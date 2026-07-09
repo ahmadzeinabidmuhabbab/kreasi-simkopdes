@@ -1,0 +1,120 @@
+=== File: analisis_segmentasi_strategi_rfm_refined\code.html ===
+Title: KREASI RFM Dashboard - Analisis Segmentasi
+Headings:
+  h1: KREASI
+  h2: Analisis & Segmentasi Anggota
+  h3: grid_view
+                    Distribusi Segmen
+  h4: Champions
+  h4: Loyal Members
+  h4: Potential Loyalist
+  h4: Promising
+  h4: Need Attention
+  h4: About to Sleep
+  h4: At Risk
+  h4: Can't Lose Them
+  h4: Hibernating
+  h3: Profil: Champions
+  h4: Demografi Dominan
+  h3: psychology
+                                Rekomendasi Strategi AI (5-Pilar)
+  h3: Trend Migrasi Segmen (3 Bln)
+  h3: Anggota Berpindah Segmen (Peringatan)
+Tables count: 1
+  Table 1 Headers: ['Anggota', 'ID Anggota', 'Segmen Lama', 'Segmen Baru', 'Status', 'Aksi']
+
+==================================================
+
+=== File: automated_financial_flow_sak_ep_reporting_refined\code.html ===
+Title: KREASI | Dasbor Arus Keuangan Otomatis
+Headings:
+  h1: Dasbor Arus Keuangan
+  h3: Rp 1.285.400.000
+  h3: Rp 420.150.000
+  h3: Rp 865.250.000
+  h2: Pendapatan vs Pengeluaran
+  h2: Pengeluaran per Kategori
+  h2: Laporan Keuangan Standar SAK-EP
+  h3: Wawasan Kesehatan Keuangan (AI)
+  h4: Standar
+  h4: Keamanan
+  h4: Bantuan
+Tables count: 1
+  Table 1 Headers: ['Kode Akun', 'Nama Akun (Buku Besar)', 'Kategori', 'Debit (Rp)', 'Kredit (Rp)', 'Saldo Akhir (Rp)']
+
+==================================================
+
+=== File: kreasi_landing_page_refined\code.html ===
+Title: KREASI - Revolusi Digital Koperasi Desa Berbasis AI
+Headings:
+  h1: KREASI — Revolusi Digital Koperasi Desa Berbasis AI.
+  h2: Pilar Transformasi Koperasi
+  h3: AI Demand Intelligence
+  h3: Behavioral Segmentation
+  h3: Smart Predictive Bundle
+  h3: Financial Transparency
+  h2: Konektivitas Tanpa Batas Antar Desa
+  h2: Siap Membangun Masa Depan Desa Anda?
+  h4: Produk
+  h4: Perusahaan
+  h4: Legal
+
+==================================================
+
+=== File: optimasi_stok_rekomendasi_bundling_terfokus_refined\code.html ===
+Title: KREASI - Smart Predictive Bundle & Inventory
+Headings:
+  h1: KREASI
+  h2: Portal Manajemen KREASI
+  h3: Rekomendasi Bundling & Optimasi Stok
+  h4: bar_chart
+                        Proyeksi Stok 6 Minggu ke Depan
+  h4: Peringatan Restok
+  h4: Heatmap Rak Toko
+  h4: Analisis Keranjang Belanja
+  h4: auto_awesome
+                            Rekomendasi Paket Bundling Cerdas
+  h4: Rekomendasi Promo & Diskon Anggota
+  h1: KREASI
+Tables count: 1
+  Table 1 Headers: ['PRODUK', 'STOK SAAT INI', 'LAJU PENJUALAN', 'SARAN ORDER', 'AKSI']
+
+==================================================
+
+=== File: pusat_intelijen_prediksi_demand_refined\code.html ===
+Title: Pusat Intelijen Demand - KREASI
+Headings:
+  h1: KREASI
+  h2: Pusat Intelijen Demand
+  h3: Konfigurasi Prediksi Demand
+  h3: query_stats
+                    Hasil Analisis Prediksi
+Tables count: 1
+  Table 1 Headers: ['Sumber', 'Nama Komoditas', 'Kategori', 'Volume Estimasi', 'Estimasi Harga', 'Analisis Intelijen', 'Aksi']
+
+==================================================
+
+=== File: riwayat_persetujuan_rfq_refined\code.html ===
+Title: Riwayat Persetujuan RFQ | KREASI
+Headings:
+  h1: KREASI Demand Intelligence
+  h2: KREASI
+  h2: Riwayat Persetujuan RFQ
+Tables count: 1
+  Table 1 Headers: ['Tanggal', 'Komoditas', 'Volume', 'Estimasi Nilai', 'Status RFQ', 'Sumber Data', 'Aksi']
+
+==================================================
+
+=== File: sistem_distribusi_shu_dengan_rincian_transaksi_refined\code.html ===
+Title: KREASI - Sistem Distribusi SHU Otomatis
+Headings:
+  h2: Ekosistem KREASI
+  h1: Sistem Distribusi SHU Otomatis
+  h3: Rp 2.450.000.000
+  h2: Rp 1.500.000.000
+  h3: Visualisasi Alur Pemotongan Dana (Waterfall)
+  h3: Rincian Pembagian per Anggota
+Tables count: 1
+  Table 1 Headers: ['Nama Anggota', 'ID Anggota', 'Modal', 'Jasa', 'Total SHU', 'Status Blast', 'Aksi']
+
+==================================================

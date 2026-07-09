@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Riwayat Persetujuan RFQ | KREASI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-secondary-fixed-variant": "#5c4300",
+                    "error-container": "#ffdad6",
+                    "inverse-surface": "#2e312c",
+                    "on-tertiary-container": "#d3efc8",
+                    "primary-fixed-dim": "#a2d48c",
+                    "on-tertiary-fixed": "#0a2008",
+                    "tertiary": "#3e5638",
+                    "on-primary-fixed": "#042100",
+                    "inverse-primary": "#a2d48c",
+                    "surface-container-high": "#e7e9e0",
+                    "background": "#f9faf1",
+                    "primary-container": "#467235",
+                    "secondary-fixed-dim": "#fbbc00",
+                    "outline-variant": "#c2c9ba",
+                    "on-secondary-container": "#6d5000",
+                    "surface-bright": "#f9faf1",
+                    "on-secondary-fixed": "#261a00",
+                    "on-background": "#1a1c17",
+                    "tertiary-fixed": "#ceebc4",
+                    "secondary-fixed": "#ffdfa0",
+                    "on-primary": "#ffffff",
+                    "primary": "#2e591f",
+                    "on-surface": "#1a1c17",
+                    "surface-dim": "#d9dbd2",
+                    "error": "#ba1a1a",
+                    "surface-tint": "#3d692d",
+                    "secondary-container": "#ffbf00",
+                    "secondary": "#795900",
+                    "on-error": "#ffffff",
+                    "surface-variant": "#e2e3db",
+                    "outline": "#72796c",
+                    "on-primary-fixed-variant": "#265017",
+                    "inverse-on-surface": "#f0f1e9",
+                    "on-tertiary-fixed-variant": "#354d30",
+                    "on-primary-container": "#c2f5a9",
+                    "tertiary-container": "#556e4f",
+                    "surface": "#f9faf1",
+                    "surface-container-low": "#f3f4ec",
+                    "on-tertiary": "#ffffff",
+                    "surface-container": "#edefe6",
+                    "on-surface-variant": "#42493d",
+                    "on-secondary": "#ffffff",
+                    "tertiary-fixed-dim": "#b3cea9",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-container-highest": "#e2e3db",
+                    "primary-fixed": "#bef1a5",
+                    "on-error-container": "#93000a"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "gutter": "24px",
+                    "xs": "4px",
+                    "container-max": "1280px",
+                    "md": "24px",
+                    "base": "8px",
+                    "xl": "64px",
+                    "sm": "12px",
+                    "lg": "40px"
+            },
+            "fontFamily": {
+                    "body-md": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "body-lg": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-sm": ["Inter"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(46, 89, 31, 0.1);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c2c9ba;
+            border-radius: 10px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #72796c;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<header class="fixed top-0 left-0 right-0 z-50 bg-surface/80 backdrop-blur-md h-16 flex items-center px-lg border-b border-outline-variant">
+<div class="max-w-[1440px] mx-auto w-full flex justify-between items-center">
+<div class="flex items-center gap-base">
+<span class="material-symbols-outlined text-primary text-3xl">hub</span>
+<h1 class="text-headline-sm font-bold text-primary tracking-tight">KREASI <span class="font-normal text-on-surface-variant">Demand Intelligence</span></h1>
+</div>
+<div class="flex items-center gap-md">
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-sm">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low rounded-full border border-outline-variant focus:ring-2 focus:ring-primary focus:border-transparent text-body-sm w-72 transition-all" placeholder="Cari RFQ atau komoditas..." type="text"/>
+</div>
+<div class="flex items-center gap-xs">
+<button class="p-2 hover:bg-surface-variant rounded-full transition-colors relative">
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-surface"></span>
+</button>
+<button class="p-2 hover:bg-surface-variant rounded-full transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">settings</span>
+</button>
+<div class="h-8 w-[1px] bg-outline-variant mx-2"></div>
+<div class="flex items-center gap-sm cursor-pointer group">
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant">
+<img alt="Profil Pengguna" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA9PRQbGFv7MAoVRFe0OeOmkj2D6TWrZ6lbDvOjlkwWInG-e7C5KnsPPzoNvOPVRs6xGtIyYiEb568gjwGnGnumqgZ4xxlM8saH3i6i94N4KelRRs9j40EDB6gxl4NmMf1E2kjFVsXGlW9uDNp7Pl3hcgxsr43CxeWwIBf6knrhD5foWotf8kg2MGVEnvpC98OfoSftyRoSq2DyrHoHbSC7D0gywz8u7XaC4mNqbnkzMO-gM2XXGDZ-"/>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors">expand_more</span>
+</div>
+</div>
+</div>
+</div>
+</header>
+<div class="pt-16 flex flex-1 overflow-hidden">
+<!-- SideNavBar -->
+<aside class="w-64 flex-shrink-0 bg-surface-container-lowest border-r border-outline-variant hidden md:flex flex-col p-md gap-base">
+<div class="mb-lg px-sm">
+<h2 class="font-bold text-primary text-xl">KREASI</h2>
+<p class="text-label-md text-on-surface-variant font-medium">Portal AI Desa</p>
+</div>
+<nav class="flex flex-col gap-xs flex-grow overflow-y-auto custom-scrollbar">
+<a class="flex items-center gap-sm px-sm py-2.5 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">cloud_download</span>
+<span class="font-label-md">Akuisisi Data</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-2.5 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">analytics</span>
+<span class="font-label-md">Analisis Permintaan</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-2.5 bg-primary-container text-on-primary-container font-bold rounded-lg transition-all shadow-sm" href="#">
+<span class="material-symbols-outlined text-[20px]">history</span>
+<span class="font-label-md">Riwayat RFQ</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-2.5 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">trending_up</span>
+<span class="font-label-md">Intelijen Pasar</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-2.5 text-on-surface-variant hover:bg-surface-variant hover:text-on-surface rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">assessment</span>
+<span class="font-label-md">Laporan Koperasi</span>
+</a>
+<div class="mt-lg pt-lg border-t border-outline-variant flex flex-col gap-xs">
+<a class="flex items-center gap-sm px-sm py-2.5 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="font-label-md">Pusat Bantuan</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-2.5 text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="font-label-md">Pengaturan</span>
+</a>
+</div>
+</nav>
+<div class="pt-md">
+<button class="w-full bg-primary text-on-primary py-3 px-md rounded-xl font-bold flex items-center justify-center gap-sm shadow-lg hover:bg-primary/90 active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined">add_circle</span>
+                    Mulai RFQ Baru
+                </button>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-grow overflow-y-auto bg-surface-bright custom-scrollbar">
+<div class="max-w-[1200px] mx-auto p-lg min-h-full flex flex-col">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-md mb-xl">
+<div class="max-w-2xl">
+<nav class="flex items-center gap-xs text-on-surface-variant mb-xs">
+<a class="text-label-md hover:text-primary transition-colors" href="#">Dashboard</a>
+<span class="material-symbols-outlined text-[14px]">chevron_right</span>
+<span class="text-label-md text-primary font-bold">Riwayat Persetujuan RFQ</span>
+</nav>
+<h2 class="text-display-lg-mobile md:text-headline-md font-bold text-on-surface mb-sm">Riwayat Persetujuan RFQ</h2>
+<p class="text-body-md text-on-surface-variant leading-relaxed">Kelola dan pantau semua prediksi permintaan yang telah disetujui untuk dikonversi menjadi permintaan penawaran aktif di ekosistem KREASI.</p>
+</div>
+<div class="flex gap-sm w-full md:w-auto">
+<button class="flex-1 md:flex-none flex items-center justify-center gap-xs px-md py-2.5 border border-outline-variant text-on-surface-variant rounded-lg hover:bg-surface-variant transition-all font-bold">
+<span class="material-symbols-outlined text-sm">filter_list</span>
+<span class="text-body-sm">Filter</span>
+</button>
+<button class="flex-1 md:flex-none flex items-center justify-center gap-xs px-md py-2.5 border border-outline-variant text-on-surface-variant rounded-lg hover:bg-surface-variant transition-all font-bold">
+<span class="material-symbols-outlined text-sm">download</span>
+<span class="text-body-sm">Ekspor</span>
+</button>
+</div>
+</div>
+<!-- Approval History List -->
+<div class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant overflow-hidden flex-grow mb-xl">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="px-md py-4 text-label-md text-on-surface-variant uppercase tracking-widest font-bold">Tanggal</th>
+<th class="px-md py-4 text-label-md text-on-surface-variant uppercase tracking-widest font-bold">Komoditas</th>
+<th class="px-md py-4 text-label-md text-on-surface-variant uppercase tracking-widest font-bold text-right">Volume</th>
+<th class="px-md py-4 text-label-md text-on-surface-variant uppercase tracking-widest font-bold text-right">Estimasi Nilai</th>
+<th class="px-md py-4 text-label-md text-on-surface-variant uppercase tracking-widest font-bold">Status RFQ</th>
+<th class="px-md py-4 text-label-md text-on-surface-variant uppercase tracking-widest font-bold">Sumber Data</th>
+<th class="px-md py-4 text-label-md text-on-surface-variant uppercase tracking-widest font-bold text-center">Aksi</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<!-- Row 1: Semen -->
+<tr class="group hover:bg-surface-container-low/30 transition-colors">
+<td class="px-md py-5">
+<div class="flex flex-col">
+<span class="text-body-sm font-bold text-on-surface">12 Okt 2023</span>
+<span class="text-[11px] text-on-surface-variant font-medium">14:20 WIB</span>
+</div>
+</td>
+<td class="px-md py-5">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-surface-container overflow-hidden flex-shrink-0 border border-outline-variant">
+<img alt="Semen" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCOFgmRNZwncSyvfnp2c39t2Pw9Bpgkbh0RcTKTc-UVx4ehrzN2_1huVxwd7bz-L5Z3AIfKFuc0aS3ImI2no3dmAan1zwHlEbMnlHKEDxiY-fuMDprSf-OqgSMNNf9Zl4Z8GUqTulWooevczeHY6p4aaGT7ISSMbOP5rPBcE8a2EvEmX8PNARLndaDn8nV128c5bS9sxPapv6Zj1A-q4EllZMDBRtsWq79FYcPozlJ3Nnkh6i_XOTkb"/>
+</div>
+<div>
+<p class="text-body-sm font-bold text-on-surface leading-tight">Semen Portland Tipe I</p>
+<span class="mt-1 text-[10px] text-primary bg-primary-container/20 px-2 py-0.5 rounded-full font-bold uppercase tracking-wider inline-block">Konstruksi</span>
+</div>
+</div>
+</td>
+<td class="px-md py-5 text-right">
+<span class="text-body-sm font-medium text-on-surface">1.200 Ton</span>
+</td>
+<td class="px-md py-5 text-right">
+<span class="text-body-sm font-bold text-on-surface">Rp 1,44 Miliar</span>
+</td>
+<td class="px-md py-5">
+<span class="px-3 py-1.5 bg-secondary-container text-on-secondary-container rounded-full text-[11px] font-bold flex items-center gap-1.5 w-fit">
+<span class="material-symbols-outlined text-[14px]">send</span> Dikirim
+                                        </span>
+</td>
+<td class="px-md py-5">
+<div class="flex items-center gap-1.5 text-primary group-hover:underline cursor-pointer">
+<span class="material-symbols-outlined text-[16px]">link</span>
+<span class="text-[11px] font-bold uppercase tracking-wide">Berita Logistik</span>
+</div>
+</td>
+<td class="px-md py-5 text-center">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-container/20 rounded-full transition-all">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 2: Minyak Goreng -->
+<tr class="group hover:bg-surface-container-low/30 transition-colors">
+<td class="px-md py-5">
+<div class="flex flex-col">
+<span class="text-body-sm font-bold text-on-surface">10 Okt 2023</span>
+<span class="text-[11px] text-on-surface-variant font-medium">09:15 WIB</span>
+</div>
+</td>
+<td class="px-md py-5">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-surface-container overflow-hidden flex-shrink-0 border border-outline-variant">
+<img alt="Minyak" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8ZvfAtIPerl4VTBtMkIv_xcdG9LHbCXHVr0ax1PbZbNolAzqXsz8M2EJBDhxkx4TnpWE5WM0LfhTi6PBdplDKt6S_QeZrPRLBZUE9cjCHqcExyjseUflv2K9e8Qa8VlyQDP4ZkV3pW0zCV9qDbHgj4ft2zYgny1zRb8ioM40cjaayC7UadxfHcevLM9e9UI033Fmw27ZGTgxKP344Uj8EydCnOxbniavYyR7kibTAmmrrD1JpSrkA"/>
+</div>
+<div>
+<p class="text-body-sm font-bold text-on-surface leading-tight">Minyak Goreng 2L</p>
+<span class="mt-1 text-[10px] text-error bg-error-container px-2 py-0.5 rounded-full font-bold uppercase tracking-wider inline-block">FMCG</span>
+</div>
+</div>
+</td>
+<td class="px-md py-5 text-right">
+<span class="text-body-sm font-medium text-on-surface">15.000 Pcs</span>
+</td>
+<td class="px-md py-5 text-right">
+<span class="text-body-sm font-bold text-on-surface">Rp 480 Juta</span>
+</td>
+<td class="px-md py-5">
+<span class="px-3 py-1.5 bg-primary-container text-on-primary-container rounded-full text-[11px] font-bold flex items-center gap-1.5 w-fit shadow-sm">
+<span class="material-symbols-outlined text-[14px]">forum</span> Penawaran Masuk
+                                        </span>
+</td>
+<td class="px-md py-5">
+<div class="flex items-center gap-1.5 text-primary group-hover:underline cursor-pointer">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+<span class="text-[11px] font-bold uppercase tracking-wide">Tren Google</span>
+</div>
+</td>
+<td class="px-md py-5 text-center">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-container/20 rounded-full transition-all">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+<!-- Row 3: Baja -->
+<tr class="group hover:bg-surface-container-low/30 transition-colors">
+<td class="px-md py-5">
+<div class="flex flex-col">
+<span class="text-body-sm font-bold text-on-surface">05 Okt 2023</span>
+<span class="text-[11px] text-on-surface-variant font-medium">16:45 WIB</span>
+</div>
+</td>
+<td class="px-md py-5">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-lg bg-surface-container overflow-hidden flex-shrink-0 border border-outline-variant">
+<img alt="Baja" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWzddYA9ZqopJ3wtKCaoglj2OMHVR1mtPcLYrwNj3xiWTkEw6xYmQjWePwkOlSLNrM7GrvI8DhKS4dqJ6SI4j8OO5Jbk1RzvknB67BSkALUwZWiN77SH7RfCCl-1pwGhTSwrMtbP20P1_dhPJ1VZnGBy5fGAU1AYKXsi-gzKdw23BOjnzFX65WWL7lyOhGIIQAhuW2IiXEo7qtXVRwdrijIqSAxZp5TIX7P86EMTKwSudG0_wv43pQ"/>
+</div>
+<div>
+<p class="text-body-sm font-bold text-on-surface leading-tight">Baja Tulangan Beton</p>
+<span class="mt-1 text-[10px] text-tertiary bg-tertiary-fixed-dim px-2 py-0.5 rounded-full font-bold uppercase tracking-wider inline-block">Industri Berat</span>
+</div>
+</div>
+</td>
+<td class="px-md py-5 text-right">
+<span class="text-body-sm font-medium text-on-surface">85 Ton</span>
+</td>
+<td class="px-md py-5 text-right">
+<span class="text-body-sm font-bold text-on-surface">Rp 1,1 Miliar</span>
+</td>
+<td class="px-md py-5">
+<span class="px-3 py-1.5 bg-surface-container-highest text-on-surface-variant rounded-full text-[11px] font-bold flex items-center gap-1.5 w-fit border border-outline-variant">
+<span class="material-symbols-outlined text-[14px]">check_circle</span> Selesai
+                                        </span>
+</td>
+<td class="px-md py-5">
+<div class="flex items-center gap-1.5 text-primary group-hover:underline cursor-pointer">
+<span class="material-symbols-outlined text-[16px]">link</span>
+<span class="text-[11px] font-bold uppercase tracking-wide">Berita APBDes</span>
+</div>
+</td>
+<td class="px-md py-5 text-center">
+<button class="p-2 text-on-surface-variant hover:text-primary hover:bg-primary-container/20 rounded-full transition-all">
+<span class="material-symbols-outlined">more_vert</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination Footer -->
+<div class="px-lg py-4 flex flex-col sm:flex-row justify-between items-center bg-surface-container-low/50 border-t border-outline-variant gap-md">
+<span class="text-label-md text-on-surface-variant font-medium">Menampilkan <span class="text-on-surface font-bold">1 - 3</span> dari <span class="text-on-surface font-bold">45</span> RFQ disetujui</span>
+<div class="flex items-center gap-xs">
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded-lg text-on-surface-variant hover:bg-surface-variant transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center bg-primary text-on-primary rounded-lg text-label-md font-bold shadow-md">1</button>
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded-lg text-label-md font-bold text-on-surface-variant hover:bg-surface-variant transition-colors">2</button>
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded-lg text-label-md font-bold text-on-surface-variant hover:bg-surface-variant transition-colors">3</button>
+<span class="mx-1 text-on-surface-variant">...</span>
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded-lg text-label-md font-bold text-on-surface-variant hover:bg-surface-variant transition-colors">15</button>
+<button class="w-8 h-8 flex items-center justify-center border border-outline-variant rounded-lg text-on-surface-variant hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+<!-- Footer (Inside Main) -->
+<footer class="mt-auto pt-lg border-t border-outline-variant flex flex-col md:flex-row justify-between items-center gap-md pb-md">
+<p class="text-body-sm text-on-surface-variant font-medium">© 2024 Ekosistem Koperasi KREASI. Seluruh hak cipta dilindungi.</p>
+<div class="flex flex-wrap justify-center gap-lg">
+<a class="text-on-surface-variant hover:text-primary underline decoration-outline-variant underline-offset-4 text-body-sm font-medium transition-colors" href="#">Kebijakan Privasi</a>
+<a class="text-on-surface-variant hover:text-primary underline decoration-outline-variant underline-offset-4 text-body-sm font-medium transition-colors" href="#">Syarat Layanan</a>
+<a class="text-on-surface-variant hover:text-primary underline decoration-outline-variant underline-offset-4 text-body-sm font-medium transition-colors" href="#">Kepatuhan Regulasi</a>
+</div>
+</footer>
+</div>
+</main>
+</div>
+</body></html>

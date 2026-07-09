@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KREASI RFM Dashboard - Analisis Segmentasi</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-dim": "#d9dbd2",
+                    "error-container": "#ffdad6",
+                    "secondary-container": "#ffbf00",
+                    "surface-variant": "#e2e3db",
+                    "on-tertiary-fixed-variant": "#354d30",
+                    "background": "#f9faf1",
+                    "on-secondary-container": "#6d5000",
+                    "secondary-fixed": "#ffdfa0",
+                    "on-secondary": "#ffffff",
+                    "surface-tint": "#3d692d",
+                    "surface-container-high": "#e7e9e0",
+                    "on-error": "#ffffff",
+                    "inverse-on-surface": "#f0f1e9",
+                    "on-error-container": "#93000a",
+                    "on-secondary-fixed-variant": "#5c4300",
+                    "tertiary-fixed": "#ceebc4",
+                    "surface-bright": "#f9faf1",
+                    "on-primary-fixed": "#042100",
+                    "on-tertiary-fixed": "#0a2008",
+                    "inverse-surface": "#2e312c",
+                    "on-surface": "#1a1c17",
+                    "tertiary-container": "#556e4f",
+                    "surface-container-highest": "#e2e3db",
+                    "tertiary-fixed-dim": "#b3cea9",
+                    "on-primary-fixed-variant": "#265017",
+                    "on-tertiary": "#ffffff",
+                    "outline-variant": "#c2c9ba",
+                    "primary-fixed": "#bef1a5",
+                    "on-primary": "#ffffff",
+                    "on-tertiary-container": "#d3efc8",
+                    "primary": "#2e591f",
+                    "on-surface-variant": "#42493d",
+                    "on-primary-container": "#c2f5a9",
+                    "secondary-fixed-dim": "#fbbc00",
+                    "on-secondary-fixed": "#261a00",
+                    "tertiary": "#3e5638",
+                    "surface": "#f9faf1",
+                    "primary-container": "#467235",
+                    "outline": "#72796c",
+                    "surface-container": "#edefe6",
+                    "surface-container-lowest": "#ffffff",
+                    "on-background": "#1a1c17",
+                    "error": "#ba1a1a",
+                    "surface-container-low": "#f3f4ec",
+                    "primary-fixed-dim": "#a2d48c",
+                    "secondary": "#795900",
+                    "inverse-primary": "#a2d48c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "xs": "4px",
+                    "xl": "64px",
+                    "sm": "12px",
+                    "base": "8px",
+                    "container-max": "1280px",
+                    "lg": "40px",
+                    "md": "24px",
+                    "gutter": "24px"
+            },
+            "fontFamily": {
+                    "display-lg": ["Inter"],
+                    "body-md": ["Inter"],
+                    "display-lg-mobile": ["Inter"],
+                    "label-md": ["Inter"],
+                    "headline-md": ["Inter"],
+                    "headline-sm": ["Inter"],
+                    "body-sm": ["Inter"],
+                    "body-lg": ["Inter"]
+            },
+            "fontSize": {
+                    "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                    "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                    "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        .glass-ai {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(46, 89, 31, 0.15);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .segment-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .segment-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.08);
+        }
+        .active-segment {
+            ring: 2px solid #2e591f;
+            ring-offset: 2px;
+            background-color: #bef1a533 !important;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c2c9ba;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-0 h-full w-64 bg-surface-container-lowest border-r border-outline-variant/30 flex flex-col z-50">
+<div class="p-md mb-md">
+<div class="flex items-center gap-sm">
+<div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-md">corporate_fare</span>
+</div>
+<div>
+<h1 class="font-bold text-headline-sm text-primary leading-none">KREASI</h1>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter">Village Cooperative</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 px-sm space-y-1 overflow-y-auto custom-scrollbar">
+<div class="px-md py-2 text-[11px] font-bold text-on-surface-variant uppercase tracking-widest opacity-60">Menu Utama</div>
+<a class="flex items-center gap-base px-md py-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined text-md group-hover:text-primary transition-colors">dashboard</span>
+<span class="font-label-md text-label-md">Overview</span>
+</a>
+<a class="flex items-center gap-base px-md py-2.5 bg-primary/10 text-primary font-bold rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined text-md">analytics</span>
+<span class="font-label-md text-label-md">RFM Segmentation</span>
+</a>
+<a class="flex items-center gap-base px-md py-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined text-md group-hover:text-primary transition-colors">psychology</span>
+<span class="font-label-md text-label-md">AI Insights</span>
+</a>
+<a class="flex items-center gap-base px-md py-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined text-md group-hover:text-primary transition-colors">inventory_2</span>
+<span class="font-label-md text-label-md">Inventory</span>
+</a>
+<a class="flex items-center gap-base px-md py-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined text-md group-hover:text-primary transition-colors">payments</span>
+<span class="font-label-md text-label-md">Finance</span>
+</a>
+<a class="flex items-center gap-base px-md py-2.5 text-on-surface-variant hover:bg-surface-container-high rounded-lg transition-colors group" href="#">
+<span class="material-symbols-outlined text-md group-hover:text-primary transition-colors">groups</span>
+<span class="font-label-md text-label-md">Community</span>
+</a>
+</nav>
+<div class="p-md mt-auto space-y-2">
+<button class="w-full bg-primary text-on-primary py-2.5 rounded-lg font-bold text-label-md flex items-center justify-center gap-2 hover:bg-primary/90 shadow-sm transition-all">
+<span class="material-symbols-outlined text-md">ios_share</span>
+            Ekspor Analisis
+        </button>
+<div class="pt-md border-t border-outline-variant/30">
+<a class="flex items-center gap-base px-md py-2 text-on-surface-variant hover:text-error transition-colors" href="#">
+<span class="material-symbols-outlined text-md">logout</span>
+<span class="font-label-md text-label-md">Keluar Sesi</span>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Wrapper -->
+<div class="ml-64 flex-1 flex flex-col min-h-screen">
+<!-- TopNavBar -->
+<header class="h-16 bg-surface-container-lowest border-b border-outline-variant/30 flex items-center justify-between px-lg sticky top-0 z-40">
+<div class="flex items-center gap-sm">
+<span class="text-on-surface-variant font-medium text-label-md uppercase tracking-wider">Analytics</span>
+<span class="material-symbols-outlined text-base text-outline">chevron_right</span>
+<span class="text-primary font-bold text-label-md uppercase tracking-wider">RFM Segmentation</span>
+</div>
+<div class="flex items-center gap-md">
+<div class="relative group">
+<button class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-on-surface-variant hover:bg-primary/10 transition-colors">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full ring-2 ring-white"></span>
+</div>
+<div class="flex items-center gap-sm pl-md border-l border-outline-variant/30">
+<div class="text-right hidden sm:block">
+<p class="text-label-md font-bold text-on-surface leading-none">Admin Koperasi</p>
+<p class="text-[10px] text-on-surface-variant">Superuser</p>
+</div>
+<div class="w-9 h-9 rounded-full bg-primary-container text-on-primary-container flex items-center justify-center font-bold">AK</div>
+</div>
+</div>
+</header>
+<!-- Main Content -->
+<main class="p-lg max-w-container-max mx-auto w-full">
+<!-- Page Title Section -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-md mb-lg">
+<div>
+<h2 class="font-display-lg text-display-lg text-on-background">Analisis &amp; Segmentasi Anggota</h2>
+<div class="flex items-center gap-md mt-2">
+<div class="flex items-center gap-1.5 px-3 py-1 bg-primary-container/20 text-primary rounded-full">
+<span class="material-symbols-outlined text-[16px] fill-1">group</span>
+<span class="font-label-md text-label-md font-bold">12,482 Anggota Aktif</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">event</span>
+<span class="font-body-sm text-body-sm">01 Jan 2024 - 31 Mar 2024</span>
+</div>
+</div>
+</div>
+<div class="flex gap-sm">
+<button class="px-md py-2.5 border border-outline text-on-surface-variant font-bold rounded-lg flex items-center gap-2 hover:bg-surface-container transition-colors text-label-md">
+<span class="material-symbols-outlined text-md">filter_list</span>
+                    Filter Lanjutan
+                </button>
+<button class="px-md py-2.5 bg-primary text-on-primary font-bold rounded-lg flex items-center gap-2 shadow-sm hover:opacity-90 transition-opacity text-label-md">
+<span class="material-symbols-outlined text-md">sync</span>
+                    Perbarui Data
+                </button>
+</div>
+</div>
+<!-- RFM Grid Section -->
+<section class="mb-xl">
+<div class="flex items-center justify-between mb-md">
+<h3 class="font-headline-sm text-headline-sm flex items-center gap-2">
+<span class="material-symbols-outlined text-primary">grid_view</span>
+                    Distribusi Segmen
+                </h3>
+<div class="flex items-center gap-1 bg-surface-container p-1 rounded-lg">
+<button class="px-3 py-1 bg-surface-container-lowest rounded shadow-sm text-label-md font-bold text-primary">Visual Grid</button>
+<button class="px-3 py-1 text-on-surface-variant text-label-md hover:text-on-surface transition-colors">Tabel Data</button>
+</div>
+</div>
+<!-- Enhanced Bento Grid -->
+<div class="grid grid-cols-12 grid-rows-3 gap-md min-h-[500px]">
+<!-- Champions -->
+<div class="col-span-12 md:col-span-4 row-span-2 segment-card bg-surface-container-lowest border border-primary/20 rounded-2xl p-md flex flex-col justify-between cursor-pointer active-segment" onclick="selectSegment('Champions', this)">
+<div class="flex justify-between items-start">
+<div class="p-2.5 bg-primary text-on-primary rounded-xl">
+<span class="material-symbols-outlined">stars</span>
+</div>
+<span class="text-display-lg font-black text-primary">12%</span>
+</div>
+<div>
+<h4 class="font-headline-sm text-primary mb-1">Champions</h4>
+<p class="text-body-sm text-on-surface-variant leading-snug">Anggota paling berharga dengan frekuensi dan pengeluaran tertinggi.</p>
+</div>
+</div>
+<!-- Loyal -->
+<div class="col-span-12 md:col-span-4 segment-card bg-surface-container-low border border-outline-variant/30 rounded-2xl p-md flex flex-col justify-between cursor-pointer" onclick="selectSegment('Loyal', this)">
+<div class="flex justify-between items-center">
+<h4 class="font-headline-sm text-on-surface">Loyal Members</h4>
+<span class="text-headline-md font-bold text-primary">24%</span>
+</div>
+</div>
+<!-- Potential Loyalist -->
+<div class="col-span-12 md:col-span-4 segment-card bg-surface-container-low border border-outline-variant/30 rounded-2xl p-md flex flex-col justify-between cursor-pointer" onclick="selectSegment('Potential Loyalist', this)">
+<div class="flex justify-between items-center">
+<h4 class="font-headline-sm text-on-surface">Potential Loyalist</h4>
+<span class="text-headline-md font-bold text-primary">15%</span>
+</div>
+</div>
+<!-- Promising -->
+<div class="col-span-12 md:col-span-3 segment-card bg-secondary-container/5 border border-secondary/20 rounded-2xl p-md flex flex-col justify-between cursor-pointer" onclick="selectSegment('Promising', this)">
+<div class="flex justify-between items-center">
+<h4 class="font-headline-sm text-secondary">Promising</h4>
+<span class="text-headline-md font-bold text-secondary">8%</span>
+</div>
+</div>
+<!-- Need Attention -->
+<div class="col-span-12 md:col-span-5 segment-card bg-secondary-container/10 border border-secondary/30 rounded-2xl p-md flex flex-col justify-between cursor-pointer" onclick="selectSegment('Need Attention', this)">
+<div class="flex justify-between items-center">
+<h4 class="font-headline-sm text-secondary">Need Attention</h4>
+<span class="text-headline-md font-bold text-secondary">10%</span>
+</div>
+</div>
+<!-- About To Sleep -->
+<div class="col-span-12 md:col-span-4 segment-card bg-surface-variant border border-outline-variant/30 rounded-2xl p-md flex flex-col justify-between cursor-pointer" onclick="selectSegment('About To Sleep', this)">
+<div class="flex justify-between items-center">
+<h4 class="font-headline-sm text-on-surface-variant">About to Sleep</h4>
+<span class="text-headline-md font-bold text-on-surface-variant">9%</span>
+</div>
+</div>
+<!-- Lower Row -->
+<div class="col-span-12 md:col-span-4 segment-card bg-error-container/5 border border-error/20 rounded-2xl p-md flex flex-col justify-between cursor-pointer" onclick="selectSegment('At Risk', this)">
+<div class="flex justify-between items-center">
+<h4 class="font-headline-sm text-error">At Risk</h4>
+<span class="text-headline-md font-bold text-error">11%</span>
+</div>
+</div>
+<div class="col-span-12 md:col-span-4 segment-card bg-error-container/10 border border-error/30 rounded-2xl p-md flex flex-col justify-between cursor-pointer" onclick="selectSegment('Can\'t Lose Them', this)">
+<div class="flex justify-between items-center">
+<h4 class="font-headline-sm text-error">Can't Lose Them</h4>
+<span class="text-headline-md font-bold text-error">4%</span>
+</div>
+</div>
+<div class="col-span-12 md:col-span-4 segment-card bg-surface-dim border border-outline-variant rounded-2xl p-md flex flex-col justify-between cursor-pointer" onclick="selectSegment('Hibernating', this)">
+<div class="flex justify-between items-center">
+<h4 class="font-headline-sm text-on-surface-variant">Hibernating</h4>
+<span class="text-headline-md font-bold text-on-surface-variant">7%</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Detailed Analysis & AI -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-lg items-start">
+<!-- Left: Segment Details -->
+<div class="lg:col-span-4 bg-surface-container-lowest rounded-2xl p-lg shadow-sm border border-outline-variant/30">
+<div class="flex items-center gap-3 mb-6">
+<div class="w-1 h-8 bg-primary rounded-full"></div>
+<h3 class="font-headline-sm text-headline-sm" id="selected-segment-name">Profil: Champions</h3>
+</div>
+<div class="space-y-md">
+<div>
+<div class="flex justify-between mb-2">
+<span class="text-label-md text-on-surface-variant font-bold">Resensi Rata-rata</span>
+<span class="text-label-md font-bold text-primary">3 Hari Lalu</span>
+</div>
+<div class="w-full bg-outline-variant/20 h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[92%] rounded-full"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between mb-2">
+<span class="text-label-md text-on-surface-variant font-bold">Frekuensi Rata-rata</span>
+<span class="text-label-md font-bold text-primary">12x / Bulan</span>
+</div>
+<div class="w-full bg-outline-variant/20 h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[85%] rounded-full"></div>
+</div>
+</div>
+<div>
+<div class="flex justify-between mb-2">
+<span class="text-label-md text-on-surface-variant font-bold">Nilai Moneter</span>
+<span class="text-label-md font-bold text-primary">Rp 4.2jt / Bln</span>
+</div>
+<div class="w-full bg-outline-variant/20 h-2 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[88%] rounded-full"></div>
+</div>
+</div>
+</div>
+<div class="mt-lg pt-lg border-t border-outline-variant/30">
+<h4 class="text-[10px] font-black uppercase text-on-surface-variant mb-4 tracking-widest">Demografi Dominan</h4>
+<div class="flex flex-wrap gap-2">
+<span class="px-3 py-1.5 bg-surface-container rounded-lg text-body-sm font-medium">Pria (58%)</span>
+<span class="px-3 py-1.5 bg-surface-container rounded-lg text-body-sm font-medium">Usia 35-45</span>
+<span class="px-3 py-1.5 bg-surface-container rounded-lg text-body-sm font-medium">Petani Sawit</span>
+<span class="px-3 py-1.5 bg-surface-container rounded-lg text-body-sm font-medium">Area: Maju Jaya</span>
+</div>
+</div>
+<div class="mt-6 p-4 bg-primary/5 rounded-xl border border-primary/10 relative overflow-hidden">
+<span class="material-symbols-outlined absolute -right-2 -bottom-2 text-primary/10 text-6xl rotate-12">format_quote</span>
+<p class="text-body-sm italic text-on-surface-variant leading-relaxed relative z-10">
+                        "Segmen ini adalah tulang punggung koperasi. Mereka bukan sekadar pelanggan, melainkan advokat yang aktif merekomendasikan layanan kita."
+                    </p>
+</div>
+</div>
+<!-- Right: AI Strategy & Trends -->
+<div class="lg:col-span-8 space-y-lg">
+<div class="glass-ai rounded-2xl p-lg relative overflow-hidden shadow-sm">
+<div class="absolute -top-12 -right-12 w-48 h-48 bg-primary/5 rounded-full blur-3xl"></div>
+<div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-lg gap-md relative z-10">
+<div>
+<h3 class="font-headline-md text-primary flex items-center gap-2">
+<span class="material-symbols-outlined fill-1">psychology</span>
+                                Rekomendasi Strategi AI (5-Pilar)
+                            </h3>
+<p class="text-body-sm text-on-surface-variant mt-1">Otomasi strategi retensi berbasis perilaku anggota.</p>
+</div>
+<div class="px-4 py-1.5 bg-primary text-on-primary rounded-full text-[10px] font-bold uppercase tracking-widest animate-pulse">
+                            AI Aktif Menganalisis
+                        </div>
+</div>
+<div class="grid grid-cols-2 md:grid-cols-5 gap-md relative z-10">
+<div class="space-y-3">
+<div class="w-10 h-10 bg-white rounded-lg shadow-sm flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-md">campaign</span>
+</div>
+<h5 class="font-bold text-body-sm text-on-surface">Pemasaran</h5>
+<ul class="text-[12px] text-on-surface-variant space-y-1.5 leading-tight">
+<li>• Reward Eksklusif</li>
+<li>• Bonus Referal</li>
+</ul>
+</div>
+<div class="space-y-3">
+<div class="w-10 h-10 bg-white rounded-lg shadow-sm flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-md">inventory_2</span>
+</div>
+<h5 class="font-bold text-body-sm text-on-surface">Produk</h5>
+<ul class="text-[12px] text-on-surface-variant space-y-1.5 leading-tight">
+<li>• Alat Tani Premium</li>
+<li>• Pupuk Massal</li>
+</ul>
+</div>
+<div class="space-y-3">
+<div class="w-10 h-10 bg-white rounded-lg shadow-sm flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-md">payments</span>
+</div>
+<h5 class="font-bold text-body-sm text-on-surface">Harga</h5>
+<ul class="text-[12px] text-on-surface-variant space-y-1.5 leading-tight">
+<li>• Diskon Bertingkat</li>
+<li>• Pinjaman 0%</li>
+</ul>
+</div>
+<div class="space-y-3">
+<div class="w-10 h-10 bg-white rounded-lg shadow-sm flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-md">credit_score</span>
+</div>
+<h5 class="font-bold text-body-sm text-on-surface">Kredit</h5>
+<ul class="text-[12px] text-on-surface-variant space-y-1.5 leading-tight">
+<li>• Limit Pre-approved</li>
+<li>• Bayar Fleksibel</li>
+</ul>
+</div>
+<div class="space-y-3">
+<div class="w-10 h-10 bg-white rounded-lg shadow-sm flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-md">handshake</span>
+</div>
+<h5 class="font-bold text-body-sm text-on-surface">Relasi</h5>
+<ul class="text-[12px] text-on-surface-variant space-y-1.5 leading-tight">
+<li>• Dukungan Prioritas</li>
+<li>• Undangan VIP</li>
+</ul>
+</div>
+</div>
+<div class="mt-lg flex justify-end">
+<button class="px-6 py-2.5 bg-primary text-on-primary font-bold rounded-lg shadow-md flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all text-label-md">
+                            Eksekusi Campaign Otomatis
+                            <span class="material-symbols-outlined text-md">auto_awesome</span>
+</button>
+</div>
+</div>
+<!-- Historical Trend Chart -->
+<div class="bg-surface-container-lowest rounded-2xl p-lg shadow-sm border border-outline-variant/30">
+<div class="flex items-center justify-between mb-8">
+<h3 class="font-headline-sm text-headline-sm">Trend Migrasi Segmen (3 Bln)</h3>
+<div class="flex gap-md">
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 bg-primary rounded-full"></span>
+<span class="text-[11px] font-bold text-on-surface-variant uppercase">Masuk</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="w-2.5 h-2.5 bg-secondary rounded-full"></span>
+<span class="text-[11px] font-bold text-on-surface-variant uppercase">Keluar</span>
+</div>
+</div>
+</div>
+<div class="relative h-40 w-full flex items-end gap-3 px-2">
+<div class="flex-1 bg-primary/20 h-[50%] rounded-t-lg group relative">
+<div class="absolute -top-10 left-1/2 -translate-x-1/2 bg-on-surface text-surface text-[10px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">+92 Anggota</div>
+</div>
+<div class="flex-1 bg-primary/40 h-[70%] rounded-t-lg"></div>
+<div class="flex-1 bg-primary/60 h-[85%] rounded-t-lg"></div>
+<div class="flex-1 bg-primary/80 h-[95%] rounded-t-lg"></div>
+<div class="flex-1 bg-primary h-[82%] rounded-t-lg"></div>
+<div class="flex-1 bg-primary-container h-[90%] rounded-t-lg"></div>
+<div class="flex-1 bg-secondary/30 h-[35%] rounded-t-lg"></div>
+<div class="absolute bottom-0 left-0 w-full border-b border-outline-variant/40"></div>
+</div>
+<div class="flex justify-between mt-3 text-[11px] text-on-surface-variant font-bold uppercase tracking-wider">
+<span>Januari</span>
+<span>Februari</span>
+<span>Maret</span>
+<span>April (Berjalan)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Alerts Table -->
+<section class="mt-xl">
+<div class="flex items-center justify-between mb-md">
+<h3 class="font-headline-sm text-headline-sm">Anggota Berpindah Segmen (Peringatan)</h3>
+<a class="text-primary font-bold text-label-md flex items-center gap-1 group" href="#">
+                    Lihat Semua
+                    <span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</a>
+</div>
+<div class="bg-surface-container-lowest rounded-2xl shadow-sm border border-outline-variant/30 overflow-hidden">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant/30">
+<th class="px-lg py-4 font-bold text-[11px] text-on-surface-variant uppercase tracking-widest">Anggota</th>
+<th class="px-lg py-4 font-bold text-[11px] text-on-surface-variant uppercase tracking-widest">ID Anggota</th>
+<th class="px-lg py-4 font-bold text-[11px] text-on-surface-variant uppercase tracking-widest">Segmen Lama</th>
+<th class="px-lg py-4 font-bold text-[11px] text-on-surface-variant uppercase tracking-widest">Segmen Baru</th>
+<th class="px-lg py-4 font-bold text-[11px] text-on-surface-variant uppercase tracking-widest text-center">Status</th>
+<th class="px-lg py-4 font-bold text-[11px] text-on-surface-variant uppercase tracking-widest text-right">Aksi</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/20">
+<tr class="hover:bg-surface-container/30 transition-colors">
+<td class="px-lg py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-xs">AS</div>
+<span class="font-bold text-on-surface">Ahmad Subarjo</span>
+</div>
+</td>
+<td class="px-lg py-4 text-body-sm text-on-surface-variant font-mono">#KRS-2021-0082</td>
+<td class="px-lg py-4"><span class="px-3 py-1 bg-surface-variant text-on-surface-variant rounded-full text-[10px] font-bold uppercase">Loyal</span></td>
+<td class="px-lg py-4"><span class="px-3 py-1 bg-primary/10 text-primary rounded-full text-[10px] font-bold uppercase border border-primary/20">Champions</span></td>
+<td class="px-lg py-4 text-center">
+<span class="text-primary font-bold flex items-center justify-center gap-1 text-label-md">
+<span class="material-symbols-outlined text-[16px]">trending_up</span> +18%
+                                </span>
+</td>
+<td class="px-lg py-4 text-right">
+<button class="p-2 hover:bg-primary/10 rounded-lg text-primary transition-colors">
+<span class="material-symbols-outlined text-md">mail</span>
+</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container/30 transition-colors">
+<td class="px-lg py-4">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full bg-secondary/10 text-secondary flex items-center justify-center font-bold text-xs">SP</div>
+<span class="font-bold text-on-surface">Siti Purwanti</span>
+</div>
+</td>
+<td class="px-lg py-4 text-body-sm text-on-surface-variant font-mono">#KRS-2019-1102</td>
+<td class="px-lg py-4"><span class="px-3 py-1 bg-surface-variant text-on-surface-variant rounded-full text-[10px] font-bold uppercase">Champions</span></td>
+<td class="px-lg py-4"><span class="px-3 py-1 bg-error/10 text-error rounded-full text-[10px] font-bold uppercase border border-error/20">At Risk</span></td>
+<td class="px-lg py-4 text-center">
+<span class="text-error font-bold flex items-center justify-center gap-1 text-label-md">
+<span class="material-symbols-outlined text-[16px]">trending_down</span> -24%
+                                </span>
+</td>
+<td class="px-lg py-4 text-right">
+<button class="p-2 hover:bg-primary/10 rounded-lg text-primary transition-colors">
+<span class="material-symbols-outlined text-md">phone</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+<!-- Uniform Footer -->
+<footer class="mt-auto border-t border-outline-variant/30 bg-surface-container-lowest p-lg">
+<div class="max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-md">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 bg-surface-container rounded flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-md">corporate_fare</span>
+</div>
+<p class="text-[11px] text-on-surface-variant font-medium">© 2024 KREASI Village Cooperative. Sistem Analisis Terintegrasi.</p>
+</div>
+<div class="flex gap-lg">
+<a class="text-[11px] font-bold text-on-surface-variant hover:text-primary transition-colors uppercase tracking-widest" href="#">Bantuan</a>
+<a class="text-[11px] font-bold text-on-surface-variant hover:text-primary transition-colors uppercase tracking-widest" href="#">Privasi</a>
+<a class="text-[11px] font-bold text-on-surface-variant hover:text-primary transition-colors uppercase tracking-widest" href="#">Dokumentasi API</a>
+</div>
+</div>
+</footer>
+</div>
+<script>
+    function selectSegment(segmentName, element) {
+        // Remove active state from all cards
+        document.querySelectorAll('.segment-card').forEach(card => {
+            card.classList.remove('active-segment');
+        });
+
+        // Set active to clicked element
+        element.classList.add('active-segment');
+
+        // Update Detail Title
+        document.getElementById('selected-segment-name').innerText = 'Profil: ' + segmentName;
+
+        // Visual feedback
+        console.log('Segment Aktif:', segmentName);
+    }
+</script>
+</body></html>

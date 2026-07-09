@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pusat Intelijen Demand - KREASI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #c2c9ba;
+            border-radius: 10px;
+        }
+        .sidebar-active {
+            background-color: #bef1a5;
+            color: #042100;
+            font-weight: 600;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-secondary-fixed-variant": "#5c4300",
+                      "error-container": "#ffdad6",
+                      "inverse-surface": "#2e312c",
+                      "on-tertiary-container": "#d3efc8",
+                      "primary-fixed-dim": "#a2d48c",
+                      "on-tertiary-fixed": "#0a2008",
+                      "tertiary": "#3e5638",
+                      "on-primary-fixed": "#042100",
+                      "inverse-primary": "#a2d48c",
+                      "surface-container-high": "#e7e9e0",
+                      "background": "#f9faf1",
+                      "primary-container": "#467235",
+                      "secondary-fixed-dim": "#fbbc00",
+                      "outline-variant": "#c2c9ba",
+                      "on-secondary-container": "#6d5000",
+                      "surface-bright": "#f9faf1",
+                      "on-secondary-fixed": "#261a00",
+                      "on-background": "#1a1c17",
+                      "tertiary-fixed": "#ceebc4",
+                      "secondary-fixed": "#ffdfa0",
+                      "on-primary": "#ffffff",
+                      "primary": "#2e591f",
+                      "on-surface": "#1a1c17",
+                      "surface-dim": "#d9dbd2",
+                      "error": "#ba1a1a",
+                      "surface-tint": "#3d692d",
+                      "secondary-container": "#ffbf00",
+                      "secondary": "#795900",
+                      "on-error": "#ffffff",
+                      "surface-variant": "#e2e3db",
+                      "outline": "#72796c",
+                      "on-primary-fixed-variant": "#265017",
+                      "inverse-on-surface": "#f0f1e9",
+                      "on-tertiary-fixed-variant": "#354d30",
+                      "on-primary-container": "#c2f5a9",
+                      "tertiary-container": "#556e4f",
+                      "surface": "#f9faf1",
+                      "surface-container-low": "#f3f4ec",
+                      "on-tertiary": "#ffffff",
+                      "surface-container": "#edefe6",
+                      "on-surface-variant": "#42493d",
+                      "on-secondary": "#ffffff",
+                      "tertiary-fixed-dim": "#b3cea9",
+                      "surface-container-lowest": "#ffffff",
+                      "surface-container-highest": "#e2e3db",
+                      "primary-fixed": "#bef1a5",
+                      "on-error-container": "#93000a"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "gutter": "24px",
+                      "xs": "4px",
+                      "container-max": "1280px",
+                      "md": "24px",
+                      "base": "8px",
+                      "xl": "64px",
+                      "sm": "12px",
+                      "lg": "40px"
+              },
+              "fontFamily": {
+                      "body-md": ["Inter"],
+                      "display-lg": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "headline-md": ["Inter"],
+                      "label-md": ["Inter"],
+                      "headline-sm": ["Inter"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                      "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                      "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}],
+                      "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}]
+              }
+            },
+          },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex">
+<!-- Side Navigation -->
+<aside class="hidden md:flex flex-col h-screen w-64 fixed left-0 top-0 bg-surface-container-low border-r border-outline-variant p-md gap-base z-50">
+<div class="flex items-center gap-sm mb-lg px-xs">
+<div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center text-on-primary shadow-sm">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">agriculture</span>
+</div>
+<div>
+<h1 class="font-headline-sm text-primary leading-tight tracking-tight">KREASI</h1>
+<p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Portal AI Desa</p>
+</div>
+</div>
+<nav class="flex-grow flex flex-col gap-xs">
+<a class="flex items-center gap-sm px-sm py-base text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">cloud_download</span>
+<span class="font-label-md">Akuisisi Data</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-base sidebar-active rounded-lg shadow-sm" href="#">
+<span class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<span class="font-label-md">Analisis Permintaan</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-base text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">trending_up</span>
+<span class="font-label-md">Intelijen Pasar</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-base text-on-surface-variant hover:bg-surface-variant rounded-lg transition-all" href="#">
+<span class="material-symbols-outlined text-[20px]">assessment</span>
+<span class="font-label-md">Laporan Koperasi</span>
+</a>
+</nav>
+<div class="mt-auto flex flex-col gap-xs border-t border-outline-variant pt-md">
+<button class="bg-secondary-container text-on-secondary-container font-bold py-sm rounded-lg mb-base hover:shadow-md transition-all active:scale-95">
+            Inisiasi RFQ
+        </button>
+<a class="flex items-center gap-sm px-sm py-base text-on-surface-variant hover:bg-surface-variant rounded-lg" href="#">
+<span class="material-symbols-outlined text-[20px]">help</span>
+<span class="font-label-md">Pusat Bantuan</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-base text-on-surface-variant hover:bg-surface-variant rounded-lg" href="#">
+<span class="material-symbols-outlined text-[20px]">settings</span>
+<span class="font-label-md">Pengaturan</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-grow md:ml-64 min-h-screen relative overflow-x-hidden flex flex-col">
+<!-- Header -->
+<header class="sticky top-0 z-40 bg-surface/80 backdrop-blur-md border-b border-outline-variant px-lg h-16 flex justify-between items-center w-full">
+<h2 class="text-headline-sm font-bold text-on-surface">Pusat Intelijen Demand</h2>
+<div class="flex items-center gap-md">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border border-outline-variant rounded-full text-body-sm focus:ring-2 focus:ring-primary w-64 transition-all focus:w-80" placeholder="Cari data intelijen..." type="text"/>
+</div>
+<div class="flex items-center gap-sm border-l border-outline-variant pl-md ml-xs">
+<div class="relative">
+<span class="material-symbols-outlined p-2 text-on-surface-variant hover:bg-surface-variant/50 rounded-full cursor-pointer transition-colors">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border border-surface"></span>
+</div>
+<div class="w-9 h-9 rounded-full overflow-hidden border-2 border-primary/20 cursor-pointer hover:border-primary transition-all">
+<img alt="User Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBc9DUDBYw77DTRyIq3cNwFSg7c8ZChvZzlw9nkcJ4d6g2oAOddbN5VA0ITaWrMgvLfXtlrWAlTVCB8uzjnK-nx-fgYcvoHNx6j8gwaRSO6bnRp69roLrAyO1mUDdKp5Xl7_DfYEqGbwAlqQKpkWgP8yYqf88lcXLQ83vvooxowPmFDsJoTf5J3zFSEws1toyxzEX2nNFK-YyTM-DQGyv5snKm2BbErvsPn7pLlus2IUFEPkKpKGmoP"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Content Canvas -->
+<div class="p-lg max-w-container-max mx-auto space-y-lg flex-grow w-full">
+<!-- 1. Top Section: Metrics -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-md">
+<div class="lg:col-span-4 bg-surface-container-lowest p-md rounded-xl border border-outline-variant shadow-sm flex items-center gap-md relative overflow-hidden group">
+<div class="absolute -right-4 -bottom-4 opacity-5 group-hover:opacity-10 transition-opacity">
+<span class="material-symbols-outlined text-[120px] text-primary">assignment_turned_in</span>
+</div>
+<div class="w-14 h-14 bg-primary-container/30 rounded-xl flex items-center justify-center text-primary shrink-0">
+<span class="material-symbols-outlined text-[32px]">assignment_turned_in</span>
+</div>
+<div>
+<p class="text-label-md text-on-surface-variant font-bold uppercase tracking-wider">Total RFQ Diajukan</p>
+<div class="flex items-baseline gap-xs">
+<p class="text-[32px] font-bold text-on-surface leading-none">1.248</p>
+<span class="text-xs font-bold text-primary flex items-center">+12% <span class="material-symbols-outlined text-xs">trending_up</span></span>
+</div>
+</div>
+</div>
+<div class="lg:col-span-8 bg-surface-container-lowest p-md rounded-xl border border-outline-variant shadow-sm flex flex-col gap-sm">
+<div class="flex justify-between items-center">
+<p class="text-label-md text-on-surface-variant font-bold uppercase tracking-wider">Komoditas Terpopuler (Bulan Ini)</p>
+<span class="text-label-md text-primary font-semibold cursor-pointer hover:underline">Lihat Detail</span>
+</div>
+<div class="flex items-end gap-md flex-grow pt-xs h-24">
+<div class="flex flex-col items-center gap-xs flex-1 group">
+<div class="w-full bg-primary/10 rounded-t-lg h-full relative overflow-hidden">
+<div class="absolute bottom-0 w-full bg-primary/80 group-hover:bg-primary transition-all rounded-t-lg" style="height: 85%"></div>
+</div>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase">Beras</span>
+</div>
+<div class="flex flex-col items-center gap-xs flex-1 group">
+<div class="w-full bg-primary/10 rounded-t-lg h-full relative overflow-hidden">
+<div class="absolute bottom-0 w-full bg-primary/60 group-hover:bg-primary transition-all rounded-t-lg" style="height: 60%"></div>
+</div>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase">Jagung</span>
+</div>
+<div class="flex flex-col items-center gap-xs flex-1 group">
+<div class="w-full bg-primary/10 rounded-t-lg h-full relative overflow-hidden">
+<div class="absolute bottom-0 w-full bg-primary/40 group-hover:bg-primary transition-all rounded-t-lg" style="height: 45%"></div>
+</div>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase">Pupuk</span>
+</div>
+<div class="flex flex-col items-center gap-xs flex-1 group">
+<div class="w-full bg-primary/10 rounded-t-lg h-full relative overflow-hidden">
+<div class="absolute bottom-0 w-full bg-primary/20 group-hover:bg-primary transition-all rounded-t-lg" style="height: 30%"></div>
+</div>
+<span class="text-[10px] font-bold text-on-surface-variant uppercase">Semen</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 2. Middle Section: Configuration -->
+<section class="bg-surface-container-lowest p-lg rounded-xl border border-outline-variant shadow-sm space-y-lg">
+<div class="flex items-center justify-between border-b border-outline-variant pb-md">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 bg-primary/10 text-primary rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+</div>
+<h3 class="text-headline-sm font-bold text-on-surface">Konfigurasi Prediksi Demand</h3>
+</div>
+<button class="text-primary hover:bg-primary/5 px-sm py-1 rounded-lg text-label-md font-bold transition-colors">Reset Filter</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+<div class="space-y-sm">
+<label class="font-label-md text-on-surface-variant block uppercase tracking-widest font-bold">Sumber Data Intelijen</label>
+<div class="flex flex-wrap gap-sm">
+<button class="px-md py-sm bg-primary text-on-primary rounded-lg flex items-center gap-sm transition-all border border-primary shadow-sm active:scale-95" onclick="toggleSource(this)">
+<span class="material-symbols-outlined text-body-sm" style="font-variation-settings: 'FILL' 1;">newspaper</span>
+<span class="font-semibold">Berita Nasional</span>
+</button>
+<button class="px-md py-sm bg-surface-container-high text-on-surface-variant rounded-lg flex items-center gap-sm hover:bg-surface-variant transition-all border border-transparent active:scale-95" onclick="toggleSource(this)">
+<span class="material-symbols-outlined text-body-sm">trending_up</span>
+<span class="font-semibold">Google Trends</span>
+</button>
+<button class="px-md py-sm bg-surface-container-high text-on-surface-variant rounded-lg flex items-center gap-sm hover:bg-surface-variant transition-all border border-transparent active:scale-95" onclick="toggleSource(this)">
+<span class="material-symbols-outlined text-body-sm">public</span>
+<span class="font-semibold">Laporan Global</span>
+</button>
+</div>
+</div>
+<div class="space-y-sm">
+<label class="font-label-md text-on-surface-variant block uppercase tracking-widest font-bold">Rentang Waktu Analisis</label>
+<div class="flex items-center gap-sm">
+<div class="relative flex-grow">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">calendar_today</span>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg pl-10 pr-md py-sm focus:ring-2 focus:ring-primary outline-none transition-all" type="date" value="2024-05-01"/>
+</div>
+<span class="text-outline font-bold">sampai</span>
+<div class="relative flex-grow">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[18px]">event</span>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-lg pl-10 pr-md py-sm focus:ring-2 focus:ring-primary outline-none transition-all" type="date" value="2024-05-31"/>
+</div>
+</div>
+</div>
+</div>
+<!-- 3. Action Button -->
+<div class="pt-md flex justify-center border-t border-outline-variant/50">
+<button class="bg-secondary-container hover:bg-secondary-container/90 text-on-secondary-container px-xl py-md rounded-xl font-bold flex items-center gap-sm transition-all shadow-md active:scale-95 group" onclick="generatePredictions()">
+<span class="material-symbols-outlined group-hover:rotate-12 transition-transform">bolt</span>
+                    Generate Prediksi Demand
+                </button>
+</div>
+</section>
+<!-- 4. Results Section -->
+<section class="space-y-md">
+<div class="flex items-center justify-between">
+<h3 class="text-headline-md font-bold flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary text-[28px]">query_stats</span>
+                    Hasil Analisis Prediksi
+                </h3>
+<div class="flex gap-sm">
+<button class="flex items-center gap-xs px-sm py-2 border border-outline-variant rounded-lg text-body-sm font-semibold hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-[18px]">download</span>
+                        Ekspor CSV
+                    </button>
+<button class="flex items-center gap-xs px-sm py-2 bg-primary text-on-primary rounded-lg text-body-sm font-semibold hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined text-[18px]">print</span>
+                        Cetak Laporan
+                    </button>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant shadow-sm overflow-hidden">
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low border-b border-outline-variant">
+<th class="px-lg py-md font-bold text-on-surface-variant uppercase tracking-wider text-[11px]">Sumber</th>
+<th class="px-lg py-md font-bold text-on-surface-variant uppercase tracking-wider text-[11px]">Nama Komoditas</th>
+<th class="px-lg py-md font-bold text-on-surface-variant uppercase tracking-wider text-[11px]">Kategori</th>
+<th class="px-lg py-md font-bold text-on-surface-variant uppercase tracking-wider text-[11px]">Volume Estimasi</th>
+<th class="px-lg py-md font-bold text-on-surface-variant uppercase tracking-wider text-[11px]">Estimasi Harga</th>
+<th class="px-lg py-md font-bold text-on-surface-variant uppercase tracking-wider text-[11px]">Analisis Intelijen</th>
+<th class="px-lg py-md font-bold text-on-surface-variant uppercase tracking-wider text-[11px] text-right">Aksi</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container/50 transition-colors">
+<td class="px-lg py-md">
+<span class="bg-primary/10 text-primary px-sm py-xs rounded-full text-[10px] font-bold uppercase tracking-tight">Berita Utama</span>
+</td>
+<td class="px-lg py-md">
+<p class="font-bold text-on-surface">Beras Medium SPHP</p>
+<p class="text-[10px] text-on-surface-variant">ID: PROD-9921</p>
+</td>
+<td class="px-lg py-md text-body-sm">Pangan Pokok</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-xs">
+<span class="font-bold text-primary">500 Ton</span>
+<span class="w-2 h-2 bg-primary rounded-full"></span>
+</div>
+</td>
+<td class="px-lg py-md text-body-sm font-medium">Rp 10.900/kg</td>
+<td class="px-lg py-md">
+<p class="text-body-sm text-on-surface-variant line-clamp-2 max-w-xs leading-relaxed">
+                                        Ancaman cuaca ekstrem El Nino di sentra produksi Jawa Tengah memicu kenaikan permintaan stok gudang. Prediksi lonjakan 15% pada pekan kedua.
+                                    </p>
+</td>
+<td class="px-lg py-md text-right">
+<button class="bg-primary text-on-primary px-md py-sm rounded-lg text-label-md font-bold hover:shadow-md active:scale-95 transition-all">Ajukan RFQ</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container/50 transition-colors">
+<td class="px-lg py-md">
+<span class="bg-secondary/10 text-secondary px-sm py-xs rounded-full text-[10px] font-bold uppercase tracking-tight">Google Trends</span>
+</td>
+<td class="px-lg py-md">
+<p class="font-bold text-on-surface">Semen Portland</p>
+<p class="text-[10px] text-on-surface-variant">ID: PROD-4412</p>
+</td>
+<td class="px-lg py-md text-body-sm">Konstruksi</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-xs">
+<span class="font-bold text-primary">2.000 Sak</span>
+<span class="w-2 h-2 bg-secondary rounded-full"></span>
+</div>
+</td>
+<td class="px-lg py-md text-body-sm font-medium">Rp 65.000/sak</td>
+<td class="px-lg py-md">
+<p class="text-body-sm text-on-surface-variant line-clamp-2 max-w-xs leading-relaxed">
+                                        Volume pencarian renovasi hunian mandiri meningkat di wilayah Urban-3 seiring awal musim kemarau. Permintaan diprediksi stabil meningkat.
+                                    </p>
+</td>
+<td class="px-lg py-md text-right">
+<button class="bg-primary text-on-primary px-md py-sm rounded-lg text-label-md font-bold hover:shadow-md active:scale-95 transition-all">Ajukan RFQ</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container/50 transition-colors">
+<td class="px-lg py-md">
+<span class="bg-primary/10 text-primary px-sm py-xs rounded-full text-[10px] font-bold uppercase tracking-tight">Berita Utama</span>
+</td>
+<td class="px-lg py-md">
+<p class="font-bold text-on-surface">Pupuk NPK Mutiara</p>
+<p class="text-[10px] text-on-surface-variant">ID: PROD-1102</p>
+</td>
+<td class="px-lg py-md text-body-sm">Agrikultur</td>
+<td class="px-lg py-md">
+<div class="flex items-center gap-xs">
+<span class="font-bold text-primary">15 Ton</span>
+<span class="w-2 h-2 bg-primary rounded-full"></span>
+</div>
+</td>
+<td class="px-lg py-md text-body-sm font-medium">Rp 18.000/kg</td>
+<td class="px-lg py-md">
+<p class="text-body-sm text-on-surface-variant line-clamp-2 max-w-xs leading-relaxed">
+                                        Persiapan musim tanam serentak di tingkat Koperasi Unit Desa (KUD). Kebutuhan pupuk komersial naik akibat kuota subsidi yang menipis.
+                                    </p>
+</td>
+<td class="px-lg py-md text-right">
+<button class="bg-primary text-on-primary px-md py-sm rounded-lg text-label-md font-bold hover:shadow-md active:scale-95 transition-all">Ajukan RFQ</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="bg-surface-container-low px-lg py-sm border-t border-outline-variant flex justify-between items-center">
+<p class="text-label-md text-on-surface-variant">Menampilkan 3 dari 12 prediksi yang relevan</p>
+<div class="flex gap-xs">
+<button class="p-1 hover:bg-surface-variant rounded-md transition-colors"><span class="material-symbols-outlined text-[20px]">chevron_left</span></button>
+<button class="p-1 hover:bg-surface-variant rounded-md transition-colors"><span class="material-symbols-outlined text-[20px]">chevron_right</span></button>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Footer -->
+<footer class="bg-surface-container-low border-t border-outline-variant w-full py-lg mt-auto">
+<div class="flex flex-col md:flex-row justify-between items-center px-lg max-w-container-max mx-auto gap-md">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 bg-primary/10 rounded flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">agriculture</span>
+</div>
+<div>
+<p class="font-bold text-primary text-sm tracking-tight uppercase">Ekosistem Koperasi KREASI</p>
+<p class="text-[11px] text-on-surface-variant">© 2024 Seluruh Hak Cipta Dilindungi. Didukung oleh Village-AI Engine.</p>
+</div>
+</div>
+<div class="flex flex-wrap justify-center gap-md">
+<a class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors underline decoration-outline-variant underline-offset-4" href="#">Kebijakan Privasi</a>
+<a class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors underline decoration-outline-variant underline-offset-4" href="#">Ketentuan Layanan</a>
+<a class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors underline decoration-outline-variant underline-offset-4" href="#">Etika Data AI</a>
+<a class="text-xs font-semibold text-on-surface-variant hover:text-primary transition-colors underline decoration-outline-variant underline-offset-4" href="#">Hubungi Kami</a>
+</div>
+</div>
+</footer>
+</main>
+<script>
+    function toggleSource(btn) {
+        const isSelected = btn.classList.contains('bg-primary');
+        if (isSelected) {
+            btn.classList.remove('bg-primary', 'text-on-primary', 'border-primary', 'shadow-sm');
+            btn.classList.add('bg-surface-container-high', 'text-on-surface-variant', 'border-transparent');
+            btn.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 0";
+        } else {
+            btn.classList.add('bg-primary', 'text-on-primary', 'border-primary', 'shadow-sm');
+            btn.classList.remove('bg-surface-container-high', 'text-on-surface-variant', 'border-transparent');
+            btn.querySelector('.material-symbols-outlined').style.fontVariationSettings = "'FILL' 1";
+        }
+    }
+
+    function generatePredictions() {
+        const btn = event.currentTarget;
+        const originalText = btn.innerHTML;
+        btn.disabled = true;
+        btn.innerHTML = `<span class="material-symbols-outlined animate-spin">sync</span> Memproses Data...`;
+        
+        setTimeout(() => {
+            alert('Proses Intelijen Selesai: Berhasil mengekstrak tren dari 142 artikel berita dan data tren pasar terbaru.');
+            btn.disabled = false;
+            btn.innerHTML = originalText;
+        }, 2000);
+    }
+</script>
+</body></html>

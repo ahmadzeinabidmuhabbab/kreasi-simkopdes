@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+
+<html class="light" lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KREASI - Sistem Distribusi SHU Otomatis</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        .ai-glow {
+            box-shadow: 0 0 25px rgba(46, 89, 31, 0.15);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f9faf1;
+        }
+        .waterfall-connector {
+            position: relative;
+        }
+        .waterfall-connector::after {
+            content: '';
+            position: absolute;
+            right: -12px;
+            top: 50%;
+            width: 24px;
+            height: 2px;
+            background: #c2c9ba;
+            z-index: 0;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary": "#2e591f",
+                        "secondary-fixed": "#ffdfa0",
+                        "on-error": "#ffffff",
+                        "on-tertiary-fixed": "#0a2008",
+                        "secondary-fixed-dim": "#fbbc00",
+                        "tertiary-container": "#556e4f",
+                        "on-surface-variant": "#42493d",
+                        "primary-fixed": "#bef1a5",
+                        "on-tertiary-fixed-variant": "#354d30",
+                        "inverse-on-surface": "#f0f1e9",
+                        "secondary": "#795900",
+                        "inverse-surface": "#2e312c",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#261a00",
+                        "surface-container-low": "#f3f4ec",
+                        "surface-container-high": "#e7e9e0",
+                        "surface-container": "#edefe6",
+                        "surface-tint": "#3d692d",
+                        "on-secondary-container": "#6d5000",
+                        "tertiary-fixed-dim": "#b3cea9",
+                        "error-container": "#ffdad6",
+                        "primary-fixed-dim": "#a2d48c",
+                        "surface-container-highest": "#e2e3db",
+                        "on-secondary": "#ffffff",
+                        "tertiary": "#3e5638",
+                        "outline-variant": "#c2c9ba",
+                        "on-tertiary-container": "#d3efc8",
+                        "on-primary-container": "#c2f5a9",
+                        "inverse-primary": "#a2d48c",
+                        "surface-dim": "#d9dbd2",
+                        "on-surface": "#1a1c17",
+                        "on-secondary-fixed-variant": "#5c4300",
+                        "tertiary-fixed": "#ceebc4",
+                        "on-primary-fixed": "#042100",
+                        "on-tertiary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "primary-container": "#467235",
+                        "on-background": "#1a1c17",
+                        "surface": "#f9faf1",
+                        "outline": "#72796c",
+                        "on-primary-fixed-variant": "#265017",
+                        "error": "#ba1a1a",
+                        "background": "#f9faf1",
+                        "surface-bright": "#f9faf1",
+                        "surface-variant": "#e2e3db",
+                        "on-error-container": "#93000a",
+                        "secondary-container": "#ffbf00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "base": "8px",
+                        "container-max": "1280px",
+                        "sm": "12px",
+                        "lg": "40px",
+                        "xl": "64px",
+                        "md": "24px",
+                        "gutter": "24px"
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- TopNavBar -->
+<header class="bg-surface sticky top-0 z-50 shadow-sm border-b border-outline-variant">
+<div class="flex justify-between items-center w-full px-lg max-w-container-max mx-auto h-16">
+<div class="flex items-center gap-md">
+<span class="font-headline-md text-headline-md font-bold text-primary tracking-tight">KREASI</span>
+<nav class="hidden md:flex gap-md ml-lg items-center h-full">
+<a class="font-label-md text-on-surface-variant hover:text-primary transition-colors py-5" href="#">Dashboard</a>
+<a class="font-label-md text-on-surface-variant hover:text-primary transition-colors py-5" href="#">Inventaris</a>
+<a class="font-label-md text-primary border-b-2 border-primary py-5" href="#">Keuangan</a>
+<a class="font-label-md text-on-surface-variant hover:text-primary transition-colors py-5" href="#">Anggota</a>
+</nav>
+</div>
+<div class="flex items-center gap-sm">
+<div class="relative hidden md:block">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-sm">search</span>
+<input class="pl-10 pr-4 py-1.5 bg-surface-container-low border border-outline-variant rounded-full text-body-sm focus:outline-none focus:ring-2 focus:ring-primary w-64" placeholder="Cari transaksi atau anggota..." type="text"/>
+</div>
+<button class="p-2 text-on-surface-variant hover:bg-surface-container transition-colors rounded-full">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<div class="w-9 h-9 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant ml-2">
+<img alt="Profil" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDgj2Foh1I5Kw-jve66WNhujQBrS-BASISllXiWWmd7dlfrFWzwan9uf-bxdNZXOmCZT5u3ZC-ZeTbDn6488z43T_JI70FI_HDmZnwnvcdwW_ObEoyyWPpTvnOQIYtfl_gnanA7GKjuyeji_UqniWyGdgbBv3Pchym9JOoLKff6mBxhIjlyym3H8tzy-Z96AVm7YEE2cf8G3vMTLxRbzE8GgJWSegpF7mrWy_kenXWnuvvnqfbHXWSJ"/>
+</div>
+</div>
+</div>
+</header>
+<div class="flex max-w-container-max mx-auto">
+<!-- SideNavBar -->
+<aside class="hidden md:flex flex-col h-[calc(100vh-64px)] w-64 fixed left-0 top-16 bg-surface border-r border-outline-variant py-md">
+<div class="px-md mb-lg">
+<h2 class="text-label-md font-bold text-primary uppercase tracking-widest">Ekosistem KREASI</h2>
+<p class="text-xs text-on-surface-variant">Pusat Koperasi Digital</p>
+</div>
+<nav class="flex-1 px-sm space-y-1">
+<a class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-container-low transition-all px-md py-3 rounded-xl font-label-md" href="#">
+<span class="material-symbols-outlined">dashboard</span> Ringkasan
+                </a>
+<a class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-container-low transition-all px-md py-3 rounded-xl font-label-md" href="#">
+<span class="material-symbols-outlined">auto_awesome</span> Wawasan AI
+                </a>
+<a class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-container-low transition-all px-md py-3 rounded-xl font-label-md" href="#">
+<span class="material-symbols-outlined">inventory_2</span> Inventaris
+                </a>
+<a class="flex items-center gap-sm bg-primary text-white px-md py-3 rounded-xl font-label-md shadow-sm" href="#">
+<span class="material-symbols-outlined">payments</span> Keuangan
+                </a>
+<a class="flex items-center gap-sm text-on-surface-variant hover:bg-surface-container-low transition-all px-md py-3 rounded-xl font-label-md" href="#">
+<span class="material-symbols-outlined">groups</span> Komunitas
+                </a>
+</nav>
+<div class="px-md mt-auto pt-md">
+<button class="w-full bg-surface-container-highest text-on-surface px-md py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-outline-variant transition-all text-sm">
+<span class="material-symbols-outlined text-sm">add</span> Tambah Data
+                </button>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 md:ml-64 p-md md:p-lg space-y-lg">
+<!-- Header Section -->
+<section class="flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div>
+<nav class="flex items-center gap-2 text-label-md text-on-surface-variant mb-2">
+<a class="hover:text-primary" href="#">Keuangan</a>
+<span class="material-symbols-outlined text-xs">chevron_right</span>
+<span class="text-on-surface font-semibold">Distribusi SHU</span>
+</nav>
+<h1 class="font-display-lg text-[32px] md:text-[40px] font-bold text-on-surface leading-tight">Sistem Distribusi SHU Otomatis</h1>
+<p class="text-on-surface-variant mt-2 font-body-md">Hitung dan bagikan Sisa Hasil Usaha (SHU) secara transparan berbasis kontribusi modal &amp; jasa.</p>
+</div>
+<div class="flex items-center gap-sm bg-white rounded-xl p-2 border border-outline-variant shadow-sm">
+<span class="material-symbols-outlined text-primary ml-2">calendar_today</span>
+<select class="bg-transparent border-none focus:ring-0 font-label-md text-on-surface cursor-pointer pr-8 py-1">
+<option>Semester 1 2024</option>
+<option>Semester 2 2023</option>
+<option>Tahunan 2023</option>
+</select>
+</div>
+</section>
+<!-- Dashboard Atas -->
+<section class="grid grid-cols-1 lg:grid-cols-12 gap-md">
+<div class="lg:col-span-8 grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Bruto Card -->
+<div class="bg-white p-md rounded-2xl border border-outline-variant flex flex-col justify-between shadow-sm">
+<div>
+<p class="font-label-md text-outline uppercase tracking-wider">Keuntungan Bruto</p>
+<h3 class="text-[32px] font-bold text-primary mt-base">Rp 2.450.000.000</h3>
+</div>
+<div class="mt-lg pt-md border-t border-outline-variant flex items-center justify-between">
+<span class="text-body-sm text-on-surface-variant">+12.4% dari periode lalu</span>
+<span class="material-symbols-outlined text-primary">trending_up</span>
+</div>
+</div>
+<!-- Deductions Card -->
+<div class="bg-surface-container-low p-md rounded-2xl border border-outline-variant flex flex-col gap-sm shadow-sm">
+<div class="flex justify-between items-center text-body-sm">
+<span class="text-on-surface-variant">Biaya Operasional</span>
+<span class="font-bold text-error">- Rp 450.000.000</span>
+</div>
+<div class="flex justify-between items-center text-body-sm">
+<span class="text-on-surface-variant">Biaya Pegawai</span>
+<span class="font-bold text-error">- Rp 250.000.000</span>
+</div>
+<div class="flex justify-between items-center text-body-sm">
+<span class="text-on-surface-variant">Pajak (PPH)</span>
+<span class="font-bold text-error">- Rp 120.000.000</span>
+</div>
+<div class="flex justify-between items-center text-body-sm">
+<span class="text-on-surface-variant">Cadangan Koperasi</span>
+<span class="font-bold text-error">- Rp 130.000.000</span>
+</div>
+<div class="mt-auto pt-md border-t border-dashed border-outline-variant flex justify-between items-center">
+<span class="font-bold text-on-surface">Total Pengurangan</span>
+<span class="font-bold text-error">Rp 950.000.000</span>
+</div>
+</div>
+</div>
+<!-- Net Result -->
+<div class="lg:col-span-4 bg-primary p-md rounded-2xl text-on-primary flex flex-col justify-center relative overflow-hidden ai-glow">
+<div class="relative z-10">
+<p class="font-label-md uppercase opacity-80 mb-sm">Total SHU Bersih Siap Bagi</p>
+<h2 class="text-[40px] font-black leading-tight">Rp 1.500.000.000</h2>
+<div class="mt-md bg-white/10 p-sm rounded-xl backdrop-blur-md border border-white/30">
+<p class="text-body-sm italic">"AI KREASI telah memverifikasi data transaksi. Distribusi siap dilakukan dengan tingkat akurasi 99.9%."</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Waterfall Flow -->
+<section class="w-full">
+<div class="bg-white p-lg rounded-2xl border border-outline-variant shadow-sm overflow-x-auto">
+<h3 class="font-headline-sm text-on-surface mb-lg">Visualisasi Alur Pemotongan Dana (Waterfall)</h3>
+<div class="flex min-w-[900px] items-start justify-between relative px-4">
+<!-- Step 1 -->
+<div class="flex flex-col items-center flex-1">
+<div class="w-full max-w-[160px] h-20 bg-primary/10 border-2 border-primary rounded-xl flex items-center justify-center font-bold text-primary text-center px-2">Bruto<br/>100%</div>
+<span class="text-label-md mt-3 font-semibold">Rp 2.45 M</span>
+</div>
+<div class="pt-8 text-outline"><span class="material-symbols-outlined">arrow_forward</span></div>
+<!-- Step 2 -->
+<div class="flex flex-col items-center flex-1">
+<div class="w-full max-w-[160px] h-16 bg-error/5 border-2 border-error border-dashed rounded-xl flex items-center justify-center font-bold text-error text-center px-2 text-sm">Biaya Operasi<br/>18%</div>
+<span class="text-label-md mt-3">-450 Jt</span>
+</div>
+<div class="pt-8 text-outline"><span class="material-symbols-outlined">arrow_forward</span></div>
+<!-- Step 3 -->
+<div class="flex flex-col items-center flex-1">
+<div class="w-full max-w-[160px] h-12 bg-error/5 border-2 border-error border-dashed rounded-xl flex items-center justify-center font-bold text-error text-center px-2 text-xs">Pegawai<br/>10%</div>
+<span class="text-label-md mt-3">-250 Jt</span>
+</div>
+<div class="pt-8 text-outline"><span class="material-symbols-outlined">arrow_forward</span></div>
+<!-- Step 4 -->
+<div class="flex flex-col items-center flex-1">
+<div class="w-full max-w-[160px] h-10 bg-error/5 border-2 border-error border-dashed rounded-xl flex items-center justify-center font-bold text-error text-center px-2 text-[10px]">Lainnya<br/>10%</div>
+<span class="text-label-md mt-3">-250 Jt</span>
+</div>
+<div class="pt-8 text-outline"><span class="material-symbols-outlined">arrow_forward</span></div>
+<!-- Final -->
+<div class="flex flex-col items-center flex-1">
+<div class="w-full max-w-[160px] h-20 bg-secondary-container border-2 border-secondary rounded-xl flex items-center justify-center font-bold text-on-secondary-container text-center px-2">Netto (SHU)<br/>62%</div>
+<span class="text-label-md mt-3 font-bold text-primary">Rp 1.50 M</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Action Section -->
+<section class="flex flex-col md:flex-row items-center gap-md">
+<button class="w-full md:w-auto px-xl py-6 bg-secondary-container text-on-secondary-container rounded-2xl font-bold text-body-lg shadow hover:shadow-lg transition-all flex items-center justify-center gap-md group active:scale-[0.98]">
+<span class="material-symbols-outlined group-hover:rotate-12 transition-transform" style="font-size: 32px;">send</span>
+                    Blast Laporan SHU Bulanan (Massal)
+                </button>
+<div class="flex-1 grid grid-cols-2 gap-sm w-full">
+<div class="bg-white p-md rounded-2xl border border-outline-variant flex items-center gap-md shadow-sm">
+<div class="bg-primary/10 text-primary p-3 rounded-full">
+<span class="material-symbols-outlined">group</span>
+</div>
+<div>
+<p class="text-xs text-on-surface-variant font-medium">Total Anggota</p>
+<p class="text-lg font-bold">1,248 Orang</p>
+</div>
+</div>
+<div class="bg-white p-md rounded-2xl border border-outline-variant flex items-center gap-md shadow-sm">
+<div class="bg-primary/10 text-primary p-3 rounded-full">
+<span class="material-symbols-outlined">checklist</span>
+</div>
+<div>
+<p class="text-xs text-on-surface-variant font-medium">Kesiapan Blast</p>
+<p class="text-lg font-bold">100% Terverifikasi</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Table Section -->
+<section class="bg-white rounded-2xl border border-outline-variant shadow-sm overflow-hidden">
+<div class="p-md flex flex-col md:flex-row md:items-center justify-between gap-md border-b border-outline-variant">
+<h3 class="font-headline-sm text-on-surface">Rincian Pembagian per Anggota</h3>
+<div class="flex gap-sm">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">filter_list</span>
+<input class="pl-10 py-2 border border-outline-variant rounded-lg text-body-sm focus:ring-primary w-48" placeholder="Cari nama..." type="text"/>
+</div>
+<button class="flex items-center gap-2 px-md py-2 bg-surface-container-low text-on-surface-variant rounded-lg font-label-md hover:bg-surface-container transition-colors border border-outline-variant">
+<span class="material-symbols-outlined text-[18px]">download</span> Unduh CSV
+                        </button>
+</div>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead class="bg-surface-container-low text-label-md text-outline uppercase tracking-wider">
+<tr>
+<th class="px-md py-4 font-semibold">Nama Anggota</th>
+<th class="px-md py-4 font-semibold">ID Anggota</th>
+<th class="px-md py-4 font-semibold">Modal</th>
+<th class="px-md py-4 font-semibold">Jasa</th>
+<th class="px-md py-4 font-semibold">Total SHU</th>
+<th class="px-md py-4 font-semibold">Status Blast</th>
+<th class="px-md py-4 font-semibold text-center">Aksi</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant text-body-sm text-on-surface">
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-md py-4 font-medium flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center font-bold text-[10px]">AD</div>
+                                    Ahmad Dahlan
+                                </td>
+<td class="px-md py-4">KR-2024-001</td>
+<td class="px-md py-4">Rp 50 Jt</td>
+<td class="px-md py-4">Rp 25 Jt</td>
+<td class="px-md py-4 font-bold text-primary">Rp 12.500.000</td>
+<td class="px-md py-4">
+<span class="px-sm py-1 bg-primary/10 text-primary rounded-full text-[10px] font-bold">Terkirim</span>
+</td>
+<td class="px-md py-4 text-center">
+<button class="p-2 text-outline hover:text-primary transition-colors hover:bg-primary/5 rounded-lg mr-1" title="Lihat Detail"><span class="material-symbols-outlined">receipt</span></button>
+<button class="p-2 text-outline hover:text-primary transition-colors hover:bg-primary/5 rounded-lg" title="Blast Ulang"><span class="material-symbols-outlined">send</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-md py-4 font-medium flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-primary-fixed text-on-primary-fixed flex items-center justify-center font-bold text-[10px]">SM</div>
+                                    Siti Maryam
+                                </td>
+<td class="px-md py-4">KR-2024-002</td>
+<td class="px-md py-4">Rp 30 Jt</td>
+<td class="px-md py-4">Rp 15 Jt</td>
+<td class="px-md py-4 font-bold text-primary">Rp 8.500.000</td>
+<td class="px-md py-4">
+<span class="px-sm py-1 bg-surface-container-high text-on-surface-variant rounded-full text-[10px] font-bold">Menunggu</span>
+</td>
+<td class="px-md py-4 text-center">
+<button class="p-2 text-outline hover:text-primary transition-colors hover:bg-primary/5 rounded-lg mr-1" title="Lihat Detail"><span class="material-symbols-outlined">receipt</span></button>
+<button class="p-2 bg-secondary-container/20 text-secondary hover:bg-secondary-container transition-colors rounded-lg" title="Blast Sekarang"><span class="material-symbols-outlined">send</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-md py-4 font-medium flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-tertiary-fixed text-on-tertiary-fixed flex items-center justify-center font-bold text-[10px]">BP</div>
+                                    Bambang Pamungkas
+                                </td>
+<td class="px-md py-4">KR-2024-003</td>
+<td class="px-md py-4">Rp 100 Jt</td>
+<td class="px-md py-4">Rp 50 Jt</td>
+<td class="px-md py-4 font-bold text-primary">Rp 25.000.000</td>
+<td class="px-md py-4">
+<span class="px-sm py-1 bg-surface-container-high text-on-surface-variant rounded-full text-[10px] font-bold">Menunggu</span>
+</td>
+<td class="px-md py-4 text-center">
+<button class="p-2 text-outline hover:text-primary transition-colors hover:bg-primary/5 rounded-lg mr-1" title="Lihat Detail"><span class="material-symbols-outlined">receipt</span></button>
+<button class="p-2 bg-secondary-container/20 text-secondary hover:bg-secondary-container transition-colors rounded-lg" title="Blast Sekarang"><span class="material-symbols-outlined">send</span></button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low transition-colors">
+<td class="px-md py-4 font-medium flex items-center gap-sm">
+<div class="w-8 h-8 rounded-full bg-error-container text-on-error-container flex items-center justify-center font-bold text-[10px]">EK</div>
+                                    Eka Kusuma
+                                </td>
+<td class="px-md py-4">KR-2024-004</td>
+<td class="px-md py-4">Rp 45 Jt</td>
+<td class="px-md py-4">Rp 20 Jt</td>
+<td class="px-md py-4 font-bold text-primary">Rp 11.200.000</td>
+<td class="px-md py-4">
+<span class="px-sm py-1 bg-primary/10 text-primary rounded-full text-[10px] font-bold">Terkirim</span>
+</td>
+<td class="px-md py-4 text-center">
+<button class="p-2 text-outline hover:text-primary transition-colors hover:bg-primary/5 rounded-lg mr-1" title="Lihat Detail"><span class="material-symbols-outlined">receipt</span></button>
+<button class="p-2 text-outline hover:text-primary transition-colors hover:bg-primary/5 rounded-lg" title="Blast Ulang"><span class="material-symbols-outlined">send</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="p-md bg-surface-container-low flex flex-col md:flex-row items-center justify-between border-t border-outline-variant gap-4">
+<div class="flex items-center gap-2 text-primary bg-primary/5 px-3 py-1.5 rounded-full border border-primary/20">
+<span class="material-symbols-outlined text-[16px]">info</span>
+<span class="text-[10px] font-bold uppercase tracking-wider">Laporan menyertakan rincian transaksi otomatis</span>
+</div>
+<p class="text-label-md text-on-surface-variant">Menampilkan 4 dari 1,248 anggota</p>
+<div class="flex gap-2">
+<button class="p-2 rounded hover:bg-surface-container transition-colors"><span class="material-symbols-outlined">chevron_left</span></button>
+<button class="px-3 py-1 rounded bg-primary text-white text-label-md">1</button>
+<button class="px-3 py-1 rounded hover:bg-surface-container text-label-md">2</button>
+<button class="px-3 py-1 rounded hover:bg-surface-container text-label-md">3</button>
+<button class="p-2 rounded hover:bg-surface-container transition-colors"><span class="material-symbols-outlined">chevron_right</span></button>
+</div>
+</div>
+</section>
+</main>
+</div>
+<!-- Footer -->
+<footer class="mt-xl border-t border-outline-variant bg-surface py-lg">
+<div class="flex flex-col md:flex-row justify-between items-center px-lg max-w-container-max mx-auto gap-md">
+<div class="flex flex-col items-center md:items-start gap-xs">
+<span class="font-label-md text-label-md font-bold text-on-surface">KREASI Cooperative Ecosystem</span>
+<p class="text-body-sm text-on-surface-variant">© 2024 KREASI. Memperkuat ekonomi rakyat dengan teknologi digital.</p>
+</div>
+<div class="flex gap-lg">
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-sm" href="#">Kebijakan Privasi</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-sm" href="#">Syarat &amp; Ketentuan</a>
+<a class="text-on-surface-variant hover:text-primary transition-colors font-body-sm" href="#">Bantuan</a>
+</div>
+</div>
+</footer>
+<script>
+        const blastBtn = document.querySelector('.group.active\\:scale-\\[0\\.98\\]');
+        if(blastBtn) {
+            blastBtn.addEventListener('click', () => {
+                const originalContent = blastBtn.innerHTML;
+                blastBtn.innerHTML = `<span class="material-symbols-outlined animate-spin" style="font-size: 32px;">sync</span> Memproses Blasting...`;
+                blastBtn.classList.add('opacity-80', 'pointer-events-none');
+                
+                setTimeout(() => {
+                    blastBtn.innerHTML = `<span class="material-symbols-outlined" style="font-size: 32px;">check_circle</span> Laporan Terkirim!`;
+                    blastBtn.classList.remove('bg-secondary-container');
+                    blastBtn.classList.add('bg-primary', 'text-white');
+                    
+                    setTimeout(() => {
+                        blastBtn.innerHTML = originalContent;
+                        blastBtn.classList.add('bg-secondary-container');
+                        blastBtn.classList.remove('bg-primary', 'text-white', 'opacity-80', 'pointer-events-none');
+                    }, 3000);
+                }, 2000);
+            });
+        }
+    </script>
+</body></html>

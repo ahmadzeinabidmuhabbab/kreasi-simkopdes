@@ -1,0 +1,308 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #2e591f;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #467235;
+  --color-on-primary-container: #c2f5a9;
+  --color-secondary: #795900;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #ffbf00;
+  --color-on-secondary-container: #6d5000;
+  --color-tertiary: #3e5638;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #556e4f;
+  --color-on-tertiary-container: #d3efc8;
+  --color-background: #f9faf1;
+  --color-on-background: #1a1c17;
+  --color-surface: #f9faf1;
+  --color-on-surface: #1a1c17;
+  --color-surface-variant: #e2e3db;
+  --color-on-surface-variant: #42493d;
+  --color-outline: #72796c;
+  --color-outline-variant: #c2c9ba;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f3f4ec;
+  --color-surface-container: #edefe6;
+  --color-surface-container-high: #e7e9e0;
+  --color-surface-container-highest: #e2e3db;
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
+  --color-error-container: #ffdad6;
+  --color-on-error-container: #93000a;
+  --color-primary-fixed: #bef1a5;
+  --color-primary-fixed-dim: #a2d48c;
+  --color-on-primary-fixed: #042100;
+  --color-on-primary-fixed-variant: #265017;
+  --color-secondary-fixed: #ffdfa0;
+  --color-secondary-fixed-dim: #fbbc00;
+  --color-on-secondary-fixed: #261a00;
+  --color-on-secondary-fixed-variant: #5c4300;
+  --color-tertiary-fixed: #ceebc4;
+  --color-tertiary-fixed-dim: #b3cea9;
+  --color-on-tertiary-fixed: #0a2008;
+  --color-on-tertiary-fixed-variant: #354d30;
+  --color-inverse-surface: #2e312c;
+  --color-inverse-on-surface: #f0f1e9;
+  --color-inverse-primary: #a2d48c;
+  --color-surface-dim: #d9dbd2;
+  --color-surface-bright: #f9faf1;
+  --color-surface-tint: #3d692d;
+
+  /* Radius mapping for design system */
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+  --radius-3xl: 1.5rem;
+
+  /* Custom Spacing */
+  --spacing-xs: 4px;
+  --spacing-sm: 12px;
+  --spacing-base: 8px;
+  --spacing-md: 24px;
+  --spacing-lg: 40px;
+  --spacing-xl: 64px;
+  --spacing-2xl: 80px;
+  --spacing-container-max: 1280px;
+  --spacing-gutter: 24px;
+}
+
+@utility glass-ai {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(46, 89, 31, 0.15);
+}
+
+@utility glass-ai-active {
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(16px);
+  border: 1px solid #2e591f;
+  box-shadow: 0 8px 30px rgba(46, 89, 31, 0.15);
+}
+
+@utility glass-panel {
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+@utility floating {
+  animation: float 4s ease-in-out infinite;
+}
+
+@utility floating-delay {
+  animation: float 4s ease-in-out infinite;
+  animation-delay: -2s;
+}
+
+@utility anim-fade-in-up {
+  animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@utility anim-slide-left {
+  animation: slideLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@utility anim-slide-right {
+  animation: slideRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@utility anim-scale-in {
+  animation: scaleIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@utility anim-stagger-1 {
+  animation-delay: 0.1s;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+@utility anim-stagger-2 {
+  animation-delay: 0.2s;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+@utility anim-stagger-3 {
+  animation-delay: 0.3s;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+@utility anim-stagger-4 {
+  animation-delay: 0.4s;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+@utility anim-stagger-5 {
+  animation-delay: 0.5s;
+  opacity: 0;
+  animation-fill-mode: forwards;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideRight {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(46, 89, 31, 0.3); }
+  50% { box-shadow: 0 0 0 12px rgba(46, 89, 31, 0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes bounce-in {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes counter-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes dash {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes rotate-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@utility pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Custom Scrollbar for dashboards */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #c2c9ba;
+  border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #72796c;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-on-surface);
+}
+
+.transition-all-300 {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Scroll reveal helper */
+.reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+.reveal-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.reveal-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Shimmer loading */
+.shimmer {
+  background: linear-gradient(90deg, #e2e3db 25%, #f0f1e9 50%, #e2e3db 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Hero gradient orbs */
+.orb {
+  border-radius: 50%;
+  filter: blur(60px);
+  position: absolute;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* Chart bar animation */
+.bar-fill {
+  animation: barGrow 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transform-origin: bottom;
+}
+
+@keyframes barGrow {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}

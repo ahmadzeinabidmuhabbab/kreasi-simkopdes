@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>KREASI - Smart Predictive Bundle &amp; Inventory</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ceebc4",
+                        "surface-bright": "#f9faf1",
+                        "on-error-container": "#93000a",
+                        "on-secondary-fixed-variant": "#5c4300",
+                        "on-tertiary-fixed": "#0a2008",
+                        "inverse-surface": "#2e312c",
+                        "on-surface": "#1a1c17",
+                        "on-primary-fixed": "#042100",
+                        "tertiary-fixed-dim": "#b3cea9",
+                        "on-primary-fixed-variant": "#265017",
+                        "on-tertiary": "#ffffff",
+                        "tertiary-container": "#556e4f",
+                        "surface-container-highest": "#e2e3db",
+                        "surface-variant": "#e2e3db",
+                        "on-tertiary-fixed-variant": "#354d30",
+                        "background": "#f9faf1",
+                        "on-secondary-container": "#6d5000",
+                        "surface-dim": "#d9dbd2",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#ffbf00",
+                        "secondary-fixed": "#ffdfa0",
+                        "on-secondary": "#ffffff",
+                        "surface-container-high": "#e7e9e0",
+                        "on-error": "#ffffff",
+                        "inverse-on-surface": "#f0f1e9",
+                        "surface-tint": "#3d692d",
+                        "outline": "#72796c",
+                        "tertiary": "#3e5638",
+                        "surface": "#f9faf1",
+                        "primary-container": "#467235",
+                        "surface-container": "#edefe6",
+                        "surface-container-lowest": "#ffffff",
+                        "on-background": "#1a1c17",
+                        "error": "#ba1a1a",
+                        "secondary": "#795900",
+                        "inverse-primary": "#a2d48c",
+                        "surface-container-low": "#f3f4ec",
+                        "primary-fixed-dim": "#a2d48c",
+                        "primary-fixed": "#bef1a5",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#c2c9ba",
+                        "on-tertiary-container": "#d3efc8",
+                        "primary": "#2e591f",
+                        "on-surface-variant": "#42493d",
+                        "on-primary-container": "#c2f5a9",
+                        "secondary-fixed-dim": "#fbbc00",
+                        "on-secondary-fixed": "#261a00"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-max": "1280px",
+                        "xs": "4px",
+                        "xl": "64px",
+                        "sm": "12px",
+                        "base": "8px",
+                        "md": "24px",
+                        "gutter": "24px",
+                        "lg": "40px"
+                    },
+                    "fontFamily": {
+                        "headline-sm": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg-mobile": ["Inter"],
+                        "label-md": ["Inter"],
+                        "headline-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-sm": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                        "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "display-lg": ["48px", {"lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "display-lg-mobile": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "label-md": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+        .heatmap-enhanced {
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(251, 188, 0, 0.4) 0%, transparent 45%),
+                radial-gradient(circle at 80% 70%, rgba(186, 26, 26, 0.5) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(70, 114, 53, 0.3) 0%, transparent 60%),
+                #f3f4ec;
+        }
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body-md antialiased">
+<!-- Side Navigation Shell -->
+<aside class="h-screen w-72 fixed left-0 top-0 border-r border-outline-variant bg-surface flex flex-col py-lg px-md z-50">
+<div class="mb-xl px-sm">
+<h1 class="text-display-lg-mobile font-bold text-primary tracking-tight">KREASI</h1>
+<p class="text-label-md font-medium text-on-surface-variant uppercase tracking-wider">Ekosistem Koperasi</p>
+</div>
+<nav class="flex-1 space-y-1">
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-semibold">Ringkasan</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-primary font-bold bg-primary-container/20 border-l-4 border-primary transition-all duration-200" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">psychology</span>
+<span>Wawasan AI</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined">inventory_2</span>
+<span class="font-semibold">Inventaris</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined">payments</span>
+<span class="font-semibold">Keuangan</span>
+</a>
+<a class="flex items-center gap-md px-md py-sm rounded-xl text-on-surface-variant hover:text-primary hover:bg-surface-container-high transition-all duration-200" href="#">
+<span class="material-symbols-outlined">groups</span>
+<span class="font-semibold">Komunitas</span>
+</a>
+</nav>
+<div class="mt-auto px-sm">
+<button class="w-full bg-primary text-on-primary py-md rounded-xl font-bold flex items-center justify-center gap-sm shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined text-[20px]">assessment</span>
+            Buat Laporan
+        </button>
+</div>
+</aside>
+<!-- Top Navigation Shell -->
+<header class="fixed top-0 right-0 w-[calc(100%-18rem)] h-20 bg-surface/80 backdrop-blur-xl border-b border-outline-variant flex justify-between items-center px-gutter z-40">
+<h2 class="font-headline-sm text-headline-sm text-on-surface">Portal Manajemen KREASI</h2>
+<div class="flex items-center gap-lg">
+<div class="relative group hidden md:block">
+<input class="bg-surface-container-low border-outline-variant rounded-full px-xl py-base text-body-sm w-80 focus:ring-2 focus:ring-primary focus:bg-white transition-all" placeholder="Cari wawasan..." type="text"/>
+<span class="material-symbols-outlined absolute left-base top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+</div>
+<div class="flex items-center gap-md">
+<button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container-high text-on-surface-variant transition-all">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<button class="w-10 h-10 rounded-full flex items-center justify-center hover:bg-surface-container-high text-on-surface-variant transition-all">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<div class="h-10 w-10 rounded-full ring-2 ring-outline-variant overflow-hidden">
+<img alt="Profil Pengguna" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCLE9riUvdBYAVAFD95UGeMiT7l7bmVZvf4RKqReBbTY-XLA0lonQNbqRc__XkuR5zs7MNqhOG1PpjmWWD7OQo7qJwffivSMopMDO7isMkyAyFIf62yS0N49upUErEAMO3wsHy7SwIxHVM0I8reuXkJ6C_gEaYXegmzgccFOIEyHhbXgHWqrlhZ6jS3Vf5_5rVUdWOC0TdgRi3ASnvpYK1dt1ltnvYAw8IVv2tpPMSCfTWlpLshC3gE"/>
+</div>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-72 pt-28 pb-xl px-gutter max-w-container-max mx-auto">
+<!-- Header Section -->
+<section class="mb-xl">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-md">
+<div class="space-y-sm">
+<h3 class="font-display-lg text-display-lg text-primary leading-tight">Rekomendasi Bundling &amp; Optimasi Stok</h3>
+<p class="text-body-lg text-on-surface-variant max-w-3xl leading-relaxed">Efisiensi ritel berbasis AI menggunakan pemodelan prediktif untuk memastikan ketersediaan stok dan memaksimalkan margin koperasi melalui analisis perilaku konsumen yang cerdas.</p>
+</div>
+<div class="flex items-center gap-md bg-surface-container-high px-md py-sm rounded-2xl border border-outline-variant">
+<div class="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+</div>
+<div>
+<p class="text-label-md font-bold text-primary uppercase tracking-widest">Status AI</p>
+<p class="text-body-sm font-semibold text-on-surface">Optimal &amp; Terkalibrasi</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-lg">
+<!-- Restock Projections (Left Col - 8 Units) -->
+<div class="col-span-12 lg:col-span-8 space-y-lg">
+<div class="bg-surface-container-lowest rounded-3xl p-md border border-outline-variant shadow-sm">
+<div class="flex justify-between items-center mb-xl">
+<h4 class="font-headline-sm text-headline-sm flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary">bar_chart</span>
+                        Proyeksi Stok 6 Minggu ke Depan
+                    </h4>
+<select class="bg-surface-container-low border-outline-variant rounded-xl text-body-sm py-sm px-md focus:ring-primary focus:border-primary">
+<option>Semua Kategori</option>
+<option>Bahan Pokok</option>
+<option>Kebutuhan Rumah Tangga</option>
+</select>
+</div>
+<!-- Enhanced Bar Chart -->
+<div class="flex items-end justify-between h-64 gap-md mb-md px-md">
+<div class="flex-1 bg-surface-container-high rounded-t-2xl relative group h-[40%] hover:bg-surface-variant transition-colors">
+<div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-base hidden group-hover:block bg-on-surface text-surface text-xs py-sm px-md rounded-lg shadow-xl whitespace-nowrap z-10">Minggu 1: 40% (Stabil)</div>
+</div>
+<div class="flex-1 bg-primary-container/60 rounded-t-2xl relative group h-[65%] hover:bg-primary-container transition-colors"></div>
+<div class="flex-1 bg-primary-container/60 rounded-t-2xl relative group h-[85%] hover:bg-primary-container transition-colors"></div>
+<div class="flex-1 bg-secondary-container rounded-t-2xl relative group h-[30%] shadow-[0_-8px_16px_rgba(255,191,0,0.2)] animate-pulse">
+<div class="absolute -top-8 left-1/2 -translate-x-1/2 text-error font-bold text-[11px] tracking-tighter bg-error-container px-base py-xs rounded">KRITIS</div>
+</div>
+<div class="flex-1 bg-primary-container/60 rounded-t-2xl relative group h-[55%] hover:bg-primary-container transition-colors"></div>
+<div class="flex-1 bg-primary-container rounded-t-2xl relative group h-[75%]"></div>
+</div>
+<div class="flex justify-between text-label-md font-semibold text-on-surface-variant px-md mt-md">
+<span>Minggu 1</span><span>Minggu 2</span><span>Minggu 3</span><span>Minggu 4</span><span>Minggu 5</span><span>Minggu 6</span>
+</div>
+</div>
+<!-- Restock Alerts Table -->
+<div class="bg-surface-container-lowest rounded-3xl border border-outline-variant shadow-sm overflow-hidden">
+<div class="p-lg border-b border-outline-variant flex justify-between items-center bg-surface-container-low/50">
+<h4 class="font-headline-sm text-headline-sm">Peringatan Restok</h4>
+<span class="bg-error-container text-on-error-container px-md py-sm rounded-full text-label-md font-bold flex items-center gap-xs">
+<span class="material-symbols-outlined text-[16px]">priority_high</span>
+                        3 Prioritas Tinggi
+                    </span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low text-label-md font-bold text-on-surface-variant border-b border-outline-variant">
+<tr>
+<th class="py-md px-lg">PRODUK</th>
+<th class="py-md px-lg text-center">STOK SAAT INI</th>
+<th class="py-md px-lg">LAJU PENJUALAN</th>
+<th class="py-md px-lg">SARAN ORDER</th>
+<th class="py-md px-lg text-right">AKSI</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant">
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="py-md px-lg">
+<div class="font-bold text-on-surface">Minyak Goreng 2L</div>
+<div class="text-label-md text-on-surface-variant">Sembako</div>
+</td>
+<td class="py-md px-lg text-center"><span class="bg-error-container text-error px-md py-xs rounded-full font-bold">12 Unit</span></td>
+<td class="py-md px-lg font-medium">Tinggi (85/minggu)</td>
+<td class="py-md px-lg font-bold text-primary">150 Unit</td>
+<td class="py-md px-lg text-right">
+<button class="bg-primary text-on-primary px-md py-sm rounded-xl text-body-sm font-bold shadow-md opacity-0 group-hover:opacity-100 transition-all">Pesan Sekarang</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="py-md px-lg">
+<div class="font-bold text-on-surface">Beras Pandan Wangi 5kg</div>
+<div class="text-label-md text-on-surface-variant">Bahan Pokok</div>
+</td>
+<td class="py-md px-lg text-center"><span class="bg-secondary-fixed text-on-secondary-fixed px-md py-xs rounded-full font-bold">24 Unit</span></td>
+<td class="py-md px-lg font-medium">Sedang (40/minggu)</td>
+<td class="py-md px-lg font-bold text-primary">100 Unit</td>
+<td class="py-md px-lg text-right">
+<button class="bg-primary text-on-primary px-md py-sm rounded-xl text-body-sm font-bold shadow-md opacity-0 group-hover:opacity-100 transition-all">Pesan Sekarang</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low/50 transition-colors group">
+<td class="py-md px-lg">
+<div class="font-bold text-on-surface">Gula Pasir 1kg</div>
+<div class="text-label-md text-on-surface-variant">Bahan Pokok</div>
+</td>
+<td class="py-md px-lg text-center"><span class="bg-surface-container-high text-on-surface-variant px-md py-xs rounded-full font-bold">80 Unit</span></td>
+<td class="py-md px-lg font-medium">Rendah (20/minggu)</td>
+<td class="py-md px-lg font-bold text-primary">40 Unit</td>
+<td class="py-md px-lg text-right">
+<button class="bg-primary text-on-primary px-md py-sm rounded-xl text-body-sm font-bold shadow-md opacity-0 group-hover:opacity-100 transition-all">Pesan Sekarang</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+<!-- Shelf & Heatmap (Right Col - 4 Units) -->
+<div class="col-span-12 lg:col-span-4 space-y-lg">
+<div class="bg-surface-container-lowest rounded-3xl p-lg border border-outline-variant shadow-sm h-full flex flex-col">
+<h4 class="font-headline-sm text-headline-sm mb-lg">Heatmap Rak Toko</h4>
+<div class="relative w-full aspect-square rounded-2xl overflow-hidden heatmap-enhanced border border-outline-variant shadow-inner">
+<!-- High Density Spots -->
+<div class="absolute inset-0 grid grid-cols-6 grid-rows-6 opacity-30">
+<div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div>
+<div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div>
+<div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div>
+<div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div>
+<div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div>
+<div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div><div class="border-[0.5px] border-white/50"></div>
+</div>
+<!-- Zone Floating Labels -->
+<div class="absolute top-6 left-6 glass-card px-sm py-xs rounded-lg text-[11px] font-bold text-on-surface">Zona A: Pintu Masuk</div>
+<div class="absolute bottom-6 right-6 glass-card px-sm py-xs rounded-lg text-[11px] font-bold text-on-surface">Zona D: Kasir</div>
+<!-- Hotspot Markers -->
+<div class="absolute top-1/4 right-1/4 w-4 h-4 bg-error rounded-full shadow-[0_0_15px_rgba(186,26,26,0.8)] animate-ping"></div>
+</div>
+<div class="mt-lg space-y-md">
+<div class="flex items-center justify-between">
+<span class="flex items-center gap-sm text-body-sm font-medium">
+<div class="w-4 h-4 bg-error rounded-full shadow-lg shadow-error/20"></div> Lalu Lintas Tinggi
+                        </span>
+<span class="text-error font-bold text-body-sm">+42% Pertumbuhan</span>
+</div>
+<div class="flex items-center justify-between">
+<span class="flex items-center gap-sm text-body-sm font-medium">
+<div class="w-4 h-4 bg-secondary-fixed-dim rounded-full shadow-lg shadow-secondary/20"></div> Area Jelajah
+                        </span>
+<span class="text-secondary font-bold text-body-sm">+18% Pertumbuhan</span>
+</div>
+</div>
+<div class="mt-auto pt-lg border-t border-outline-variant">
+<h4 class="font-label-md text-label-md uppercase text-on-surface-variant tracking-widest mb-md">Analisis Keranjang Belanja</h4>
+<div class="space-y-sm">
+<div class="flex items-center gap-md p-md bg-surface-container-low rounded-2xl border border-outline-variant hover:border-primary/40 transition-colors">
+<div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-primary shadow-sm">
+<span class="material-symbols-outlined">shopping_basket</span>
+</div>
+<div>
+<p class="text-body-sm font-bold text-on-surface">Susu + Sereal</p>
+<p class="text-label-md text-primary font-semibold">Afinitas: 84% (Sangat Kuat)</p>
+</div>
+</div>
+<div class="flex items-center gap-md p-md bg-surface-container-low rounded-2xl border border-outline-variant hover:border-primary/40 transition-colors">
+<div class="w-10 h-10 rounded-xl bg-white flex items-center justify-center text-primary shadow-sm">
+<span class="material-symbols-outlined">shopping_basket</span>
+</div>
+<div>
+<p class="text-body-sm font-bold text-on-surface">Kopi + Krimer</p>
+<p class="text-label-md text-on-surface-variant font-semibold">Afinitas: 72% (Kuat)</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Smart Predictive Bundles (Full Width) -->
+<div class="col-span-12">
+<div class="bg-surface-container-highest/30 rounded-3xl p-lg border border-outline-variant shadow-xl backdrop-blur-sm">
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-xl gap-md">
+<div>
+<h4 class="font-headline-md text-headline-md flex items-center gap-md text-primary">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
+                            Rekomendasi Paket Bundling Cerdas
+                        </h4>
+<p class="text-body-md text-on-surface-variant">Penyandingan produk otomatis untuk meningkatkan Rata-rata Nilai Transaksi (ATV).</p>
+</div>
+<button class="bg-primary text-on-primary px-xl py-md rounded-2xl font-bold flex items-center gap-sm shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+<span class="material-symbols-outlined">add_circle</span>
+                        Usulkan Bundling Baru
+                    </button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+<!-- Bundle Card 1 -->
+<div class="bg-white rounded-3xl p-lg border border-outline-variant flex flex-col card-hover group relative overflow-hidden">
+<div class="absolute top-0 right-0 w-24 h-24 bg-primary/5 rounded-bl-full -mr-12 -mt-12 transition-all group-hover:w-32 group-hover:h-32"></div>
+<div class="flex justify-between items-start mb-md relative z-10">
+<span class="bg-tertiary-fixed text-on-tertiary-fixed px-md py-sm rounded-full text-label-md font-bold uppercase tracking-wider">Esensial</span>
+<div class="text-right">
+<div class="text-label-md text-on-surface-variant uppercase font-bold">Kekuatan Prediksi</div>
+<div class="text-headline-sm text-primary font-black">98%</div>
+</div>
+</div>
+<h5 class="font-bold text-xl text-on-surface mb-sm">Paket Sembako Hemat</h5>
+<p class="text-body-sm text-on-surface-variant mb-xl leading-relaxed">Beras 5kg, Minyak 2L, Gula 1kg, Garam 500g. Cocok untuk kebutuhan awal bulan.</p>
+<div class="mt-auto pt-lg border-t border-outline-variant flex justify-between items-center relative z-10">
+<div>
+<span class="text-label-md text-on-surface-variant font-bold uppercase block mb-1">Potensi Margin</span>
+<span class="font-black text-2xl text-primary">12.5%</span>
+</div>
+<button class="bg-primary-container text-on-primary-container px-lg py-sm rounded-xl text-body-sm font-bold hover:bg-primary hover:text-on-primary transition-all">Aktifkan Promo</button>
+</div>
+</div>
+<!-- Bundle Card 2 -->
+<div class="bg-white rounded-3xl p-lg border border-outline-variant flex flex-col card-hover group relative overflow-hidden">
+<div class="absolute top-0 right-0 w-24 h-24 bg-secondary-container/10 rounded-bl-full -mr-12 -mt-12 transition-all group-hover:w-32 group-hover:h-32"></div>
+<div class="flex justify-between items-start mb-md relative z-10">
+<span class="bg-secondary-fixed text-on-secondary-fixed px-md py-sm rounded-full text-label-md font-bold uppercase tracking-wider">Musiman</span>
+<div class="text-right">
+<div class="text-label-md text-on-surface-variant uppercase font-bold">Kekuatan Prediksi</div>
+<div class="text-headline-sm text-secondary font-black">82%</div>
+</div>
+</div>
+<h5 class="font-bold text-xl text-on-surface mb-sm">Paket Berkah Lebaran</h5>
+<p class="text-body-sm text-on-surface-variant mb-xl leading-relaxed">Kue Kering, Sirup, Kotak Teh, Kurma 500g. Paket bingkisan hari raya.</p>
+<div class="mt-auto pt-lg border-t border-outline-variant flex justify-between items-center relative z-10">
+<div>
+<span class="text-label-md text-on-surface-variant font-bold uppercase block mb-1">Potensi Margin</span>
+<span class="font-black text-2xl text-secondary">18.2%</span>
+</div>
+<button class="bg-secondary-container text-on-secondary-container px-lg py-sm rounded-xl text-body-sm font-bold hover:bg-secondary hover:text-on-secondary-fixed transition-all">Aktifkan Promo</button>
+</div>
+</div>
+<!-- Bundle Card 3 -->
+<div class="bg-white rounded-3xl p-lg border border-outline-variant flex flex-col card-hover group relative overflow-hidden">
+<div class="absolute top-0 right-0 w-24 h-24 bg-surface-container-highest/20 rounded-bl-full -mr-12 -mt-12 transition-all group-hover:w-32 group-hover:h-32"></div>
+<div class="flex justify-between items-start mb-md relative z-10">
+<span class="bg-surface-container-highest text-on-surface-variant px-md py-sm rounded-full text-label-md font-bold uppercase tracking-wider">Flash Sale</span>
+<div class="text-right">
+<div class="text-label-md text-on-surface-variant uppercase font-bold">Kekuatan Prediksi</div>
+<div class="text-headline-sm text-on-surface font-black">76%</div>
+</div>
+</div>
+<h5 class="font-bold text-xl text-on-surface mb-sm">Combo Sarapan Pagi</h5>
+<p class="text-body-sm text-on-surface-variant mb-xl leading-relaxed">Roti Tawar, Selai, Kopi Instan (Isi 10). Solusi cepat untuk keluarga sibuk.</p>
+<div class="mt-auto pt-lg border-t border-outline-variant flex justify-between items-center relative z-10">
+<div>
+<span class="text-label-md text-on-surface-variant font-bold uppercase block mb-1">Potensi Margin</span>
+<span class="font-black text-2xl text-on-surface">9.0%</span>
+</div>
+<button class="bg-surface-container-high text-on-surface-variant px-lg py-sm rounded-xl text-body-sm font-bold hover:bg-on-surface hover:text-white transition-all">Aktifkan Promo</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Promo & Discounts -->
+<div class="col-span-12">
+<div class="bg-surface-container-lowest rounded-3xl p-lg border border-outline-variant shadow-sm h-full">
+<div class="flex items-center justify-between mb-lg">
+<h4 class="font-headline-sm text-headline-sm">Rekomendasi Promo &amp; Diskon Anggota</h4>
+<button class="text-primary font-bold text-body-sm flex items-center gap-xs hover:underline">
+                        Lihat Semua Promo <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<div class="flex items-center justify-between p-lg border border-outline-variant rounded-2xl bg-surface-bright card-hover group cursor-pointer">
+<div class="flex items-center gap-lg">
+<div class="w-16 h-16 rounded-2xl bg-primary-container/20 flex items-center justify-center text-primary group-hover:bg-primary transition-all group-hover:text-white">
+<span class="material-symbols-outlined text-[32px]">loyalty</span>
+</div>
+<div>
+<span class="font-bold text-body-lg text-on-surface">Anggota Loyal - Tingkat 3</span>
+<p class="text-body-sm text-on-surface-variant">Diskon 10% untuk semua Produk Segar</p>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<div class="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
+<span class="text-primary font-black text-lg">AKTIF</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-lg border border-outline-variant rounded-2xl bg-surface-bright opacity-60 grayscale hover:grayscale-0 hover:opacity-100 transition-all card-hover cursor-pointer">
+<div class="flex items-center gap-lg">
+<div class="w-16 h-16 rounded-2xl bg-secondary-container/20 flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[32px]">celebration</span>
+</div>
+<div>
+<span class="font-bold text-body-lg text-on-surface">Akhir Pekan Komunitas</span>
+<p class="text-body-sm text-on-surface-variant">Dimulai Sabtu, pukul 08:00 WIB</p>
+</div>
+</div>
+<span class="text-on-surface-variant font-bold text-body-sm tracking-widest px-md py-sm bg-surface-container-high rounded-lg">MENUNGGU</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Unified Footer -->
+<footer class="mt-24 pt-xl border-t border-outline-variant pb-lg flex flex-col md:flex-row justify-between items-center gap-md">
+<div class="flex flex-col items-center md:items-start gap-xs">
+<h1 class="text-headline-sm font-bold text-primary tracking-tighter">KREASI</h1>
+<p class="text-label-md text-on-surface-variant">© 2024 KREASI. Semua Hak Dilindungi. Sistem Cerdas Koperasi.</p>
+</div>
+<div class="flex items-center gap-xl text-label-md font-bold text-on-surface-variant uppercase tracking-widest">
+<a class="hover:text-primary transition-colors" href="#">Panduan</a>
+<a class="hover:text-primary transition-colors" href="#">Privasi</a>
+<a class="hover:text-primary transition-colors" href="#">Dukungan</a>
+</div>
+</footer>
+</main>
+<script>
+    // Premium interaction effects
+    document.querySelectorAll('button').forEach(btn => {
+        btn.addEventListener('mousedown', () => {
+            btn.classList.add('scale-[0.98]');
+        });
+        btn.addEventListener('mouseup', () => {
+            btn.classList.remove('scale-[0.98]');
+        });
+    });
+
+    // Sidebar active state logic (visual only)
+    const navLinks = document.querySelectorAll('aside nav a');
+    navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            navLinks.forEach(l => {
+                l.classList.remove('text-primary', 'font-bold', 'bg-primary-container/20', 'border-l-4', 'border-primary');
+                l.classList.add('text-on-surface-variant');
+            });
+            link.classList.add('text-primary', 'font-bold', 'bg-primary-container/20', 'border-l-4', 'border-primary');
+            link.classList.remove('text-on-surface-variant');
+        });
+    });
+</script>
+</body></html>
