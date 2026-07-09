@@ -33,41 +33,129 @@ function RestockModal({ item, onClose, onSave }: { item: StockItem; onClose: () 
   const [qty, setQty] = useState(0);
   const [saving, setSaving] = useState(false);
 
+  const nextStock = item.stock + qty;
+  let projectedStatus: "AMAN" | "RENDAH" | "KRITIS" | "HABIS" = "AMAN";
+  if (nextStock <= 0) projectedStatus = "HABIS";
+  else if (nextStock <= item.minStock / 2) projectedStatus = "KRITIS";
+  else if (nextStock <= item.minStock) projectedStatus = "RENDAH";
+
+  const currentMeta = statusMeta[item.stockStatus];
+  const projectedMeta = statusMeta[projectedStatus];
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-md">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-surface-container-lowest rounded-3xl shadow-2xl border border-outline-variant/20 w-full max-w-md p-xl">
-        <div className="flex items-center justify-between mb-lg">
-          <h2 className="font-extrabold text-lg text-on-surface">Tambah Stok</h2>
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors">
+      <div className="absolute inset-0 bg-black/45 backdrop-blur-md" onClick={onClose} />
+      <div className="relative bg-surface-container-lowest rounded-[28px] shadow-2xl border border-outline-variant/30 w-[95%] sm:w-full max-w-[448px] p-6 anim-scale-in">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-md">
+          <div className="flex items-center gap-xs">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+              <span className="material-symbols-outlined text-[22px]">local_shipping</span>
+            </div>
+            <div>
+              <h2 className="font-extrabold text-base text-on-surface">Restock Barang</h2>
+              <p className="text-[10px] font-medium text-on-surface-variant/80 uppercase tracking-wide">Penerimaan Inventaris</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-surface-container text-on-surface-variant hover:text-primary transition-all duration-200">
             <span className="material-symbols-outlined text-[20px]">close</span>
           </button>
         </div>
 
-        <div className="bg-surface-container rounded-xl p-md mb-lg">
-          <p className="font-bold text-on-surface">{item.name}</p>
-          <p className="text-xs text-on-surface-variant">{item.sku} · Stok saat ini: <strong className="text-on-surface">{item.stock} {item.unit}</strong></p>
-        </div>
-
-        <div className="space-y-xs mb-lg">
-          <label className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Jumlah Penambahan ({item.unit})</label>
-          <div className="flex items-center gap-sm">
-            <button onClick={() => setQty(q => Math.max(0, q - 1))} className="w-10 h-10 rounded-xl bg-surface-container border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high font-bold text-lg transition-colors">−</button>
-            <input type="number" value={qty} min={0} onChange={e => setQty(Math.max(0, parseInt(e.target.value) || 0))}
-              className="flex-1 text-center px-md py-3 bg-surface-container border border-outline-variant/30 rounded-xl font-extrabold text-xl text-on-surface focus:outline-none focus:border-primary" />
-            <button onClick={() => setQty(q => q + 1)} className="w-10 h-10 rounded-xl bg-surface-container border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high font-bold text-lg transition-colors">+</button>
+        {/* Item Details Info Card */}
+        <div className="bg-surface-container-low border border-outline-variant/10 rounded-2xl p-md mb-md">
+          <div className="flex items-start justify-between gap-sm mb-xs">
+            <div>
+              <p className="font-mono text-[10px] text-on-surface-variant font-bold">{item.sku}</p>
+              <p className="font-extrabold text-on-surface text-base leading-tight mt-0.5">{item.name}</p>
+            </div>
+            <span className={`inline-flex items-center gap-xs px-2 py-0.5 rounded-full text-[10px] font-bold ${currentMeta.color}`}>
+              <span className={`w-1.5 h-1.5 rounded-full ${currentMeta.dot}`} />
+              {currentMeta.label}
+            </span>
           </div>
-          <p className="text-xs text-on-surface-variant">Stok setelah penambahan: <strong className="text-primary">{item.stock + qty} {item.unit}</strong></p>
+          <div className="border-t border-outline-variant/10 mt-sm pt-xs flex justify-between text-xs text-on-surface-variant">
+            <span>Stok saat ini:</span>
+            <span className="font-bold text-on-surface">{item.stock} {item.unit} <span className="font-normal text-on-surface-variant/60">(Min: {item.minStock})</span></span>
+          </div>
         </div>
 
+        {/* Quantity Form */}
+        <div className="space-y-sm mb-lg">
+          <div className="flex items-center justify-between">
+            <label className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Jumlah Penambahan</label>
+            <span className="text-[10px] text-on-surface-variant/80 font-bold bg-surface-container px-2 py-0.5 rounded-md">Satuan: {item.unit}</span>
+          </div>
+          
+          <div className="flex items-center gap-sm">
+            <button 
+              type="button"
+              onClick={() => setQty(q => Math.max(0, q - 1))} 
+              className="w-12 h-12 rounded-xl bg-surface-container border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high font-bold text-xl transition-all active:scale-95 shadow-sm"
+            >
+              −
+            </button>
+            <input 
+              type="number" 
+              value={qty || ""} 
+              min={0} 
+              placeholder="0"
+              onChange={e => setQty(Math.max(0, parseInt(e.target.value) || 0))}
+              className="flex-1 text-center px-md py-3 bg-surface-container border border-outline-variant/30 rounded-xl font-extrabold text-2xl text-on-surface focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all placeholder:text-on-surface-variant/20" 
+            />
+            <button 
+              type="button"
+              onClick={() => setQty(q => q + 1)} 
+              className="w-12 h-12 rounded-xl bg-surface-container border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high font-bold text-xl transition-all active:scale-95 shadow-sm"
+            >
+              +
+            </button>
+          </div>
+
+          {/* Real-time Status Preview */}
+          <div className="bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-sm space-y-xs">
+            <div className="flex justify-between text-xs">
+              <span className="text-on-surface-variant">Stok setelah restock:</span>
+              <strong className="text-primary font-extrabold">{nextStock} {item.unit}</strong>
+            </div>
+            {qty > 0 && (
+              <div className="flex justify-between items-center text-xs pt-xs border-t border-outline-variant/10">
+                <span className="text-on-surface-variant">Proyeksi status:</span>
+                <span className={`inline-flex items-center gap-xs px-2 py-0.5 rounded-full text-[10px] font-bold ${projectedMeta.color} transition-all duration-300`}>
+                  <span className={`w-1.5 h-1.5 rounded-full ${projectedMeta.dot}`} />
+                  {projectedMeta.label}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Buttons */}
         <div className="flex gap-md">
-          <button onClick={onClose} className="flex-1 py-3 border border-outline-variant/30 rounded-xl font-semibold text-sm text-on-surface-variant hover:bg-surface-container transition-colors">Batal</button>
-          <button
-            onClick={async () => { setSaving(true); await onSave(item.id, item.stock + qty); setSaving(false); onClose(); }}
-            disabled={qty === 0 || saving}
-            className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary/90 transition-colors disabled:opacity-60"
+          <button 
+            type="button"
+            onClick={onClose} 
+            className="flex-1 py-3 border border-outline-variant/40 rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container transition-all active:scale-98"
           >
-            {saving ? "Menyimpan..." : `Simpan (+${qty} ${item.unit})`}
+            Batal
+          </button>
+          <button
+            type="button"
+            onClick={async () => { setSaving(true); await onSave(item.id, nextStock); setSaving(false); onClose(); }}
+            disabled={qty === 0 || saving}
+            className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary/95 transition-all active:scale-98 disabled:opacity-50 disabled:pointer-events-none shadow-md shadow-primary/10 flex items-center justify-center gap-xs"
+          >
+            {saving ? (
+              <>
+                <span className="material-symbols-outlined text-[18px] animate-spin">sync</span>
+                <span>Menyimpan...</span>
+              </>
+            ) : (
+              <>
+                <span className="material-symbols-outlined text-[18px]">save</span>
+                <span>Simpan (+{qty})</span>
+              </>
+            )}
           </button>
         </div>
       </div>

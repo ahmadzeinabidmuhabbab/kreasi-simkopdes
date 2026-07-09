@@ -355,7 +355,7 @@ export default function LandingPage() {
                 </h1>
               </div>
 
-              <p className="anim-fade-in-up text-lg md:text-xl text-on-surface-variant max-w-xl leading-relaxed font-medium" style={{ animationDelay: "0.15s", opacity: 0, animationFillMode: "forwards" }}>
+              <p className="anim-fade-in-up text-lg md:text-xl text-on-surface-variant max-w-[576px] leading-relaxed font-medium" style={{ animationDelay: "0.15s", opacity: 0, animationFillMode: "forwards" }}>
                 Platform AI terpadu yang mengubah data transaksi & pasar menjadi kecerdasan bisnis nyata — prediksi demand, segmentasi anggota, laporan keuangan, hingga distribusi SHU, otomatis dalam satu ekosistem.
               </p>
 
@@ -554,7 +554,7 @@ export default function LandingPage() {
                 Ekosistem AI untuk{" "}
                 <span className="text-primary">Koperasi Desa Modern</span>
               </h2>
-              <p className="text-base text-on-surface-variant max-w-xl mx-auto font-medium leading-relaxed" style={{ textWrap: 'balance' } as React.CSSProperties}>
+              <p className="text-base text-on-surface-variant max-w-[576px] mx-auto font-medium leading-relaxed" style={{ textWrap: 'balance' } as React.CSSProperties}>
                 Lima modul AI — prediksi permintaan, profil anggota, manajemen stok, laporan SAK-EP, hingga distribusi SHU — dalam satu platform terintegrasi.
               </p>
             </div>
@@ -617,7 +617,7 @@ export default function LandingPage() {
               <h2 className="text-3xl md:text-4xl font-extrabold text-on-surface tracking-tight">
                 Cara Kerja KREASI
               </h2>
-              <p className="text-on-surface-variant mt-md max-w-xs mx-auto text-center text-sm leading-relaxed" style={{ textWrap: 'balance' } as React.CSSProperties}>
+              <p className="text-on-surface-variant mt-md max-w-[480px] mx-auto text-center text-sm leading-relaxed" style={{ textWrap: 'balance' } as React.CSSProperties}>
                 Tiga langkah sederhana menuju koperasi yang lebih cerdas dan transparan.
               </p>
             </div>
@@ -763,7 +763,7 @@ export default function LandingPage() {
             <h2 className="text-3xl md:text-4xl xl:text-5xl font-extrabold text-white tracking-tight max-w-3xl mx-auto leading-tight">
               Siap Membangun Koperasi Desa yang Lebih Cerdas?
             </h2>
-            <p className="text-base text-white/80 max-w-md mx-auto leading-relaxed" style={{ textWrap: 'balance' } as React.CSSProperties}>
+            <p className="text-base text-white/80 max-w-[448px] mx-auto leading-relaxed" style={{ textWrap: 'balance' } as React.CSSProperties}>
               Wujudkan koperasi desa yang transparan dan efisien — laporan SAK-EP otomatis, SHU adil, stok tepat, semuanya dengan kecerdasan AI.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-md pt-sm">

@@ -59,7 +59,7 @@ export default function LoginPage() {
       <div className="absolute w-[500px] h-[500px] rounded-full bg-primary/5 -top-32 -right-32 pointer-events-none" />
       <div className="absolute w-[400px] h-[400px] rounded-full bg-secondary-container/10 -bottom-20 -left-20 pointer-events-none" />
 
-      <div className="w-full max-w-sm relative">
+      <div className="w-full max-w-[384px] relative">
         {/* Brand header */}
         <div className="text-center mb-xl">
           <Link href="/" className="inline-flex flex-col items-center gap-sm group">

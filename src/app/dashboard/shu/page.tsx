@@ -570,55 +570,84 @@ _KREASI Portal · Tim Xensushi · Hackathon Simkopdes 2026_`;
       {/* ══ WHATSAPP PREVIEW MODAL ══ */}
       {waPreview && waPreview.member && aggregate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-md">
-          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setWaPreview(null)} />
-          <div className="relative bg-surface-container-lowest rounded-3xl shadow-2xl border border-outline-variant/20 w-full max-w-lg flex flex-col max-h-[90vh]">
+          <div className="absolute inset-0 bg-black/45 backdrop-blur-md" onClick={() => setWaPreview(null)} />
+          <div className="relative bg-surface-container-lowest rounded-[28px] shadow-2xl border border-outline-variant/30 w-[95%] sm:w-full max-w-[560px] flex flex-col max-h-[90vh] overflow-hidden anim-scale-in">
 
             {/* Modal header */}
-            <div className="flex items-center justify-between px-xl pt-lg pb-md border-b border-outline-variant/20 shrink-0">
+            <div className="flex items-center justify-between px-6 pt-5 pb-4 border-b border-outline-variant/20 shrink-0">
               <div className="flex items-center gap-sm">
-                <div className="w-10 h-10 rounded-full bg-[#25D366] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-[#25D366] flex items-center justify-center text-white shrink-0">
                   <svg viewBox="0 0 24 24" className="w-6 h-6 fill-white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.124.554 4.118 1.528 5.845L0 24l6.317-1.506A11.943 11.943 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 21.818a9.808 9.808 0 01-5.001-1.373l-.36-.213-3.748.893.935-3.642-.233-.374A9.789 9.789 0 012.182 12C2.182 6.578 6.578 2.182 12 2.182S21.818 6.578 21.818 12 17.422 21.818 12 21.818z"/></svg>
                 </div>
                 <div>
-                  <p className="font-extrabold text-on-surface">Preview Pesan WhatsApp</p>
-                  <p className="text-xs text-on-surface-variant">
-                    {waPreview.isAll ? `Blast ke semua ${members.filter(m => m.blastStatus === "BELUM").length} anggota` : `Ke: ${waPreview.member.name} (${waPreview.member.phone})`}
+                  <p className="font-extrabold text-sm text-on-surface">Preview Pesan WhatsApp</p>
+                  <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">
+                    {waPreview.isAll ? `Blast ke semua ${members.filter(m => m.blastStatus === "BELUM").length} anggota` : `Ke: ${waPreview.member.name}`}
                   </p>
                 </div>
               </div>
-              <button onClick={() => setWaPreview(null)} className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors">
+              <button onClick={() => setWaPreview(null)} className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-surface-container text-on-surface-variant hover:text-primary transition-all duration-200">
                 <span className="material-symbols-outlined text-[20px]">close</span>
               </button>
             </div>
 
             {/* WhatsApp bubble preview */}
-            <div className="overflow-y-auto flex-1 p-xl">
-              <div className="rounded-2xl overflow-hidden" style={{ background: "#e5ddd5" }}>
+            <div className="overflow-y-auto flex-1 p-4 bg-surface-container-high/40">
+              <div className="rounded-2xl overflow-hidden shadow-md border border-[#e1f3d4]/30" style={{ background: "#efeae2" }}>
                 {/* WA header bar */}
-                <div className="flex items-center gap-sm px-md py-3" style={{ background: "#075E54" }}>
-                  <div className="w-8 h-8 rounded-full bg-[#25D366] flex items-center justify-center text-white font-bold text-sm shrink-0">K</div>
-                  <div>
-                    <p className="font-bold text-white text-sm">Koperasi Desa KREASI</p>
-                    <p className="text-[10px] text-white/70">Distribusi SHU {aggregate.period}</p>
+                <div className="flex items-center justify-between px-md py-2.5 text-white shrink-0" style={{ background: "#008069" }}>
+                  <div className="flex items-center gap-xs">
+                    <span className="material-symbols-outlined text-[20px] cursor-pointer">arrow_back</span>
+                    <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center font-bold text-sm shrink-0 border border-white/10">K</div>
+                    <div>
+                      <p className="font-bold text-xs">Koperasi Desa KREASI</p>
+                      <p className="text-[9px] text-white/80 leading-none">Online</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-sm opacity-90">
+                    <span className="material-symbols-outlined text-[18px] cursor-pointer">videocam</span>
+                    <span className="material-symbols-outlined text-[18px] cursor-pointer">call</span>
+                    <span className="material-symbols-outlined text-[18px] cursor-pointer">more_vert</span>
                   </div>
                 </div>
-                {/* Message bubble */}
-                <div className="p-md">
-                  <div className="bg-white rounded-2xl rounded-tl-none p-md shadow-sm max-w-[85%]">
-                    <p className="text-sm text-on-surface whitespace-pre-wrap font-mono leading-relaxed">
-                      {buildWaMessage(waPreview.member, aggregate.period)}
-                    </p>
-                    <p className="text-[10px] text-on-surface-variant/60 text-right mt-sm">
-                      {new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })} ✓✓
-                    </p>
+
+                {/* Message bubble pane */}
+                <div className="p-md min-h-[220px] flex flex-col justify-end">
+                  <div className="bg-[#d9fdd3] rounded-2xl rounded-tr-none p-3 shadow-sm border border-[#c3ebbc] max-w-[88%] ml-auto relative">
+                    {/* Triangle tail for outgoing message */}
+                    <div className="absolute top-0 -right-1.5 w-3 h-3 bg-[#d9fdd3] border-r border-t border-[#c3ebbc] rotate-[45deg] rounded-tr-[3px]" style={{ clipPath: "polygon(0 0, 100% 0, 100% 100%)" }} />
+                    
+                    <div className="space-y-0.5">
+                      {buildWaMessage(waPreview.member, aggregate.period).split("\n").map((line, i) => {
+                        let html = line;
+                        // Replace bold *text* with strong
+                        html = html.replace(/\*(.*?)\*/g, '<strong class="font-extrabold text-[#111b21]">$1</strong>');
+                        // Replace italic _text_ with em
+                        html = html.replace(/_(.*?)_/g, '<em class="not-italic text-on-surface-variant/90">$1</em>');
+                        
+                        if (line.includes("─────────────────────")) {
+                          return <div key={i} className="my-1.5 border-t border-black/5" />;
+                        }
+                        
+                        return (
+                          <p key={i} className="min-h-[1.25rem] text-[12.5px] font-sans leading-relaxed text-[#111b21] whitespace-pre-wrap">
+                            <span dangerouslySetInnerHTML={{ __html: html }} />
+                          </p>
+                        );
+                      })}
+                    </div>
+                    <div className="flex items-center justify-end gap-0.5 mt-1 text-[9px] text-[#667781]">
+                      <span>{new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}</span>
+                      <span className="material-symbols-outlined text-[13px] text-[#53bdeb] leading-none" style={{ fontVariationSettings: "'FILL' 1" }}>done_all</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Action buttons */}
-            <div className="flex gap-md px-xl pb-xl pt-md border-t border-outline-variant/20 shrink-0">
-              <button onClick={() => setWaPreview(null)} className="flex-1 py-3 border border-outline-variant/30 rounded-xl font-semibold text-sm text-on-surface-variant hover:bg-surface-container transition-colors">
+            <div className="flex gap-md px-6 pb-6 pt-4 border-t border-outline-variant/20 shrink-0">
+              <button onClick={() => setWaPreview(null)} className="flex-1 py-3 border border-outline-variant/40 rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container transition-all active:scale-98">
                 Batal
               </button>
               <button
@@ -626,10 +655,10 @@ _KREASI Portal · Tim Xensushi · Hackathon Simkopdes 2026_`;
                   if (waPreview.isAll) confirmBlastAll();
                   else confirmBlastSingle(waPreview.member!);
                 }}
-                className="flex-1 py-3 bg-[#25D366] text-white rounded-xl font-bold text-sm hover:bg-[#128C7E] transition-colors flex items-center justify-center gap-sm"
+                className="flex-1 py-3 bg-[#25D366] hover:bg-[#1fbe58] active:bg-[#1aa34b] text-white rounded-xl font-bold text-sm transition-all active:scale-98 flex items-center justify-center gap-sm shadow-md shadow-[#25D366]/10"
               >
-                <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>send</span>
-                {waPreview.isAll ? "Kirim ke Semua Anggota" : "Kirim Pesan"}
+                <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>send</span>
+                <span>{waPreview.isAll ? "Kirim ke Semua Anggota" : "Kirim Pesan"}</span>
               </button>
             </div>
           </div>

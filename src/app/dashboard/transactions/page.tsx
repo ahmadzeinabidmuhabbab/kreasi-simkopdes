@@ -35,64 +35,99 @@ const paymentColors: Record<string, string> = {
 
 // ── Detail Modal ───────────────────────────────────────────────────────────
 function DetailModal({ trx, onClose }: { trx: Transaction; onClose: () => void }) {
+  const [copied, setCopied] = useState(false);
   const s = statusMeta[trx.status];
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(trx.id);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-md">
-      <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-surface-container-lowest rounded-3xl shadow-2xl border border-outline-variant/20 w-full max-w-lg p-xl overflow-y-auto max-h-[90vh]">
+      <div className="absolute inset-0 bg-black/45 backdrop-blur-md" onClick={onClose} />
+      <div className="relative bg-surface-container-lowest rounded-[28px] shadow-2xl border border-outline-variant/30 w-[95%] sm:w-full max-w-[512px] p-6 overflow-y-auto max-h-[90vh] anim-scale-in">
         {/* Header */}
-        <div className="flex items-center justify-between mb-lg">
-          <div>
-            <h2 className="font-extrabold text-lg text-on-surface">{trx.id}</h2>
-            <p className="text-xs text-on-surface-variant">{trx.date} · {trx.time} WIB</p>
+        <div className="flex items-start justify-between mb-md border-b border-outline-variant/20 pb-sm">
+          <div className="space-y-xs">
+            <div className="flex items-center gap-xs">
+              <span className="material-symbols-outlined text-[20px] text-primary">receipt_long</span>
+              <h2 className="font-extrabold text-base text-on-surface tracking-tight font-mono">{trx.id}</h2>
+              <button 
+                onClick={handleCopy} 
+                className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-surface-container text-on-surface-variant hover:text-primary transition-all duration-200" 
+                title="Salin ID Transaksi"
+              >
+                <span className="material-symbols-outlined text-[16px]">
+                  {copied ? "check" : "content_copy"}
+                </span>
+              </button>
+              {copied && <span className="text-[10px] bg-primary text-white px-1.5 py-0.5 rounded font-semibold animate-pulse">Tersalin</span>}
+            </div>
+            <p className="text-[11px] text-on-surface-variant/80 font-medium">{trx.date} · {trx.time} WIB</p>
           </div>
-          <button onClick={onClose} className="w-8 h-8 flex items-center justify-center rounded-xl hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors">
+          <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors">
             <span className="material-symbols-outlined text-[20px]">close</span>
           </button>
         </div>
 
-        {/* Status + payment */}
-        <div className="flex items-center gap-sm mb-lg flex-wrap">
-          <span className={`inline-flex items-center gap-xs px-3 py-1.5 rounded-full text-xs font-bold ${s.color}`}>
-            <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />{s.label}
+        {/* Status + payment metadata */}
+        <div className="flex flex-wrap gap-xs mb-md">
+          <span className={`inline-flex items-center gap-xs px-2.5 py-1 rounded-full text-[10px] font-bold ${s.color}`}>
+            <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
+            {s.label}
           </span>
-          <span className={`px-3 py-1.5 rounded-full text-xs font-bold ${paymentColors[trx.paymentMethod] || "bg-gray-100 text-gray-700"}`}>
+          <span className={`inline-flex items-center gap-xs px-2.5 py-1 rounded-full text-[10px] font-bold ${paymentColors[trx.paymentMethod] || "bg-gray-100 text-gray-700"}`}>
+            <span className="material-symbols-outlined text-[12px]">payments</span>
             {trx.paymentMethod}
           </span>
-          <span className="px-3 py-1.5 bg-surface-container rounded-full text-xs font-bold text-on-surface-variant">{trx.category}</span>
+          <span className="inline-flex items-center gap-xs px-2.5 py-1 bg-surface-container rounded-full text-[10px] font-bold text-on-surface-variant">
+            <span className="material-symbols-outlined text-[12px]">sell</span>
+            {trx.category}
+          </span>
         </div>
 
-        {/* Member */}
-        <div className="flex items-center gap-sm p-md bg-surface-container rounded-xl mb-lg">
-          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-extrabold shrink-0">
+        {/* Member Card */}
+        <div className="flex items-center gap-sm p-md bg-surface-container-low border border-outline-variant/15 rounded-2xl mb-md">
+          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-extrabold shrink-0 border border-primary/20">
             {trx.memberName.charAt(0)}
           </div>
-          <div>
-            <p className="font-bold text-on-surface text-sm">{trx.memberName}</p>
-            <p className="text-xs text-on-surface-variant font-mono">{trx.memberId}</p>
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-wider leading-none">Pembeli</p>
+            <p className="font-extrabold text-on-surface text-sm truncate mt-0.5">{trx.memberName}</p>
+            <p className="text-[10px] text-on-surface-variant/80 font-mono mt-0.5">{trx.memberId}</p>
           </div>
         </div>
 
-        {/* Items */}
-        <div className="bg-surface-container-lowest border border-outline-variant/20 rounded-xl overflow-hidden mb-lg">
-          <div className="px-md py-sm bg-surface-container border-b border-outline-variant/20">
-            <p className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Detail Barang</p>
+        {/* Items List (Invoice Receipt Style) */}
+        <div className="bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/20 mb-md shadow-sm">
+          <div className="px-md py-2.5 bg-surface-container border-b border-outline-variant/20 flex items-center justify-between">
+            <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Rincian Belanja</p>
+            <span className="text-[10px] font-semibold text-on-surface-variant/70">{trx.items.length} Barang</span>
           </div>
-          {trx.items.map((item, i) => (
-            <div key={i} className="flex items-center justify-between px-md py-sm border-b border-outline-variant/10 last:border-0">
-              <div>
-                <p className="font-semibold text-sm text-on-surface">{item.name}</p>
-                <p className="text-xs text-on-surface-variant">{item.qty} {item.unit} × {fmt(item.price)}</p>
+          <div className="divide-y divide-outline-variant/10">
+            {trx.items.map((item, i) => (
+              <div key={i} className="flex items-center justify-between px-md py-3 hover:bg-surface-container-low/30 transition-colors">
+                <div>
+                  <p className="font-bold text-xs text-on-surface">{item.name}</p>
+                  <p className="text-[11px] text-on-surface-variant mt-0.5">
+                    {item.qty} {item.unit} × {fmt(item.price)}
+                  </p>
+                </div>
+                <p className="font-extrabold text-xs text-primary">{fmt(item.qty * item.price)}</p>
               </div>
-              <p className="font-extrabold text-sm text-primary">{fmt(item.qty * item.price)}</p>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
 
-        {/* Total */}
-        <div className="flex items-center justify-between p-md bg-primary/5 rounded-xl border border-primary/20">
-          <p className="font-extrabold text-primary">Total Transaksi</p>
-          <p className="text-2xl font-extrabold text-primary">{fmt(trx.total)}</p>
+        {/* Total Price Section with Receipt Cutoff Dash design */}
+        <div className="border-t border-dashed border-outline-variant/50 pt-md mt-md flex items-center justify-between p-md bg-primary/5 rounded-2xl border border-primary/10">
+          <div>
+            <p className="text-[10px] font-bold text-primary/60 uppercase tracking-widest leading-none">Total Pembayaran</p>
+            <p className="font-extrabold text-primary text-sm mt-1">Metode: {trx.paymentMethod}</p>
+          </div>
+          <p className="text-xl font-extrabold text-primary tracking-tight font-mono">{fmt(trx.total)}</p>
         </div>
       </div>
     </div>
