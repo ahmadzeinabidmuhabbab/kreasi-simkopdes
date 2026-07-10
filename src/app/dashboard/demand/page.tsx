@@ -939,24 +939,43 @@ onClick={() => fetchRfqDashboard()}
         )}
       </section>
 
-      <div className="flex flex-wrap gap-xs rounded-2xl bg-surface-container-low p-1">
-        {[
-          { key: "history", label: "History RFQ", icon: "history" },
-          { key: "forecasting", label: "Forecasting", icon: "monitoring" },
-          { key: "trend", label: "Analisis Trend", icon: "travel_explore" },
-        ].map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setActiveTab(tab.key as TabKey)}
-            className={`inline-flex items-center gap-xs rounded-xl px-md py-2.5 text-sm font-bold transition ${
-              activeTab === tab.key ? "bg-primary text-white shadow-md" : "text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
-            }`}
-          >
-            <span className="material-symbols-outlined text-[18px]">{tab.icon}</span>
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      <nav
+        className="w-full rounded-2xl border border-outline-variant/25 bg-surface-container-low p-1 shadow-sm"
+        aria-label="Navigasi fitur demand"
+      >
+        <div className="inline-flex max-w-full flex-wrap gap-xs">
+          {[
+            { key: "history", label: "History RFQ", icon: "history" },
+            { key: "forecasting", label: "Forecasting", icon: "monitoring" },
+            { key: "trend", label: "Analisis Trend", icon: "travel_explore" },
+          ].map((tab) => {
+            const selected = activeTab === tab.key;
+
+            return (
+              <button
+                key={tab.key}
+                type="button"
+                onClick={() => setActiveTab(tab.key as TabKey)}
+                aria-pressed={selected}
+                className={`inline-flex min-h-11 items-center gap-xs rounded-xl px-md py-2 text-left transition ${
+                  selected
+                    ? "bg-primary text-white shadow-md shadow-primary/20"
+                    : "text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
+                }`}
+              >
+                <span
+                  className={`grid size-8 shrink-0 place-items-center rounded-lg ${
+                    selected ? "bg-white/15 text-white" : "bg-surface-container-lowest text-primary"
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-[18px]">{tab.icon}</span>
+                </span>
+                <span className="whitespace-nowrap text-sm font-extrabold">{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
+      </nav>
 
       {activeTab === "history" && (
         <section className="space-y-md">

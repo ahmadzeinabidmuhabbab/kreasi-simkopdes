@@ -1152,3 +1152,13 @@
  GET /dashboard/bundle 200 in 172ms (next.js: 40ms, application-code: 132ms)
  GET /api/bundle 200 in 34ms (next.js: 13ms, application-code: 21ms)
  GET /api/bundle 200 in 18ms (next.js: 6ms, application-code: 12ms)
+ GET /dashboard/finance 200 in 303ms (next.js: 67ms, application-code: 236ms)
+▲ Next.js 16.2.10 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://10.200.130.14:3000
+✓ Ready in 1376ms
+
+ GET /dashboard/bundle 404 in 2.3s (next.js: 556ms, application-code: 1713ms)
+ GET /dashboard/bundle 404 in 599ms (next.js: 220ms, application-code: 379ms)
+ GET /dashboard/bundle 404 in 225ms (next.js: 49ms, application-code: 176ms)
+[?25h

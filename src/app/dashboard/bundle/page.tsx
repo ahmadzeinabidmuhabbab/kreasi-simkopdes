@@ -1,10 +1,19 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { SortableHeader } from "@/components/ui/SortableHeader";
-import { useSortable } from "@/hooks/useSortable";
+import dynamic from "next/dynamic";
+import { useEffect, useMemo, useState, type ReactNode } from "react";
 
-// ── Types ──────────────────────────────────────────────────────────────────
+const PlanogramDesigner = dynamic(
+  () => import("@/components/bundle/PlanogramDesigner"),
+  {
+    ssr: false,
+    loading: () => <PlanogramFallback />,
+  }
+);
+
+type ActiveTab = "shelf" | "pricing";
+type Urgency = "high" | "medium" | "low";
+
 interface InventoryItem {
   id: number;
   name: string;
@@ -16,23 +25,9 @@ interface InventoryItem {
   restock: number;
   status: string;
   category: string;
-}
-
-interface ShelfCell {
-  cell: string;
-  item: string;
-  traffic: "HOT" | "WARM" | "COLD";
-  visits: number;
-  placement: string;
-  tip: string;
-}
-
-interface BasketItem {
-  itemA: string;
-  itemB: string;
-  confidence: number;
-  support: number;
-  lift: number;
+  price?: number;
+  associationCount?: number;
+  associationRank?: number;
 }
 
 interface Bundle {
@@ -56,524 +51,672 @@ interface DynamicPrice {
   suggestedPrice: number;
   reason: string;
   type: string;
-  urgency: string;
+  urgency: Urgency;
 }
 
-// ── Helpers ────────────────────────────────────────────────────────────────
-function formatRupiah(n: number) {
-  if (n >= 1_000_000) return `Rp ${(n / 1_000_000).toFixed(1)} Jt`;
-  return `Rp ${n.toLocaleString("id-ID")}`;
+interface PlanogramSlotItem {
+  scenarioId: string;
+  scenarioName: string;
+  slot: string;
+  shelf: number;
+  row: number;
+  rowPosition: string;
+  column: number;
+  produk: string;
+  kategori: string;
+  hargaRupiah: number;
+  weightClass: string;
+  adjacentReference?: string | null;
+  ruleTheme?: string | null;
+  ruleConfidence: number;
+  ruleLift: number;
+  ruleSupportCount: number;
+  sourceRule?: string | null;
+  placementReason: string;
 }
 
-const statusMeta: Record<string, { color: string; dot: string; bg: string }> = {
-  Kritis: { color: "text-red-700", dot: "bg-red-500", bg: "bg-red-50 border-red-200" },
-  Perhatian: { color: "text-amber-700", dot: "bg-amber-500", bg: "bg-amber-50 border-amber-200" },
-  Normal: { color: "text-sky-700", dot: "bg-sky-500", bg: "bg-sky-50 border-sky-200" },
-  Aman: { color: "text-emerald-700", dot: "bg-emerald-500", bg: "bg-emerald-50 border-emerald-200" },
+interface PlanogramScenario {
+  scenarioId: string;
+  name: string;
+  objective: string;
+  editable: boolean;
+  layoutSlots: PlanogramSlotItem[];
+}
+
+interface PlanogramPayload {
+  success: boolean;
+  layoutSpec: {
+    shelfCount: number;
+    rowsPerShelf: number;
+    columnsPerRow: number;
+    slotFormat: string;
+    rowMapping: Record<string, string>;
+  };
+  scenarios: PlanogramScenario[];
+}
+
+interface BundleApiResponse {
+  success: boolean;
+  inventory: InventoryItem[];
+  bundles: Bundle[];
+  dynamicPricing: DynamicPrice[];
+  planogram?: PlanogramPayload;
+}
+
+interface KpiItem {
+  label: string;
+  value: ReactNode;
+  helper: string;
+  icon: string;
+  tone?: "primary" | "sky" | "amber" | "danger" | "success";
+}
+
+const tabs: Array<{ key: ActiveTab; label: string; icon: string }> = [
+  {
+    key: "shelf",
+    label: "Planogram",
+    icon: "shelves",
+  },
+  {
+    key: "pricing",
+    label: "Bundling",
+    icon: "local_offer",
+  },
+];
+
+const urgencyMeta: Record<Urgency, { label: string; className: string; icon: string }> = {
+  high: {
+    label: "Tinggi",
+    className: "border-error/25 bg-error-container/60 text-error",
+    icon: "priority_high",
+  },
+  medium: {
+    label: "Sedang",
+    className: "border-secondary-container/70 bg-secondary-container/35 text-on-secondary-container",
+    icon: "notifications_active",
+  },
+  low: {
+    label: "Rendah",
+    className: "border-primary/20 bg-primary/10 text-primary",
+    icon: "task_alt",
+  },
 };
 
-const trafficMeta: Record<string, { label: string; color: string; bg: string; textColor: string }> = {
-  HOT: { label: "HOT", color: "border-red-400", bg: "bg-red-50", textColor: "text-red-700" },
-  WARM: { label: "WARM", color: "border-amber-400", bg: "bg-amber-50", textColor: "text-amber-700" },
-  COLD: { label: "COLD", color: "border-emerald-400", bg: "bg-emerald-50", textColor: "text-emerald-700" },
+const trendTone = {
+  up: {
+    icon: "trending_up",
+    label: "Naik",
+    className: "border-error/20 bg-error-container/55 text-error",
+    chip: "bg-error-container/55 text-error",
+  },
+  down: {
+    icon: "trending_down",
+    label: "Turun",
+    className: "border-primary/20 bg-primary/10 text-primary",
+    chip: "bg-primary/10 text-primary",
+  },
 };
 
-const urgencyMeta: Record<string, string> = {
-  high: "bg-red-100 text-red-700 border-red-200",
-  medium: "bg-amber-100 text-amber-700 border-amber-200",
-  low: "bg-emerald-100 text-emerald-700 border-emerald-200",
-};
+function formatRupiah(value: number) {
+  if (value >= 1_000_000) return `Rp ${(value / 1_000_000).toFixed(1)} Jt`;
+  return `Rp ${value.toLocaleString("id-ID")}`;
+}
 
-// ── Main Component ─────────────────────────────────────────────────────────
+function MaterialIcon({
+  children,
+  className = "",
+  filled = false,
+}: {
+  children: string;
+  className?: string;
+  filled?: boolean;
+}) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`material-symbols-outlined ${className}`}
+      style={{ fontVariationSettings: filled ? "'FILL' 1" : "'FILL' 0" }}
+    >
+      {children}
+    </span>
+  );
+}
+
+function kpiToneClass(tone: KpiItem["tone"] = "primary") {
+  return {
+    primary: "bg-primary/10 text-primary",
+    sky: "bg-sky-100 text-sky-700",
+    amber: "bg-secondary-container/35 text-on-secondary-container",
+    danger: "bg-error-container/65 text-error",
+    success: "bg-primary-fixed/55 text-on-primary-fixed-variant",
+  }[tone];
+}
+
+function PlanogramFallback() {
+  return (
+    <div
+      className="rounded-2xl border border-outline-variant/30 bg-surface-container-lowest p-md shadow-sm"
+      role="status"
+      aria-live="polite"
+      aria-label="Memuat planogram"
+    >
+      <div className="grid min-h-[380px] gap-md xl:grid-cols-[18rem_minmax(0,1fr)]">
+        <div className="rounded-2xl border border-outline-variant/20 bg-surface-container-low p-md">
+          <div className="mb-md h-5 w-32 rounded-full shimmer" />
+          <div className="grid gap-xs">
+            {[1, 2, 3, 4, 5, 6].map((item) => (
+              <div key={item} className="h-14 rounded-xl shimmer" />
+            ))}
+          </div>
+        </div>
+        <div className="grid gap-md">
+          <div className="h-[180px] rounded-2xl shimmer" />
+          <div className="h-[180px] rounded-2xl shimmer" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function KpiCard({ label, value, helper, icon, tone = "primary" }: KpiItem) {
+  return (
+    <article className="flex min-w-0 items-center gap-sm rounded-2xl border border-outline-variant/25 bg-surface-container-lowest p-md shadow-sm transition hover:shadow-md">
+      <div className={`grid size-11 shrink-0 place-items-center rounded-xl ${kpiToneClass(tone)}`}>
+        <MaterialIcon filled className="text-[22px]">
+          {icon}
+        </MaterialIcon>
+      </div>
+      <div className="min-w-0">
+        <p className="text-[11px] font-extrabold uppercase tracking-wider text-on-surface-variant">
+          {label}
+        </p>
+        <p className="mt-0.5 truncate text-2xl font-extrabold text-on-surface">{value}</p>
+        <p className="mt-0.5 truncate text-xs font-semibold text-on-surface-variant">{helper}</p>
+      </div>
+    </article>
+  );
+}
+
+function SectionHeading({
+  icon,
+  eyebrow,
+  title,
+  description,
+  action,
+}: {
+  icon: string;
+  eyebrow: string;
+  title: string;
+  description: string;
+  action?: ReactNode;
+}) {
+  return (
+    <div className="mb-md flex flex-col gap-md rounded-2xl border border-outline-variant/25 bg-surface-container-lowest p-md shadow-sm lg:flex-row lg:items-center lg:justify-between">
+      <div className="flex min-w-0 items-center gap-sm">
+        <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+          <MaterialIcon filled className="text-[22px]">
+            {icon}
+          </MaterialIcon>
+        </span>
+        <div className="min-w-0">
+          <p className="text-[11px] font-extrabold uppercase tracking-wider text-on-surface-variant">
+            {eyebrow}
+          </p>
+          <h2 className="mt-0.5 text-lg font-extrabold text-on-surface">{title}</h2>
+          <p className="mt-xs max-w-3xl text-sm text-on-surface-variant">{description}</p>
+        </div>
+      </div>
+      {action}
+    </div>
+  );
+}
+
 export default function SmartBundle() {
-  const [activeTab, setActiveTab] = useState<"procurement" | "shelf" | "pricing">("procurement");
+  const [activeTab, setActiveTab] = useState<ActiveTab>("shelf");
   const [inventory, setInventory] = useState<InventoryItem[]>([]);
-  const [shelf, setShelf] = useState<ShelfCell[]>([]);
-  const [basket, setBasket] = useState<BasketItem[]>([]);
   const [bundles, setBundles] = useState<Bundle[]>([]);
   const [dynamicPricing, setDynamicPricing] = useState<DynamicPrice[]>([]);
+  const [planogram, setPlanogram] = useState<PlanogramPayload | null>(null);
   const [loading, setLoading] = useState(true);
   const [toast, setToast] = useState<string | null>(null);
-  const [invSearch, setInvSearch] = useState("");
 
   useEffect(() => {
-    fetch("/api/bundle")
-      .then((r) => r.json())
+    const controller = new AbortController();
+
+    fetch("/api/bundle", { signal: controller.signal })
+      .then((response) => response.json() as Promise<BundleApiResponse>)
       .then((data) => {
         if (data.success) {
           setInventory(data.inventory);
-          setShelf(data.shelf);
-          setBasket(data.basket);
           setBundles(data.bundles);
           setDynamicPricing(data.dynamicPricing);
+          setPlanogram(data.planogram ?? null);
         }
-        setLoading(false);
       })
-      .catch(() => setLoading(false));
+      .catch((error: Error) => {
+        if (error.name !== "AbortError") setLoading(false);
+      })
+      .finally(() => setLoading(false));
+
+    return () => controller.abort();
   }, []);
 
-  const showToast = (msg: string) => {
-    setToast(msg);
-    setTimeout(() => setToast(null), 3000);
+  const stats = useMemo<KpiItem[]>(() => {
+    const criticalCount = inventory.filter((item) => item.status === "Kritis").length;
+    const categoryCount = new Set(inventory.map((item) => item.category)).size;
+    const highUrgencyCount = dynamicPricing.filter((price) => price.urgency === "high").length;
+
+    return [
+      {
+        label: "Total Produk",
+        value: inventory.length,
+        helper: `${categoryCount} kategori komoditas`,
+        icon: "inventory_2",
+        tone: "sky",
+      },
+      {
+        label: "Slot Planogram",
+        value: "36",
+        helper: `${planogram?.scenarios.length ?? 4} skenario penataan`,
+        icon: "view_comfy",
+        tone: "primary",
+      },
+      {
+        label: "SKU Kritis",
+        value: criticalCount,
+        helper: "prioritas stok toko",
+        icon: "warning",
+        tone: criticalCount > 0 ? "danger" : "success",
+      },
+      {
+        label: "Review Harga",
+        value: dynamicPricing.length,
+        helper: `${highUrgencyCount} urgensi tinggi`,
+        icon: "price_change",
+        tone: "amber",
+      },
+      {
+        label: "Bundle Aktif",
+        value: bundles.length,
+        helper: "paket rekomendasi AI",
+        icon: "inventory_2",
+        tone: "success",
+      },
+    ];
+  }, [bundles.length, dynamicPricing, inventory, planogram?.scenarios.length]);
+
+  const pricingSummary = useMemo(() => {
+    const revenue = bundles.reduce((total, bundle) => total + bundle.bundlePrice * bundle.sold, 0);
+    const averageDiscount =
+      bundles.length === 0
+        ? 0
+        : Math.round(bundles.reduce((total, bundle) => total + bundle.discount, 0) / bundles.length);
+    const priceDrops = dynamicPricing.filter((price) => price.suggestedPrice < price.currentPrice).length;
+
+    return { revenue, averageDiscount, priceDrops };
+  }, [bundles, dynamicPricing]);
+
+  const showToast = (message: string) => {
+    setToast(message);
+    window.setTimeout(() => setToast(null), 2600);
   };
 
-  // Filter + sort inventory
-  const filteredInventory = inventory.filter(i =>
-    !invSearch ||
-    i.name.toLowerCase().includes(invSearch.toLowerCase()) ||
-    i.category.toLowerCase().includes(invSearch.toLowerCase())
-  );
-  const { sorted: sortedInventory, sortKey: invSortKey, sortDir: invSortDir, toggleSort: toggleInvSort } = useSortable(filteredInventory, "name");
-
-  const criticalCount = inventory.filter((i) => i.status === "Kritis").length;
-  const restockTotal = inventory.reduce((a, i) => a + i.restock, 0);
-
   return (
-    <div className="dashboard-page dashboard-page-bundle space-y-lg w-full max-w-[1280px] mx-auto pb-2xl">
-      {/* Toast */}
+    <div className="dashboard-page dashboard-page-bundle mx-auto w-full max-w-[1280px] space-y-lg pb-2xl">
       {toast && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-sm px-md py-sm bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-2xl shadow-2xl font-semibold text-sm anim-fade-in-up">
-          <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
+        <div
+          className="anim-fade-in-up fixed bottom-6 right-6 z-50 flex items-center gap-sm rounded-2xl border border-primary/20 bg-primary-fixed px-md py-sm text-sm font-semibold text-on-primary-fixed shadow-2xl"
+          role="status"
+          aria-live="polite"
+        >
+          <MaterialIcon filled className="text-[20px]">
+            check_circle
+          </MaterialIcon>
           {toast}
         </div>
       )}
 
-      {/* Header */}
-      <div className="anim-fade-in-up">
-        <div className="flex items-center gap-sm mb-xs">
-          <div className="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center">
-            <span className="material-symbols-outlined text-sky-700 text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>inventory_2</span>
+      <header className="anim-fade-in-up overflow-hidden rounded-2xl border border-outline-variant/25 bg-gradient-to-br from-primary/10 via-surface-container-lowest to-secondary-container/25 p-lg shadow-sm">
+        <div className="flex flex-col gap-md xl:flex-row xl:items-center xl:justify-between">
+          <div className="flex min-w-0 items-center gap-md">
+            <div className="grid size-14 shrink-0 place-items-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/15">
+              <MaterialIcon filled className="text-3xl">
+                inventory_2
+              </MaterialIcon>
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs font-extrabold uppercase tracking-wider text-primary">
+                AI Smart Predictive Bundle
+              </p>
+              <h1 className="mt-0.5 text-2xl font-extrabold text-on-surface">
+                Planogram, Dynamic Pricing, dan Bundling
+              </h1>
+              <p className="mt-xs max-w-4xl text-sm leading-relaxed text-on-surface-variant">
+                Dashboard operasional untuk mengatur penempatan barang toko kelontong, membaca
+                peluang harga, dan mengaktifkan paket komoditas berbasis pola transaksi.
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-2xl font-extrabold text-on-surface">Smart Predictive Bundle</h1>
-            <p className="text-sm text-on-surface-variant">Pengadaan · Penempatan Rak · Dynamic Pricing</p>
+
+          <div className="grid min-w-[min(100%,24rem)] gap-xs sm:grid-cols-2">
+            <div className="rounded-xl border border-primary/15 bg-white/75 px-md py-sm shadow-sm">
+              <p className="text-[11px] font-extrabold uppercase tracking-wider text-on-surface-variant">
+                Status Mesin AI
+              </p>
+              <div className="mt-xs flex items-center gap-xs text-sm font-extrabold text-primary">
+                <MaterialIcon filled className="text-[18px]">
+                  auto_awesome
+                </MaterialIcon>
+                Siap rekomendasi
+              </div>
+            </div>
+            <div className="rounded-xl border border-outline-variant/25 bg-white/75 px-md py-sm shadow-sm">
+              <p className="text-[11px] font-extrabold uppercase tracking-wider text-on-surface-variant">
+                Layout Rak
+              </p>
+              <div className="mt-xs flex items-center gap-xs text-sm font-extrabold text-on-surface">
+                <MaterialIcon className="text-[18px] text-primary">view_agenda</MaterialIcon>
+                Rak A dan Rak B
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-gutter anim-fade-in-up">
-        {[
-          { label: "Total Produk", value: inventory.length, icon: "inventory", color: "bg-sky-100 text-sky-700" },
-          { label: "Stok Kritis", value: criticalCount, icon: "warning", color: "bg-red-100 text-red-700" },
-          { label: "Perlu Restock", value: `${restockTotal} unit`, icon: "local_shipping", color: "bg-amber-100 text-amber-700" },
-          { label: "Bundle Aktif", value: bundles.length, icon: "package_2", color: "bg-violet-100 text-violet-700" },
-        ].map((s) => (
-          <div key={s.label} className="bg-surface-container-lowest rounded-2xl p-md border border-outline-variant/20 hover:shadow-md transition-shadow flex items-center gap-md">
-            <div className={`w-12 h-12 rounded-xl ${s.color} flex items-center justify-center shrink-0`}>
-              <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>{s.icon}</span>
-            </div>
-            <div>
-              <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">{s.label}</p>
-              <p className="text-2xl font-extrabold text-on-surface">{s.value}</p>
-            </div>
-          </div>
+      <section className="anim-fade-in-up grid grid-cols-[repeat(auto-fit,minmax(210px,1fr))] gap-gutter">
+        {stats.map((stat) => (
+          <KpiCard key={stat.label} {...stat} />
         ))}
-      </div>
+      </section>
 
-      {/* Tabs */}
-      <div className="flex gap-xs bg-surface-container-low rounded-2xl p-1 w-fit flex-wrap">
-        {[
-          { key: "procurement", label: "Pengadaan & Restock", icon: "local_shipping" },
-          { key: "shelf", label: "Penempatan Rak", icon: "shelves" },
-          { key: "pricing", label: "Dynamic Pricing & Bundling", icon: "local_offer" },
-        ].map((tab) => (
-          <button
-            key={tab.key}
-            onClick={() => setActiveTab(tab.key as typeof activeTab)}
-            className={`flex items-center gap-xs px-md py-2.5 rounded-xl font-semibold text-sm transition-all ${
-              activeTab === tab.key
-                ? "bg-primary text-white shadow-md shadow-primary/20"
-                : "text-on-surface-variant hover:text-on-surface hover:bg-surface-container"
-            }`}
-          >
-            <span className="material-symbols-outlined text-[18px]">{tab.icon}</span>
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      <nav
+        className="w-full rounded-2xl border border-outline-variant/25 bg-surface-container-low p-1 shadow-sm"
+        aria-label="Navigasi fitur bundle"
+      >
+        <div className="inline-flex max-w-full flex-wrap gap-xs">
+          {tabs.map((tab) => {
+            const selected = activeTab === tab.key;
 
-      {/* ── TAB: PROCUREMENT ── */}
-      {activeTab === "procurement" && (
-        <div className="space-y-lg">
-          {/* Stok Kritis Alert */}
-          {criticalCount > 0 && (
-            <div className="flex items-start gap-md p-md bg-red-50 border border-red-200 rounded-2xl">
-              <span className="material-symbols-outlined text-red-600 text-2xl shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>error</span>
-              <div>
-                <p className="font-bold text-red-800">{criticalCount} produk stok kritis — Segera lakukan restock!</p>
-                <p className="text-sm text-red-700 mt-xs">
-                  {inventory.filter(i => i.status === "Kritis").map(i => i.name).join(", ")}
-                </p>
-              </div>
+            return (
               <button
-                onClick={() => showToast("Pesanan restock dikirim ke supplier!")}
-                className="ml-auto flex items-center gap-xs px-md py-2 bg-red-600 text-white rounded-xl text-sm font-bold hover:bg-red-700 transition-colors shrink-0"
+                key={tab.key}
+                type="button"
+                onClick={() => setActiveTab(tab.key)}
+                aria-pressed={selected}
+                className={`inline-flex min-h-11 items-center gap-xs rounded-xl px-md py-2 text-left transition ${
+                  selected
+                    ? "bg-primary text-white shadow-md shadow-primary/20"
+                    : "text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
+                }`}
               >
-                <span className="material-symbols-outlined text-[16px]">send</span>
-                Order Semua
+                <span
+                  className={`grid size-8 shrink-0 place-items-center rounded-lg ${
+                    selected ? "bg-white/15 text-white" : "bg-surface-container-lowest text-primary"
+                  }`}
+                >
+                  <MaterialIcon filled className="text-[18px]">
+                    {tab.icon}
+                  </MaterialIcon>
+                </span>
+                <span className="whitespace-nowrap text-sm font-extrabold">{tab.label}</span>
               </button>
-            </div>
-          )}
-
-          {/* Inventory Table */}
-          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/20 overflow-hidden">
-            <div className="p-md border-b border-outline-variant/20 flex flex-wrap items-center justify-between gap-sm">
-              <p className="font-extrabold text-on-surface">Status Stok & Rekomendasi Pengadaan</p>
-              <div className="flex items-center gap-xs px-md py-2 bg-surface-container border border-outline-variant/30 rounded-xl focus-within:border-primary transition-colors">
-                <span className="material-symbols-outlined text-[16px] text-on-surface-variant">search</span>
-                <input type="text" placeholder="Cari produk..." value={invSearch} onChange={e => setInvSearch(e.target.value)}
-                  className="bg-transparent text-sm font-semibold text-on-surface outline-none placeholder:text-on-surface-variant/40 w-32" />
-                {invSearch && <button onClick={() => setInvSearch("")} className="material-symbols-outlined text-[14px] text-on-surface-variant hover:text-primary">close</button>}
-              </div>
-            </div>
-            {loading ? (
-              <div className="p-md space-y-sm">
-                {[1,2,3].map(i => <div key={i} className="h-12 rounded-xl shimmer" />)}
-              </div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="bg-surface-container border-b border-outline-variant/20">
-                      <SortableHeader label="Produk"               colKey="name"     current={invSortKey} dir={invSortDir} onSort={toggleInvSort} />
-                      <SortableHeader label="Kategori"             colKey="category" current={invSortKey} dir={invSortDir} onSort={toggleInvSort} />
-                      <SortableHeader label="Stok Saat Ini"        colKey="stock"    current={invSortKey} dir={invSortDir} onSort={toggleInvSort} />
-                      <SortableHeader label="Stok Min."            colKey="minStock" current={invSortKey} dir={invSortDir} onSort={toggleInvSort} />
-                      <SortableHeader label="Velocity/Minggu"      colKey="velocity" current={invSortKey} dir={invSortDir} onSort={toggleInvSort} />
-                      <SortableHeader label="Status"               colKey="status"   current={invSortKey} dir={invSortDir} onSort={toggleInvSort} />
-                      <SortableHeader label="Rekomendasi Restock"  colKey="restock"  current={invSortKey} dir={invSortDir} onSort={toggleInvSort} />
-                      <th className="px-md py-3 text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Aksi</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {sortedInventory.map((item) => {
-                      const st = statusMeta[item.status] ?? statusMeta.Aman;
-                      const stockPct = Math.min(100, Math.round((item.stock / item.minStock) * 100));
-                      return (
-                        <tr key={item.id} className="border-b border-outline-variant/10 hover:bg-surface-container-low/50 transition-colors">
-                          <td className="px-md py-3 font-bold text-on-surface">{item.name}</td>
-                          <td className="px-md py-3">
-                            <span className="text-[10px] font-semibold bg-surface-container px-2 py-0.5 rounded-full text-on-surface-variant">{item.category}</span>
-                          </td>
-                          <td className="px-md py-3">
-                            <div className="flex items-center gap-sm">
-                              <div className="w-20 h-1.5 bg-outline-variant/20 rounded-full overflow-hidden">
-                                <div className="h-full rounded-full" style={{
-                                  width: `${stockPct}%`,
-                                  background: item.status === "Kritis" ? "#dc2626" : item.status === "Perhatian" ? "#d97706" : "#16a34a"
-                                }} />
-                              </div>
-                              <span className="font-bold text-on-surface">{item.stock} {item.unit}</span>
-                            </div>
-                          </td>
-                          <td className="px-md py-3 text-on-surface-variant">{item.minStock} {item.unit}</td>
-                          <td className="px-md py-3 font-semibold text-on-surface">{item.velocity} {item.unit}</td>
-                          <td className="px-md py-3">
-                            <div className={`inline-flex items-center gap-xs px-2.5 py-1 rounded-full text-[10px] font-bold border ${st.bg}`}>
-                              <span className={`w-1.5 h-1.5 rounded-full ${st.dot}`} />
-                              <span className={st.color}>{item.status}</span>
-                            </div>
-                          </td>
-                          <td className="px-md py-3">
-                            {item.restock > 0 ? (
-                              <span className="font-bold text-primary">+{item.restock} {item.unit}</span>
-                            ) : (
-                              <span className="text-emerald-600 font-semibold text-xs">Stok Cukup</span>
-                            )}
-                          </td>
-                          <td className="px-md py-3">
-                            {item.restock > 0 && (
-                              <button
-                                onClick={() => showToast(`Order ${item.restock} ${item.unit} ${item.name} dikirim!`)}
-                                className="flex items-center gap-xs px-sm py-1.5 bg-primary text-white rounded-lg text-[11px] font-bold hover:bg-primary/90 transition-colors whitespace-nowrap"
-                              >
-                                <span className="material-symbols-outlined text-[14px]">add_shopping_cart</span>
-                                Order
-                              </button>
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </div>
-
-          {/* Market Basket Analysis */}
-          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/20 overflow-hidden">
-            <div className="p-md border-b border-outline-variant/20">
-              <p className="font-extrabold text-on-surface">Market Basket Analysis</p>
-              <p className="text-xs text-on-surface-variant mt-xs">Pasangan produk yang sering dibeli bersamaan — dasar rekomendasi bundle</p>
-            </div>
-            <div className="p-md grid md:grid-cols-2 gap-sm">
-              {basket.map((b, i) => (
-                <div key={i} className="flex items-center gap-md p-sm bg-surface-container-low rounded-xl border border-outline-variant/20">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-xs text-xs font-bold text-on-surface flex-wrap">
-                      <span className="bg-primary/10 text-primary px-2 py-0.5 rounded-full">{b.itemA}</span>
-                      <span className="material-symbols-outlined text-[14px] text-on-surface-variant">add</span>
-                      <span className="bg-secondary-container/50 text-secondary px-2 py-0.5 rounded-full">{b.itemB}</span>
-                    </div>
-                    <div className="flex gap-md mt-sm">
-                      <div>
-                        <p className="text-[10px] font-bold text-on-surface-variant uppercase">Confidence</p>
-                        <p className="text-sm font-extrabold text-primary">{b.confidence}%</p>
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-bold text-on-surface-variant uppercase">Support</p>
-                        <p className="text-sm font-extrabold text-on-surface">{b.support}%</p>
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-bold text-on-surface-variant uppercase">Lift</p>
-                        <p className="text-sm font-extrabold text-amber-600">{b.lift}x</p>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                    <span className="material-symbols-outlined text-primary text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>link</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+            );
+          })}
         </div>
-      )}
+      </nav>
 
-      {/* ── TAB: SHELF ── */}
       {activeTab === "shelf" && (
-        <div className="space-y-lg">
-          {/* Legend */}
-          <div className="flex flex-wrap gap-sm">
-            {[
-              { label: "HOT — Traffic Tinggi (>250 kunjungan/minggu)", color: "bg-red-500" },
-              { label: "WARM — Traffic Sedang (150–250 kunjungan)", color: "bg-amber-500" },
-              { label: "COLD — Traffic Rendah (<150 kunjungan)", color: "bg-emerald-500" },
-            ].map((l) => (
-              <div key={l.label} className="flex items-center gap-xs text-[11px] font-semibold text-on-surface-variant">
-                <div className={`w-3 h-3 rounded-sm ${l.color}`} />
-                {l.label}
-              </div>
-            ))}
-          </div>
-
-          {/* Shelf Grid */}
-          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/20 p-lg">
-            <p className="font-extrabold text-on-surface mb-md">Peta Rak Toko (Visual Planogram)</p>
-            <div className="flex flex-col gap-md">
-              {/* Row labels */}
-              {["A", "B", "C"].map((row) => {
-                const rowCells = shelf.filter(s => s.cell.startsWith(row));
-                return (
-                  <div key={row} className="flex gap-sm items-stretch">
-                    <div className="w-8 flex items-center justify-center bg-surface-container rounded-lg shrink-0">
-                      <span className="text-[11px] font-black text-on-surface-variant -rotate-90">{row === "A" ? "Depan" : row === "B" ? "Tengah" : "Belakang"}</span>
-                    </div>
-                    <div className="flex-1 grid grid-cols-3 gap-sm">
-                      {rowCells.map((cell) => {
-                        const tm = trafficMeta[cell.traffic];
-                        return (
-                          <div
-                            key={cell.cell}
-                            className={`rounded-xl p-sm border-2 ${tm.color} ${tm.bg} group hover:shadow-md transition-all cursor-default relative`}
-                          >
-                            <div className="flex items-start justify-between mb-xs">
-                              <span className="text-[10px] font-black text-on-surface-variant uppercase">{cell.cell}</span>
-                              <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full ${tm.bg} ${tm.textColor} border ${tm.color}`}>
-                                {cell.traffic}
-                              </span>
-                            </div>
-                            <p className="text-xs font-bold text-on-surface leading-tight mb-xs">{cell.item}</p>
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="text-[9px] text-on-surface-variant">{cell.placement}</p>
-                                <p className="text-[9px] font-semibold text-on-surface-variant">{cell.visits} kunjungan/mgg</p>
-                              </div>
-                            </div>
-                            {/* Tooltip */}
-                            <div className="absolute bottom-full left-0 mb-2 bg-on-surface text-surface text-[10px] p-sm rounded-lg shadow-xl z-10 w-52 hidden group-hover:block">
-                              💡 {cell.tip}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                );
-              })}
-              {/* Column headers */}
-              <div className="flex gap-sm pl-10">
-                {["Kolom 1 (Kiri)", "Kolom 2 (Tengah)", "Kolom 3 (Kanan)"].map(c => (
-                  <div key={c} className="flex-1 text-center text-[10px] font-bold text-on-surface-variant">{c}</div>
-                ))}
-              </div>
-            </div>
-          </div>
-
-          {/* Placement Tips Table */}
-          <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/20 overflow-hidden">
-            <div className="p-md border-b border-outline-variant/20">
-              <p className="font-extrabold text-on-surface">Rekomendasi Penempatan AI</p>
-            </div>
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-surface-container border-b border-outline-variant/20">
-                    {["Sel", "Produk", "Traffic", "Kunjungan/Mgg", "Penempatan", "Rekomendasi AI"].map(h => (
-                      <th key={h} className="text-left px-md py-3 text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {shelf.map((cell) => {
-                    const tm = trafficMeta[cell.traffic];
-                    return (
-                      <tr key={cell.cell} className="border-b border-outline-variant/10 hover:bg-surface-container-low/50 transition-colors">
-                        <td className="px-md py-3 font-mono font-bold text-primary">{cell.cell}</td>
-                        <td className="px-md py-3 font-semibold text-on-surface">{cell.item}</td>
-                        <td className="px-md py-3">
-                          <span className={`text-[10px] font-bold px-2 py-1 rounded-full border ${tm.color} ${tm.bg} ${tm.textColor}`}>{cell.traffic}</span>
-                        </td>
-                        <td className="px-md py-3 font-semibold text-on-surface">{cell.visits}</td>
-                        <td className="px-md py-3 text-on-surface-variant text-xs">{cell.placement}</td>
-                        <td className="px-md py-3 text-xs text-on-surface-variant italic">💡 {cell.tip}</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
+        <PlanogramDesigner
+          inventory={inventory}
+          loading={loading}
+          onToast={showToast}
+          planogram={planogram}
+        />
       )}
 
-      {/* ── TAB: DYNAMIC PRICING ── */}
       {activeTab === "pricing" && (
         <div className="space-y-lg">
-          {/* Dynamic Pricing */}
-          <div>
-            <div className="mb-md">
-              <h2 className="font-extrabold text-on-surface text-lg">Rekomendasi Dynamic Pricing</h2>
-              <p className="text-sm text-on-surface-variant mt-xs">Penyesuaian harga berbasis kondisi stok, demand, dan MBA secara real-time</p>
-            </div>
-            <div className="grid md:grid-cols-2 gap-gutter">
-              {dynamicPricing.map((dp) => {
-                const isUp = dp.suggestedPrice > dp.currentPrice;
-                const diff = Math.abs(dp.suggestedPrice - dp.currentPrice);
-                const pct = Math.round((diff / dp.currentPrice) * 100);
-                return (
-                  <div key={dp.id} className="bg-surface-container-lowest rounded-2xl p-md border border-outline-variant/20 hover:shadow-md transition-shadow">
-                    <div className="flex items-start justify-between mb-md">
-                      <div>
-                        <p className="font-extrabold text-on-surface">{dp.item}</p>
-                        <div className={`inline-flex items-center gap-xs mt-xs px-2.5 py-0.5 rounded-full text-[10px] font-bold border ${urgencyMeta[dp.urgency]}`}>
-                          Urgensi: {dp.urgency === "high" ? "Tinggi" : dp.urgency === "medium" ? "Sedang" : "Rendah"}
-                        </div>
-                      </div>
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${isUp ? "bg-red-100" : "bg-emerald-100"}`}>
-                        <span className={`material-symbols-outlined text-xl ${isUp ? "text-red-600" : "text-emerald-600"}`} style={{ fontVariationSettings: "'FILL' 1" }}>
-                          {isUp ? "trending_up" : "trending_down"}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-lg mb-md">
-                      <div>
-                        <p className="text-[10px] font-bold text-on-surface-variant uppercase">Harga Saat Ini</p>
-                        <p className="text-xl font-extrabold text-on-surface">{formatRupiah(dp.currentPrice)}</p>
-                      </div>
-                      <span className="material-symbols-outlined text-2xl text-on-surface-variant">arrow_forward</span>
-                      <div>
-                        <p className="text-[10px] font-bold text-on-surface-variant uppercase">Harga Saran AI</p>
-                        <p className={`text-xl font-extrabold ${isUp ? "text-red-600" : "text-emerald-600"}`}>
-                          {formatRupiah(dp.suggestedPrice)}
-                        </p>
-                      </div>
-                      <div className={`ml-auto px-sm py-xs rounded-xl text-sm font-extrabold ${isUp ? "bg-red-50 text-red-700" : "bg-emerald-50 text-emerald-700"}`}>
-                        {isUp ? "+" : "-"}{pct}%
-                      </div>
-                    </div>
-
-                    <p className="text-xs text-on-surface-variant leading-relaxed mb-md italic">"{dp.reason}"</p>
-
-                    <button
-                      onClick={() => showToast(`Harga ${dp.item} diperbarui → ${formatRupiah(dp.suggestedPrice)}`)}
-                      className="w-full flex items-center justify-center gap-xs py-2.5 bg-primary text-white rounded-xl text-sm font-bold hover:bg-primary/90 transition-all"
-                    >
-                      <span className="material-symbols-outlined text-[16px]">check_circle</span>
-                      Terapkan Harga Baru
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Smart Bundles */}
-          <div>
-            <div className="mb-md">
-              <h2 className="font-extrabold text-on-surface text-lg">Paket Bundle Rekomendasi</h2>
-              <p className="text-sm text-on-surface-variant mt-xs">Bundling produk berbasis Market Basket Analysis untuk mengoptimalkan revenue</p>
-            </div>
-            <div className="grid md:grid-cols-3 gap-gutter">
-              {bundles.map((b) => (
-                <div key={b.id} className="bg-surface-container-lowest rounded-2xl border border-outline-variant/20 hover:shadow-lg hover:-translate-y-0.5 transition-all overflow-hidden">
-                  {/* Top badge */}
-                  <div className="bg-gradient-to-r from-primary/5 to-primary/10 px-md py-sm border-b border-outline-variant/20 flex items-center justify-between">
-                    <p className="font-extrabold text-on-surface text-sm">{b.name}</p>
-                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border border-current/20 ${b.badgeColor}`}>{b.badge}</span>
-                  </div>
-                  <div className="p-md space-y-md">
-                    {/* Items */}
-                    <div className="space-y-xs">
-                      {b.items.map((item, i) => (
-                        <div key={i} className="flex items-center gap-xs text-xs text-on-surface-variant">
-                          <span className="material-symbols-outlined text-[12px] text-primary">check_circle</span>
-                          {item}
-                        </div>
-                      ))}
-                    </div>
-                    {/* Pricing */}
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <p className="text-[10px] font-bold text-on-surface-variant uppercase">Harga Normal</p>
-                        <p className="text-sm text-on-surface-variant line-through">{formatRupiah(b.normalPrice)}</p>
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-bold text-on-surface-variant uppercase">Harga Bundle</p>
-                        <p className="text-xl font-extrabold text-primary">{formatRupiah(b.bundlePrice)}</p>
-                      </div>
-                      <div className="bg-primary text-white text-sm font-extrabold w-12 h-12 rounded-full flex items-center justify-center shadow-md">
-                        -{b.discount}%
-                      </div>
-                    </div>
-                    {/* Stats */}
-                    <div className="flex gap-md pt-sm border-t border-outline-variant/10">
-                      <div>
-                        <p className="text-[10px] font-bold text-on-surface-variant uppercase">Terjual</p>
-                        <p className="font-extrabold text-on-surface">{b.sold}</p>
-                      </div>
-                      <div>
-                        <p className="text-[10px] font-bold text-on-surface-variant uppercase">Stok Bundle</p>
-                        <p className="font-extrabold text-on-surface">{b.stock}</p>
-                      </div>
-                    </div>
-                    <p className="text-[11px] text-on-surface-variant italic">💡 {b.impact}</p>
-                    <button
-                      onClick={() => showToast(`Bundle "${b.name}" diaktifkan!`)}
-                      className="w-full py-2 bg-primary/10 text-primary rounded-xl text-xs font-bold hover:bg-primary hover:text-white transition-all"
-                    >
-                      Aktifkan Bundle
-                    </button>
-                  </div>
+          <section className="rounded-2xl border border-primary/15 bg-gradient-to-r from-primary/10 via-surface-container-lowest to-primary-fixed/35 p-md shadow-sm">
+            <div className="grid gap-md lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+              <div className="flex min-w-0 items-center gap-sm">
+                <span className="grid size-11 shrink-0 place-items-center rounded-xl bg-primary/10 text-primary">
+                  <MaterialIcon filled className="text-[22px]">
+                    insights
+                  </MaterialIcon>
+                </span>
+                <div>
+                  <p className="text-[11px] font-extrabold uppercase tracking-wider text-on-surface-variant">
+                    Ringkasan Komersial
+                  </p>
+                  <h2 className="mt-0.5 text-lg font-extrabold text-on-surface">
+                    Optimasi harga dan paket untuk perputaran barang
+                  </h2>
                 </div>
-              ))}
+              </div>
+
+              <div className="grid gap-xs sm:grid-cols-3 lg:min-w-[32rem]">
+                <SummaryPill label="Revenue Bundle" value={formatRupiah(pricingSummary.revenue)} icon="payments" />
+                <SummaryPill label="Avg Diskon" value={`${pricingSummary.averageDiscount}%`} icon="sell" />
+                <SummaryPill label="Harga Turun" value={pricingSummary.priceDrops} icon="trending_down" />
+              </div>
             </div>
-          </div>
+          </section>
+
+          <section>
+            <SectionHeading
+              icon="price_change"
+              eyebrow="Dynamic Pricing"
+              title="Rekomendasi Penyesuaian Harga"
+              description="Prioritaskan komoditas yang stoknya menekan margin, demand berubah cepat, atau perlu percepatan sell-through."
+            />
+
+            {loading ? (
+              <div className="grid gap-gutter md:grid-cols-2">
+                {[1, 2, 3, 4].map((item) => (
+                  <div key={item} className="h-48 rounded-2xl shimmer" />
+                ))}
+              </div>
+            ) : (
+              <div className="grid gap-gutter lg:grid-cols-2">
+                {dynamicPricing.map((price) => (
+                  <PricingCard
+                    key={price.id}
+                    price={price}
+                    onApply={() => showToast(`Harga ${price.item} dijadwalkan untuk review.`)}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
+
+          <section>
+            <SectionHeading
+              icon="inventory_2"
+              eyebrow="Bundling AI"
+              title="Paket Bundle Rekomendasi"
+              description="Paket disusun dari pola transaksi agar produk pelengkap bisa bergerak bersama tanpa mengganggu margin utama."
+            />
+
+            {loading ? (
+              <div className="grid gap-gutter md:grid-cols-3">
+                {[1, 2, 3].map((item) => (
+                  <div key={item} className="h-64 rounded-2xl shimmer" />
+                ))}
+              </div>
+            ) : (
+              <div className="grid gap-gutter xl:grid-cols-3">
+                {bundles.map((bundle) => (
+                  <BundleCard
+                    key={bundle.id}
+                    bundle={bundle}
+                    onActivate={() => showToast(`Bundle "${bundle.name}" diaktifkan.`)}
+                  />
+                ))}
+              </div>
+            )}
+          </section>
         </div>
       )}
     </div>
+  );
+}
+
+function SummaryPill({ label, value, icon }: { label: string; value: ReactNode; icon: string }) {
+  return (
+    <div className="flex min-h-14 items-center gap-xs rounded-xl border border-outline-variant/20 bg-white/75 px-sm py-xs shadow-sm">
+      <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-primary/10 text-primary">
+        <MaterialIcon filled className="text-[18px]">
+          {icon}
+        </MaterialIcon>
+      </span>
+      <div className="min-w-0">
+        <p className="truncate text-[11px] font-bold uppercase text-on-surface-variant">{label}</p>
+        <p className="truncate text-base font-extrabold text-on-surface">{value}</p>
+      </div>
+    </div>
+  );
+}
+
+function PricingCard({ price, onApply }: { price: DynamicPrice; onApply: () => void }) {
+  const isUp = price.suggestedPrice > price.currentPrice;
+  const diff = Math.abs(price.suggestedPrice - price.currentPrice);
+  const pct = Math.round((diff / price.currentPrice) * 100);
+  const tone = isUp ? trendTone.up : trendTone.down;
+  const urgency = urgencyMeta[price.urgency];
+
+  return (
+    <article className={`overflow-hidden rounded-2xl border bg-surface-container-lowest shadow-sm transition hover:shadow-md ${tone.className}`}>
+      <div className="flex flex-col gap-md border-b border-outline-variant/20 bg-gradient-to-r from-surface-container-lowest via-surface-container-lowest to-primary/5 p-md sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <div className="mb-xs flex flex-wrap items-center gap-xs">
+            <span className={`inline-flex min-h-7 items-center gap-1.5 rounded-full border px-2.5 py-1 text-[11px] font-extrabold ${urgency.className}`}>
+              <MaterialIcon className="text-[15px]">{urgency.icon}</MaterialIcon>
+              Urgensi {urgency.label}
+            </span>
+            <span className="rounded-full border border-outline-variant/20 bg-surface-container px-2.5 py-1 text-[11px] font-bold text-on-surface-variant">
+              {price.type}
+            </span>
+          </div>
+          <h3 className="text-lg font-extrabold text-on-surface">{price.item}</h3>
+        </div>
+
+        <div className={`inline-flex min-h-10 items-center gap-xs rounded-xl border px-sm py-xs text-sm font-extrabold ${tone.chip}`}>
+          <MaterialIcon filled className="text-[18px]">
+            {tone.icon}
+          </MaterialIcon>
+          {tone.label} {pct}%
+        </div>
+      </div>
+
+      <div className="p-md">
+        <div className="grid gap-sm sm:grid-cols-[1fr_auto_1fr] sm:items-center">
+          <PriceBox label="Harga Saat Ini" value={formatRupiah(price.currentPrice)} muted />
+          <span className="hidden size-10 place-items-center rounded-full bg-surface-container text-on-surface-variant sm:grid">
+            <MaterialIcon className="text-[18px]">arrow_forward</MaterialIcon>
+          </span>
+          <PriceBox label="Rekomendasi" value={formatRupiah(price.suggestedPrice)} />
+        </div>
+
+        <div className="mt-md rounded-xl border border-outline-variant/20 bg-surface-container-low px-md py-sm">
+          <p className="text-[11px] font-extrabold uppercase tracking-wider text-on-surface-variant">
+            Alasan AI
+          </p>
+          <p className="mt-xs text-sm leading-relaxed text-on-surface-variant">{price.reason}</p>
+        </div>
+
+        <button
+          type="button"
+          onClick={onApply}
+          className="mt-md inline-flex min-h-11 w-full items-center justify-center gap-xs rounded-xl bg-primary px-md py-2 text-sm font-extrabold text-white transition hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/35"
+        >
+          <MaterialIcon className="text-[18px]">check</MaterialIcon>
+          Terapkan Rekomendasi
+        </button>
+      </div>
+    </article>
+  );
+}
+
+function PriceBox({ label, value, muted = false }: { label: string; value: string; muted?: boolean }) {
+  return (
+    <div className={`rounded-xl border px-md py-sm ${muted ? "border-outline-variant/20 bg-surface-container" : "border-primary/18 bg-primary/8"}`}>
+      <p className="text-[11px] font-extrabold uppercase tracking-wider text-on-surface-variant">{label}</p>
+      <p className={`mt-xs text-xl font-extrabold ${muted ? "text-on-surface" : "text-primary"}`}>
+        {value}
+      </p>
+    </div>
+  );
+}
+
+function BundleCard({ bundle, onActivate }: { bundle: Bundle; onActivate: () => void }) {
+  return (
+    <article className="overflow-hidden rounded-2xl border border-outline-variant/25 bg-surface-container-lowest shadow-sm transition hover:shadow-md">
+      <div className="border-b border-outline-variant/20 bg-gradient-to-r from-primary/8 via-surface-container-lowest to-secondary-container/25 p-md">
+        <div className="flex items-start justify-between gap-sm">
+          <div className="min-w-0">
+            <p className="text-[11px] font-extrabold uppercase tracking-wider text-on-surface-variant">
+              Paket Rekomendasi
+            </p>
+            <h3 className="mt-xs text-lg font-extrabold text-on-surface">{bundle.name}</h3>
+          </div>
+          <span
+            className={`shrink-0 rounded-full border border-current/20 px-2.5 py-1 text-[11px] font-extrabold ${bundle.badgeColor}`}
+          >
+            {bundle.badge}
+          </span>
+        </div>
+      </div>
+
+      <div className="p-md">
+        <div className="grid gap-xs">
+          {bundle.items.map((item) => (
+            <div
+              key={item}
+              className="flex min-h-9 items-center gap-xs rounded-lg border border-outline-variant/15 bg-surface-container-low px-sm py-xs text-xs font-semibold text-on-surface-variant"
+            >
+              <MaterialIcon filled className="text-[15px] text-primary">
+                check_circle
+              </MaterialIcon>
+              {item}
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-md grid grid-cols-[1fr_auto] gap-sm">
+          <div className="rounded-xl border border-outline-variant/20 bg-surface-container px-md py-sm">
+            <p className="text-[11px] font-extrabold uppercase tracking-wider text-on-surface-variant">
+              Harga Normal
+            </p>
+            <p className="mt-xs text-sm font-bold text-on-surface-variant line-through">
+              {formatRupiah(bundle.normalPrice)}
+            </p>
+            <p className="mt-xs text-xl font-extrabold text-primary">
+              {formatRupiah(bundle.bundlePrice)}
+            </p>
+          </div>
+          <div className="grid size-16 place-items-center rounded-2xl bg-primary text-sm font-extrabold text-white shadow-md">
+            -{bundle.discount}%
+          </div>
+        </div>
+
+        <div className="mt-md grid grid-cols-2 gap-xs">
+          <SummaryPill label="Terjual" value={bundle.sold} icon="shopping_cart" />
+          <SummaryPill label="Stok" value={bundle.stock} icon="inventory" />
+        </div>
+
+        <p className="mt-md rounded-xl border border-primary/10 bg-primary/8 px-md py-sm text-sm leading-relaxed text-on-surface-variant">
+          {bundle.impact}
+        </p>
+
+        <button
+          type="button"
+          onClick={onActivate}
+          className="mt-md inline-flex min-h-11 w-full items-center justify-center gap-xs rounded-xl border border-primary/15 bg-primary/10 px-md py-2 text-sm font-extrabold text-primary transition hover:bg-primary hover:text-white focus:outline-none focus:ring-2 focus:ring-primary/35"
+        >
+          <MaterialIcon className="text-[18px]">rocket_launch</MaterialIcon>
+          Aktifkan Bundle
+        </button>
+      </div>
+    </article>
   );
 }

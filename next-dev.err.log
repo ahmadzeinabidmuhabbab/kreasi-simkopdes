@@ -2274,3 +2274,6 @@ https://react.dev/link/hydration-mismatch
     at performWorkOnRoot (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9061:150)
     at performWorkOnRootViaSchedulerTask (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10255:9)
     at MessagePort.performWorkUntilDeadline (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_1amofcm._.js:2647:64) (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3439:25)
+⚠ Server is approaching the used memory threshold, restarting...
+⚠ Slow filesystem detected. The benchmark took 1214ms. If C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\.next/dev is a network drive, consider moving it to a local folder.
+See more: https://nextjs.org/docs/app/guides/local-development

@@ -16,14 +16,14 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { name: "AI Demand Intelligence", href: "/dashboard/demand", icon: "psychology", description: "Prediksi demand & RFQ", tone: "primary" },
-  { name: "RFM Segmentation", href: "/dashboard/rfm", icon: "groups", description: "Profil anggota", tone: "amber" },
-  { name: "Smart Bundle & Stock", href: "/dashboard/bundle", icon: "inventory_2", description: "Pengadaan & pricing", tone: "sky" },
+{ name: "AI Demand Intelligence", href: "/dashboard/demand", icon: "psychology", description: "Prediksi demand & RFQ", tone: "primary" },
+{ name: "RFM Segmentation", href: "/dashboard/rfm", icon: "groups", description: "Profil anggota", tone: "amber" },
+{ name: "Smart Bundle & Stock", href: "/dashboard/bundle", icon: "inventory_2", description: "Planogram & pricing", tone: "sky" },
   { name: "Arus SAK-EP", href: "/dashboard/finance", icon: "account_balance_wallet", description: "Keuangan & PDF", tone: "violet" },
   { name: "Distribusi SHU", href: "/dashboard/shu", icon: "payments", description: "Kalkulasi SHU", tone: "rose" },
-  { name: "Riwayat Transaksi", href: "/dashboard/transactions", icon: "receipt_long", description: "Penjualan anggota", tone: "cyan" },
-  { name: "Stok Barang", href: "/dashboard/stock", icon: "warehouse", description: "Inventaris", tone: "orange" },
-  { name: "Manajemen User", href: "/dashboard/users", icon: "manage_accounts", description: "Akun & akses", tone: "purple" },
+  { name: "Data Transaksi", href: "/dashboard/transactions", icon: "receipt_long", description: "Penjualan anggota", tone: "cyan" },
+  { name: "Data Stok", href: "/dashboard/stock", icon: "warehouse", description: "Inventaris", tone: "orange" },
+{ name: "Data User", href: "/dashboard/users", icon: "manage_accounts", description: "Akun & akses", tone: "purple" },
 ];
 
 const toneClass: Record<Tone, string> = {
@@ -65,21 +65,21 @@ function MaterialIcon({
 
 function Sidebar({ pathname, onClose }: { pathname: string; onClose?: () => void }) {
   return (
-    <div className="flex h-full flex-col bg-surface-container-lowest">
+<div className="dashboard-sidebar flex h-full flex-col bg-surface-container-lowest">
       <div className="border-b border-outline-variant/35 px-md py-sm">
         <Link
           href="/"
           onClick={onClose}
-          className="flex min-h-11 items-center gap-sm rounded-lg px-1 text-on-surface transition-colors hover:bg-surface-container focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35"
+className="flex min-h-12 items-center gap-sm rounded-xl px-xs text-on-surface transition-colors hover:bg-surface-container focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35"
         >
-          <span className="flex size-9 items-center justify-center rounded-lg bg-primary text-on-primary">
-            <MaterialIcon filled className="text-[21px]">
+<span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary text-on-primary shadow-sm">
+<MaterialIcon filled className="text-[22px]">
               agriculture
             </MaterialIcon>
           </span>
           <span className="min-w-0">
-            <span className="block truncate text-base font-extrabold leading-none text-primary">KREASI</span>
-            <span className="mt-0.5 block truncate text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
+<span className="block text-lg font-extrabold leading-none text-primary">KREASI</span>
+<span className="mt-1 block text-[11px] font-bold uppercase tracking-normal text-on-surface-variant">
               Operations Console
             </span>
           </span>
@@ -87,12 +87,12 @@ function Sidebar({ pathname, onClose }: { pathname: string; onClose?: () => void
       </div>
 
       <div className="border-b border-outline-variant/25 px-md py-sm">
-        <div className="flex items-center justify-between gap-sm rounded-lg bg-surface-container-low px-sm py-2">
+<div className="flex items-center justify-between gap-sm rounded-xl border border-outline-variant/20 bg-surface-container-low px-sm py-2 shadow-sm">
           <div className="min-w-0">
-            <p className="truncate text-xs font-extrabold text-on-surface">Koperasi Sumber Makmur</p>
-            <p className="truncate text-[10px] text-on-surface-variant">Workspace aktif</p>
+<p className="text-sm font-extrabold leading-tight text-on-surface">Koperasi Sumber Makmur</p>
+<p className="mt-0.5 text-[11px] font-medium text-on-surface-variant">Workspace aktif</p>
           </div>
-          <span className="inline-flex items-center gap-1 rounded-md border border-primary/20 bg-primary/10 px-2 py-1 text-[10px] font-bold text-primary">
+<span className="inline-flex shrink-0 items-center gap-1 rounded-lg border border-primary/20 bg-primary/10 px-2 py-1 text-[11px] font-bold text-primary">
             <span className="size-1.5 rounded-full bg-primary" />
             Live
           </span>
@@ -113,24 +113,24 @@ function Sidebar({ pathname, onClose }: { pathname: string; onClose?: () => void
                 href={item.href}
                 onClick={onClose}
                 aria-current={active ? "page" : undefined}
-                className={`group flex min-h-12 items-center gap-sm rounded-lg border px-sm py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35 ${
+className={`group flex min-h-[58px] items-center gap-sm rounded-xl border px-sm py-2.5 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35 ${
                   active
-                    ? "border-primary/25 bg-primary/8 text-on-surface"
+? "border-primary/25 bg-primary/8 text-on-surface shadow-sm"
                     : "border-transparent text-on-surface-variant hover:border-outline-variant/35 hover:bg-surface-container-low hover:text-on-surface"
                 }`}
               >
                 <span
-                  className={`flex size-8 shrink-0 items-center justify-center rounded-md ${
+className={`flex size-10 shrink-0 items-center justify-center rounded-lg ${
                     active ? toneClass[item.tone] : "bg-surface-container text-on-surface-variant group-hover:text-primary"
                   }`}
                 >
-                  <MaterialIcon filled={active} className="text-[19px]">
+<MaterialIcon filled={active} className="text-[21px]">
                     {item.icon}
                   </MaterialIcon>
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-[13px] font-extrabold leading-tight">{item.name}</span>
-                  <span className="block truncate text-[10px] leading-tight text-on-surface-variant">{item.description}</span>
+<span className="block break-words text-[14px] font-extrabold leading-tight">{item.name}</span>
+<span className="mt-0.5 block break-words text-[11px] leading-snug text-on-surface-variant">{item.description}</span>
                 </span>
               </Link>
             );
@@ -139,19 +139,19 @@ function Sidebar({ pathname, onClose }: { pathname: string; onClose?: () => void
       </nav>
 
       <div className="border-t border-outline-variant/30 p-sm">
-        <div className="flex items-center gap-sm rounded-lg border border-outline-variant/25 bg-surface-container-low p-sm">
-          <span className="flex size-8 items-center justify-center rounded-md bg-primary text-xs font-extrabold text-on-primary">A</span>
+<div className="flex items-center gap-sm rounded-xl border border-outline-variant/25 bg-surface-container-low p-sm shadow-sm">
+<span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary text-sm font-extrabold text-on-primary">A</span>
           <span className="min-w-0 flex-1">
-            <span className="block truncate text-xs font-extrabold text-on-surface">Admin Kopdes</span>
-            <span className="block truncate text-[10px] text-on-surface-variant">Full access</span>
+<span className="block break-words text-sm font-extrabold leading-tight text-on-surface">Admin Kopdes</span>
+<span className="mt-0.5 block text-[11px] text-on-surface-variant">Full access</span>
           </span>
           <Link
             href="/"
             onClick={onClose}
             aria-label="Kembali ke landing"
-            className="flex size-10 items-center justify-center rounded-md text-on-surface-variant hover:bg-surface-container-high hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35"
+className="flex size-10 shrink-0 items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35"
           >
-            <MaterialIcon className="text-[18px]">logout</MaterialIcon>
+<MaterialIcon className="text-[20px]">logout</MaterialIcon>
           </Link>
         </div>
       </div>
@@ -190,9 +190,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               KREASI
             </Link>
             <MaterialIcon className="hidden text-[16px] text-outline sm:inline-flex">chevron_right</MaterialIcon>
-            <div className="min-w-0">
-              <p className="truncate text-sm font-extrabold text-on-surface">{activeItem.name}</p>
-              <p className="truncate text-[11px] text-on-surface-variant sm:hidden">{activeItem.description}</p>
+<div className="min-w-0 max-w-[min(18rem,calc(100vw-8rem))]">
+<p className="break-words text-sm font-extrabold leading-tight text-on-surface sm:whitespace-nowrap">{activeItem.name}</p>
+<p className="break-words text-[11px] leading-tight text-on-surface-variant sm:hidden">{activeItem.description}</p>
             </div>
           </div>
 
@@ -256,7 +256,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </header>
 
       <div className="flex h-dvh overflow-hidden pt-14">
-        <aside className="fixed left-0 top-14 z-30 hidden h-[calc(100dvh-3.5rem)] w-[220px] shrink-0 overflow-hidden border-r border-outline-variant/35 lg:block">
+<aside className="fixed left-0 top-14 z-30 hidden h-[calc(100dvh-3.5rem)] w-[280px] shrink-0 overflow-hidden border-r border-outline-variant/35 lg:block">
           <Sidebar pathname={pathname} />
         </aside>
 
@@ -268,13 +268,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               onClick={() => setSidebarOpen(false)}
               className="fixed inset-0 z-40 bg-black/45 lg:hidden"
             />
-            <aside className="fixed inset-y-0 left-0 z-50 w-[min(17rem,88vw)] border-r border-outline-variant/35 shadow-xl lg:hidden">
+<aside className="fixed inset-y-0 left-0 z-50 w-[min(21.5rem,92vw)] border-r border-outline-variant/35 shadow-xl lg:hidden">
               <Sidebar pathname={pathname} onClose={() => setSidebarOpen(false)} />
             </aside>
           </>
         ) : null}
 
-        <main id="main-content" className="custom-scrollbar h-[calc(100dvh-3.5rem)] min-w-0 flex-1 overflow-y-auto lg:ml-[220px]">
+<main id="main-content" className="custom-scrollbar h-[calc(100dvh-3.5rem)] min-w-0 flex-1 overflow-y-auto lg:ml-[280px]">
           <div className="mx-auto w-full max-w-[1440px] px-3 py-3 sm:px-4 sm:py-4 lg:px-5">{children}</div>
         </main>
       </div>

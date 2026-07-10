@@ -1,361 +1,726 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
-import { SortableHeader } from "@/components/ui/SortableHeader";
-import { useSortable } from "@/hooks/useSortable";
+import { useCallback, useEffect, useState } from "react";
 
-// ── Types ──────────────────────────────────────────────────────────────────
-interface TrxItem { name: string; qty: number; unit: string; price: number }
-interface Transaction {
-  id: string; date: string; time: string;
-  memberId: string; memberName: string;
-  items: TrxItem[]; category: string;
-  total: number; paymentMethod: string;
-  status: "SELESAI" | "DIPROSES" | "MENUNGGU";
+import {
+  DataTablePagination,
+  EmptyState,
+  LoadingState,
+  MaterialIcon,
+  SortButton,
+  type SortOrder,
+} from "@/components/dashboard/DashboardDataTable";
+
+type TransactionStatus = "SEMUA" | "SELESAI" | "DIPROSES" | "MENUNGGU";
+type TransactionSortField =
+  | "transaction_id"
+  | "transaction_at"
+  | "customer_name"
+  | "category"
+  | "total_cost_idr"
+  | "payment_method"
+  | "total_items";
+
+interface TransactionItem {
+  id: string;
+  transaction_id: number;
+  transaction_code: string;
+  transaction_date: string;
+  transaction_time: string;
+  customer_name: string;
+  products: string[];
+  product_count: number;
+  total_pieces: number;
+  total_cost_idr: number;
+  payment_method: string | null;
+  category: string | null;
+  basket_mix_type: string | null;
+  customer_category: string | null;
+  city: string | null;
+  status: Exclude<TransactionStatus, "SEMUA">;
+  discount_applied: boolean;
+  season: string | null;
+  promotion: string | null;
 }
-interface Summary { total: number; totalValue: number; avgValue: number; byStatus: Record<string, number> }
 
-// ── Helpers ────────────────────────────────────────────────────────────────
-function fmt(n: number) {
-  if (n >= 1_000_000) return `Rp ${(n / 1_000_000).toFixed(1)} Jt`;
-  return `Rp ${n.toLocaleString("id-ID")}`;
+interface TransactionSummary {
+  total_transactions: number;
+  total_value_idr: number;
+  avg_value_idr: number;
+  unique_customers: number;
+  total_pieces: number;
+  by_status: Record<string, number>;
 }
 
-const statusMeta: Record<string, { label: string; color: string; dot: string }> = {
-  SELESAI:  { label: "Selesai",  color: "bg-emerald-100 text-emerald-700", dot: "bg-emerald-500" },
-  DIPROSES: { label: "Diproses", color: "bg-sky-100 text-sky-700",         dot: "bg-sky-500 animate-pulse" },
-  MENUNGGU: { label: "Menunggu", color: "bg-amber-100 text-amber-700",     dot: "bg-amber-500 animate-pulse" },
+interface TransactionsPayload {
+  success: boolean;
+  detail?: string;
+  items: TransactionItem[];
+  summary: TransactionSummary;
+  categories: string[];
+  payment_methods: string[];
+  statuses: TransactionStatus[];
+  page: number;
+  page_size: number;
+  total: number;
+  total_pages: number;
+}
+
+const statusMeta: Record<Exclude<TransactionStatus, "SEMUA">, { label: string; className: string; icon: string }> = {
+  SELESAI: {
+    label: "Selesai",
+    className: "border-primary/25 bg-primary/10 text-primary",
+    icon: "check_circle",
+  },
+  DIPROSES: {
+    label: "Diproses",
+    className: "border-sky-200 bg-sky-100 text-sky-700",
+    icon: "hourglass_top",
+  },
+  MENUNGGU: {
+    label: "Menunggu",
+    className: "border-amber-200 bg-amber-100 text-amber-700",
+    icon: "schedule",
+  },
 };
 
-const paymentColors: Record<string, string> = {
-  "Tunai":           "bg-emerald-50 text-emerald-700",
-  "Transfer":        "bg-sky-50 text-sky-700",
-  "Kredit Anggota":  "bg-violet-50 text-violet-700",
-};
+function formatRupiah(value: number) {
+  if (value >= 1_000_000_000) return `Rp ${(value / 1_000_000_000).toFixed(1)} M`;
+  if (value >= 1_000_000) return `Rp ${(value / 1_000_000).toFixed(1)} Jt`;
+  return `Rp ${Math.round(value).toLocaleString("id-ID")}`;
+}
 
-// ── Detail Modal ───────────────────────────────────────────────────────────
-function DetailModal({ trx, onClose }: { trx: Transaction; onClose: () => void }) {
-  const [copied, setCopied] = useState(false);
-  const s = statusMeta[trx.status];
+function formatDate(value: string) {
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  }).format(new Date(value));
+}
 
-  const handleCopy = () => {
-    navigator.clipboard.writeText(trx.id);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+function displayLabel(value: string | null | undefined) {
+  if (!value) return "-";
+  return value
+    .replaceAll("_", " ")
+    .split(" ")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function KpiCard({
+  label,
+  value,
+  helper,
+  icon,
+  tone,
+}: {
+  label: string;
+  value: string;
+  helper: string;
+  icon: string;
+  tone: "primary" | "amber" | "sky" | "success";
+}) {
+  const toneClass = {
+    primary: "bg-primary/10 text-primary",
+    amber: "bg-secondary-container/35 text-on-secondary-container",
+    sky: "bg-sky-100 text-sky-700",
+    success: "bg-primary-fixed/55 text-on-primary-fixed-variant",
+  }[tone];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-md">
-      <div className="absolute inset-0 bg-black/45 backdrop-blur-md" onClick={onClose} />
-      <div className="relative bg-surface-container-lowest rounded-[28px] shadow-2xl border border-outline-variant/30 w-[95%] sm:w-full max-w-[512px] p-6 overflow-y-auto max-h-[90vh] anim-scale-in">
-        {/* Header */}
-        <div className="flex items-start justify-between mb-md border-b border-outline-variant/20 pb-sm">
-          <div className="space-y-xs">
-            <div className="flex items-center gap-xs">
-              <span className="material-symbols-outlined text-[20px] text-primary">receipt_long</span>
-              <h2 className="font-extrabold text-base text-on-surface tracking-tight font-mono">{trx.id}</h2>
-              <button 
-                onClick={handleCopy} 
-                className="w-7 h-7 flex items-center justify-center rounded-lg hover:bg-surface-container text-on-surface-variant hover:text-primary transition-all duration-200" 
-                title="Salin ID Transaksi"
-              >
-                <span className="material-symbols-outlined text-[16px]">
-                  {copied ? "check" : "content_copy"}
-                </span>
-              </button>
-              {copied && <span className="text-[10px] bg-primary text-white px-1.5 py-0.5 rounded font-semibold animate-pulse">Tersalin</span>}
-            </div>
-            <p className="text-[11px] text-on-surface-variant/80 font-medium">{trx.date} · {trx.time} WIB</p>
-          </div>
-          <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-surface-container text-on-surface-variant hover:text-primary transition-colors">
-            <span className="material-symbols-outlined text-[20px]">close</span>
-          </button>
-        </div>
-
-        {/* Status + payment metadata */}
-        <div className="flex flex-wrap gap-xs mb-md">
-          <span className={`inline-flex items-center gap-xs px-2.5 py-1 rounded-full text-[10px] font-bold ${s.color}`}>
-            <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />
-            {s.label}
-          </span>
-          <span className={`inline-flex items-center gap-xs px-2.5 py-1 rounded-full text-[10px] font-bold ${paymentColors[trx.paymentMethod] || "bg-gray-100 text-gray-700"}`}>
-            <span className="material-symbols-outlined text-[12px]">payments</span>
-            {trx.paymentMethod}
-          </span>
-          <span className="inline-flex items-center gap-xs px-2.5 py-1 bg-surface-container rounded-full text-[10px] font-bold text-on-surface-variant">
-            <span className="material-symbols-outlined text-[12px]">sell</span>
-            {trx.category}
-          </span>
-        </div>
-
-        {/* Member Card */}
-        <div className="flex items-center gap-sm p-md bg-surface-container-low border border-outline-variant/15 rounded-2xl mb-md">
-          <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary font-extrabold shrink-0 border border-primary/20">
-            {trx.memberName.charAt(0)}
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="text-[10px] font-bold text-on-surface-variant/60 uppercase tracking-wider leading-none">Pembeli</p>
-            <p className="font-extrabold text-on-surface text-sm truncate mt-0.5">{trx.memberName}</p>
-            <p className="text-[10px] text-on-surface-variant/80 font-mono mt-0.5">{trx.memberId}</p>
-          </div>
-        </div>
-
-        {/* Items List (Invoice Receipt Style) */}
-        <div className="bg-surface-container-lowest rounded-2xl overflow-hidden border border-outline-variant/20 mb-md shadow-sm">
-          <div className="px-md py-2.5 bg-surface-container border-b border-outline-variant/20 flex items-center justify-between">
-            <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Rincian Belanja</p>
-            <span className="text-[10px] font-semibold text-on-surface-variant/70">{trx.items.length} Barang</span>
-          </div>
-          <div className="divide-y divide-outline-variant/10">
-            {trx.items.map((item, i) => (
-              <div key={i} className="flex items-center justify-between px-md py-3 hover:bg-surface-container-low/30 transition-colors">
-                <div>
-                  <p className="font-bold text-xs text-on-surface">{item.name}</p>
-                  <p className="text-[11px] text-on-surface-variant mt-0.5">
-                    {item.qty} {item.unit} × {fmt(item.price)}
-                  </p>
-                </div>
-                <p className="font-extrabold text-xs text-primary">{fmt(item.qty * item.price)}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Total Price Section with Receipt Cutoff Dash design */}
-        <div className="border-t border-dashed border-outline-variant/50 pt-md mt-md flex items-center justify-between p-md bg-primary/5 rounded-2xl border border-primary/10">
-          <div>
-            <p className="text-[10px] font-bold text-primary/60 uppercase tracking-widest leading-none">Total Pembayaran</p>
-            <p className="font-extrabold text-primary text-sm mt-1">Metode: {trx.paymentMethod}</p>
-          </div>
-          <p className="text-xl font-extrabold text-primary tracking-tight font-mono">{fmt(trx.total)}</p>
-        </div>
+    <div className="flex min-w-0 items-center gap-sm rounded-2xl border border-outline-variant/25 bg-surface-container-lowest p-sm shadow-sm">
+      <div className={`grid size-10 shrink-0 place-items-center rounded-xl ${toneClass}`}>
+        <MaterialIcon filled className="text-xl">
+          {icon}
+        </MaterialIcon>
+      </div>
+      <div className="min-w-0">
+        <p className="text-xs font-extrabold uppercase tracking-normal text-on-surface-variant">{label}</p>
+        <p className="mt-0.5 truncate text-xl font-extrabold text-on-surface">{value}</p>
+        <p className="mt-0.5 text-xs text-on-surface-variant">{helper}</p>
       </div>
     </div>
   );
 }
 
-// ── Main Component ─────────────────────────────────────────────────────────
-export default function TransactionsPage() {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
-  const [summary, setSummary] = useState<Summary | null>(null);
-  const [categories, setCategories] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [detailTrx, setDetailTrx] = useState<Transaction | null>(null);
-  const [searchQuery, setSearchQuery] = useState("");
+function StatusBadge({ status }: { status: Exclude<TransactionStatus, "SEMUA"> }) {
+  const meta = statusMeta[status];
 
-  // Filters
-  const today = new Date().toISOString().split("T")[0];
-  const weekAgo = new Date(Date.now() - 7 * 86400_000).toISOString().split("T")[0];
-  const [startDate, setStartDate] = useState(weekAgo);
-  const [endDate, setEndDate] = useState(today);
-  const [filterCategory, setFilterCategory] = useState("SEMUA");
-  const [filterStatus, setFilterStatus] = useState("SEMUA");
-
-  const fetchData = useCallback(async () => {
-    setLoading(true);
-    try {
-      const params = new URLSearchParams({ startDate, endDate, category: filterCategory, status: filterStatus });
-      const res = await fetch(`/api/transactions?${params}`);
-      const data = await res.json();
-      if (data.success) {
-        setTransactions(data.transactions);
-        setSummary(data.summary);
-        setCategories(["SEMUA", ...data.categories]);
-      }
-    } catch { /* silent */ }
-    finally { setLoading(false); }
-  }, [startDate, endDate, filterCategory, filterStatus]);
-
-  useEffect(() => { fetchData(); }, [fetchData]);
-
-  const filtered = transactions.filter(t =>
-    !searchQuery ||
-    t.memberName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    t.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    t.items.some(i => i.name.toLowerCase().includes(searchQuery.toLowerCase()))
+  return (
+    <span className={`inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-xs font-extrabold ${meta.className}`}>
+      <MaterialIcon filled className="text-[14px]">
+        {meta.icon}
+      </MaterialIcon>
+      {meta.label}
+    </span>
   );
+}
 
-  const { sorted: sortedFiltered, sortKey, sortDir, toggleSort } = useSortable(filtered, "date");
+function escapePdfText(value: string) {
+  return value.replace(/\\/g, "\\\\").replace(/\(/g, "\\(").replace(/\)/g, "\\)");
+}
 
-  // Export CSV
+function createInvoicePdf(transaction: TransactionItem) {
+  const lines = [
+    "SIMKOPDES",
+    "INVOICE PENJUALAN",
+    "",
+    `No Invoice: ${transaction.transaction_code}`,
+    `ID Transaksi: ${transaction.transaction_id}`,
+    `Tanggal: ${formatDate(transaction.transaction_date)} ${transaction.transaction_time} WIB`,
+    `Status: ${displayLabel(transaction.status)}`,
+    "",
+    "Ditagihkan kepada:",
+    transaction.customer_name,
+    `Segmen: ${displayLabel(transaction.customer_category)}`,
+    `Lokasi: ${displayLabel(transaction.city)}`,
+    "",
+    "Ringkasan:",
+    `Kategori: ${displayLabel(transaction.category)}`,
+    `Metode Pembayaran: ${displayLabel(transaction.payment_method)}`,
+    `Basket: ${displayLabel(transaction.basket_mix_type)}`,
+    `Musim: ${displayLabel(transaction.season)}`,
+    `Promo: ${displayLabel(transaction.promotion)}`,
+    "",
+    "Produk:",
+    ...transaction.products.map((product, index) => `${index + 1}. ${product}`),
+    "",
+    `Jumlah Item: ${transaction.product_count}`,
+    `Total Pcs: ${transaction.total_pieces}`,
+    `Total Pembayaran: ${formatRupiah(transaction.total_cost_idr)}`,
+    "",
+    "Terima kasih telah bertransaksi melalui SIMKOPDES.",
+  ];
+
+  const content = [
+    "BT",
+    "/F1 22 Tf",
+    "50 790 Td",
+    `(SIMKOPDES) Tj`,
+    "/F1 16 Tf",
+    "0 -28 Td",
+    `(INVOICE PENJUALAN) Tj`,
+    "/F1 10 Tf",
+    ...lines.slice(2).flatMap((line) => [
+      "0 -17 Td",
+      `(${escapePdfText(line)}) Tj`,
+    ]),
+    "ET",
+  ].join("\n");
+
+  const objects = [
+    "<< /Type /Catalog /Pages 2 0 R >>",
+    "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+    "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>",
+    "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+    `<< /Length ${content.length} >>\nstream\n${content}\nendstream`,
+  ];
+
+  let pdf = "%PDF-1.4\n";
+  const offsets = [0];
+  objects.forEach((object, index) => {
+    offsets.push(pdf.length);
+    pdf += `${index + 1} 0 obj\n${object}\nendobj\n`;
+  });
+  const xrefOffset = pdf.length;
+  pdf += `xref\n0 ${objects.length + 1}\n0000000000 65535 f \n`;
+  offsets.slice(1).forEach((offset) => {
+    pdf += `${String(offset).padStart(10, "0")} 00000 n \n`;
+  });
+  pdf += `trailer\n<< /Size ${objects.length + 1} /Root 1 0 R >>\nstartxref\n${xrefOffset}\n%%EOF`;
+
+  return new Blob([pdf], { type: "application/pdf" });
+}
+
+function downloadInvoicePdf(transaction: TransactionItem) {
+  const blob = createInvoicePdf(transaction);
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `invoice-${transaction.transaction_code}.pdf`;
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+function DetailDrawer({ transaction, onClose }: { transaction: TransactionItem; onClose: () => void }) {
+  const invoiceRows = transaction.products.map((product, index) => ({
+    no: index + 1,
+    name: product,
+  }));
+
+  return (
+    <div className="fixed inset-0 z-[1000] overflow-hidden" role="dialog" aria-modal="true">
+      <button
+        type="button"
+        aria-label="Tutup detail transaksi"
+        className="absolute inset-0 bg-black/45"
+        onClick={onClose}
+      />
+      <aside className="absolute inset-y-0 right-0 flex w-[min(42rem,100vw)] flex-col border-l border-outline-variant/30 bg-surface-container-lowest shadow-2xl">
+        <div className="flex shrink-0 items-start justify-between gap-md border-b border-outline-variant/25 p-md">
+          <div className="min-w-0">
+            <p className="text-xs font-extrabold uppercase tracking-normal text-primary">Invoice penjualan</p>
+            <h2 className="mt-xs truncate text-xl font-extrabold text-on-surface">{transaction.transaction_code}</h2>
+            <p className="mt-xs text-sm text-on-surface-variant">
+              {formatDate(transaction.transaction_date)} - {transaction.transaction_time} WIB
+            </p>
+          </div>
+          <div className="flex shrink-0 items-center gap-xs">
+            <button
+              type="button"
+              onClick={() => downloadInvoicePdf(transaction)}
+              className="inline-flex min-h-11 items-center gap-xs rounded-xl bg-primary px-md py-2 text-sm font-extrabold text-white shadow-sm transition hover:bg-primary/90"
+            >
+              <MaterialIcon className="text-[18px]">download</MaterialIcon>
+              PDF
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              aria-label="Tutup panel invoice"
+              className="grid size-11 place-items-center rounded-xl text-on-surface-variant transition hover:bg-surface-container hover:text-primary"
+            >
+              <MaterialIcon className="text-[22px]">close</MaterialIcon>
+            </button>
+          </div>
+        </div>
+
+        <div className="custom-scrollbar flex-1 overflow-y-auto p-md">
+          <article className="overflow-hidden rounded-2xl border border-outline-variant/25 bg-white shadow-sm">
+            <div className="border-b border-outline-variant/20 bg-surface-container-lowest p-md">
+              <div className="flex flex-col gap-md sm:flex-row sm:items-start sm:justify-between">
+                <div>
+                  <p className="text-xl font-extrabold text-on-surface">SIMKOPDES</p>
+                  <p className="mt-1 text-sm text-on-surface-variant">Invoice transaksi penjualan koperasi</p>
+                </div>
+                <div className="text-left sm:text-right">
+                  <p className="text-xs font-extrabold uppercase text-on-surface-variant">Total pembayaran</p>
+                  <p className="mt-1 text-2xl font-extrabold text-primary">{formatRupiah(transaction.total_cost_idr)}</p>
+                  <div className="mt-xs flex sm:justify-end">
+                    <StatusBadge status={transaction.status} />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid gap-md border-b border-outline-variant/20 p-md md:grid-cols-2">
+              <section>
+                <p className="text-xs font-extrabold uppercase tracking-normal text-on-surface-variant">Ditagihkan kepada</p>
+                <h3 className="mt-xs text-base font-extrabold text-on-surface">{transaction.customer_name}</h3>
+                <p className="text-sm text-on-surface-variant">{displayLabel(transaction.customer_category)}</p>
+                <p className="mt-xs text-sm text-on-surface-variant">{displayLabel(transaction.city)}</p>
+              </section>
+              <section className="grid gap-xs text-sm text-on-surface-variant md:text-right">
+                <p>
+                  <span className="font-bold text-on-surface">No Invoice:</span> {transaction.transaction_code}
+                </p>
+                <p>
+                  <span className="font-bold text-on-surface">ID:</span> {transaction.transaction_id}
+                </p>
+                <p>
+                  <span className="font-bold text-on-surface">Tanggal:</span> {formatDate(transaction.transaction_date)}
+                </p>
+                <p>
+                  <span className="font-bold text-on-surface">Metode:</span> {displayLabel(transaction.payment_method)}
+                </p>
+              </section>
+            </div>
+
+            <div className="grid gap-sm border-b border-outline-variant/20 p-md sm:grid-cols-3">
+              <InvoiceMetric label="Kategori" value={displayLabel(transaction.category)} />
+              <InvoiceMetric label="Basket" value={displayLabel(transaction.basket_mix_type)} />
+              <InvoiceMetric label="Promo" value={displayLabel(transaction.promotion)} />
+            </div>
+
+            <section className="p-md">
+              <div className="mb-sm flex items-center justify-between gap-sm">
+                <p className="text-sm font-extrabold text-on-surface">Rincian Produk</p>
+                <span className="rounded-lg bg-primary/10 px-2 py-1 text-xs font-extrabold text-primary">
+                  {transaction.product_count} item - {transaction.total_pieces} pcs
+                </span>
+              </div>
+              <div className="overflow-hidden rounded-xl border border-outline-variant/20">
+                <table className="w-full text-sm">
+                  <thead className="bg-surface-container text-left text-xs font-extrabold uppercase text-on-surface-variant">
+                    <tr>
+                      <th className="w-14 px-sm py-2">No</th>
+                      <th className="px-sm py-2">Produk</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-outline-variant/15">
+                    {invoiceRows.map((row) => (
+                      <tr key={`${row.name}-${row.no}`}>
+                        <td className="px-sm py-2 font-extrabold text-primary">{row.no}</td>
+                        <td className="px-sm py-2 font-bold text-on-surface">{row.name}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+
+            <div className="grid gap-sm border-t border-outline-variant/20 bg-surface-container-lowest p-md sm:grid-cols-2">
+              <div className="text-sm text-on-surface-variant">
+                <p className="font-bold text-on-surface">Catatan</p>
+                <p className="mt-xs">Invoice dibuat otomatis dari data transaksi SIMKOPDES.</p>
+              </div>
+              <div className="rounded-xl bg-primary/10 p-sm text-right">
+                <p className="text-xs font-extrabold uppercase text-primary">Grand Total</p>
+                <p className="mt-xs text-2xl font-extrabold text-primary">{formatRupiah(transaction.total_cost_idr)}</p>
+              </div>
+            </div>
+          </article>
+        </div>
+      </aside>
+    </div>
+  );
+}
+
+function InvoiceMetric({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl border border-outline-variant/20 bg-surface-container-lowest p-sm">
+      <p className="text-xs font-bold text-on-surface-variant">{label}</p>
+      <p className="mt-xs font-extrabold text-on-surface">{value}</p>
+    </div>
+  );
+}
+
+export default function TransactionsPage() {
+  const [items, setItems] = useState<TransactionItem[]>([]);
+  const [summary, setSummary] = useState<TransactionSummary | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [selected, setSelected] = useState<TransactionItem | null>(null);
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
+
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [sortBy, setSortBy] = useState<TransactionSortField>("transaction_at");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
+
+  const fetchTransactions = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+
+    const params = new URLSearchParams({
+      page: String(page),
+      page_size: String(pageSize),
+      sort_by: sortBy,
+      order: sortOrder,
+    });
+    if (search) params.set("search", search);
+
+    try {
+      const response = await fetch(`/api/transactions?${params.toString()}`, { cache: "no-store" });
+      const data = (await response.json()) as TransactionsPayload;
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.detail ?? "Gagal memuat data transaksi");
+      }
+
+      setItems(data.items);
+      setSummary(data.summary);
+      setTotal(data.total);
+      setTotalPages(data.total_pages);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Gagal memuat data transaksi");
+      setItems([]);
+      setSummary(null);
+      setTotal(0);
+      setTotalPages(1);
+    } finally {
+      setLoading(false);
+    }
+  }, [page, pageSize, search, sortBy, sortOrder]);
+
+  useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      setPage(1);
+      setSearch(searchInput.trim());
+    }, 350);
+
+    return () => window.clearTimeout(timeout);
+  }, [searchInput]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void fetchTransactions();
+  }, [fetchTransactions]);
+
+  const handleSort = (field: TransactionSortField) => {
+    setPage(1);
+    if (field === sortBy) {
+      setSortOrder((current) => (current === "asc" ? "desc" : "asc"));
+      return;
+    }
+    setSortBy(field);
+    setSortOrder(field === "transaction_at" || field === "total_cost_idr" ? "desc" : "asc");
+  };
+
   const exportCsv = () => {
-    const headers = ["ID Transaksi", "Tanggal", "Jam", "ID Anggota", "Nama Anggota", "Kategori", "Barang", "Total", "Metode Pembayaran", "Status"];
-    const rows = filtered.map(t => [
-      t.id, t.date, t.time, t.memberId, t.memberName, t.category,
-      t.items.map(i => `${i.name} (${i.qty} ${i.unit})`).join("; "),
-      t.total, t.paymentMethod, t.status
-    ]);
-    const csv = [headers, ...rows].map(r => r.join(",")).join("\n");
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
-    a.download = `transaksi_${startDate}_${endDate}.csv`;
-    a.click();
+    const header = ["ID", "Tanggal", "Pelanggan", "Produk", "Total", "Metode", "Status"];
+    const rows = items.map((item) => [
+      item.transaction_code,
+      `${item.transaction_date} ${item.transaction_time}`,
+      item.customer_name,
+      item.products.join(", "),
+      item.total_cost_idr,
+        displayLabel(item.payment_method),
+        item.status,
+      ]);
+    const csv = [header, ...rows]
+      .map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(","))
+      .join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `data-transaksi-page-${page}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
   return (
-    <div className="space-y-lg w-full max-w-[1280px] mx-auto pb-2xl">
-
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-md">
-        <div className="flex items-center gap-sm">
-          <div className="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center">
-            <span className="material-symbols-outlined text-sky-700 text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>receipt_long</span>
+    <div className="dashboard-page dashboard-page-transactions flex flex-col gap-md">
+      <section className="overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary via-[#315f25] to-[#19380f] p-lg text-white shadow-[0_18px_48px_-30px_rgba(24,53,15,0.85)]">
+        <div className="flex flex-col gap-md lg:flex-row lg:items-start lg:justify-between">
+          <div className="min-w-0">
+            <div className="mb-sm inline-flex items-center gap-xs rounded-full border border-white/15 bg-white/10 px-sm py-1 text-xs font-bold text-white/80">
+              <MaterialIcon filled className="text-[16px]">
+                database
+              </MaterialIcon>
+              Database KDMP
+            </div>
+            <h1 className="text-2xl font-extrabold text-white">Data Transaksi</h1>
+            <p className="mt-xs max-w-3xl text-sm leading-relaxed text-white/78">
+              Arsip transaksi anggota koperasi dari database backend dengan pengurutan dan pagination server-side.
+            </p>
           </div>
+          <div className="flex flex-wrap gap-xs">
+            <button
+              type="button"
+              onClick={() => void fetchTransactions()}
+              disabled={loading}
+              className="inline-flex min-h-11 items-center justify-center gap-xs rounded-xl border border-white/20 bg-white/10 px-md py-2 text-sm font-extrabold text-white transition hover:bg-white/15 disabled:opacity-60"
+            >
+              <MaterialIcon className={`text-[18px] ${loading ? "animate-spin" : ""}`}>sync</MaterialIcon>
+              Refresh
+            </button>
+            <button
+              type="button"
+              onClick={exportCsv}
+              disabled={items.length === 0}
+              className="inline-flex min-h-11 items-center justify-center gap-xs rounded-xl bg-white px-md py-2 text-sm font-extrabold text-primary shadow-sm transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <MaterialIcon className="text-[18px]">download</MaterialIcon>
+              Export CSV
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section className="grid grid-cols-1 gap-gutter sm:grid-cols-2 xl:grid-cols-4">
+        <KpiCard
+          label="Total Transaksi"
+          value={(summary?.total_transactions ?? 0).toLocaleString("id-ID")}
+          helper="seluruh data transaksi"
+          icon="receipt_long"
+          tone="primary"
+        />
+        <KpiCard
+          label="Total Nilai"
+          value={formatRupiah(summary?.total_value_idr ?? 0)}
+          helper="akumulasi penjualan"
+          icon="payments"
+          tone="success"
+        />
+        <KpiCard
+          label="Rata-rata"
+          value={formatRupiah(summary?.avg_value_idr ?? 0)}
+          helper="per transaksi"
+          icon="monitoring"
+          tone="sky"
+        />
+        <KpiCard
+          label="Pelanggan Unik"
+          value={(summary?.unique_customers ?? 0).toLocaleString("id-ID")}
+          helper={`${(summary?.total_pieces ?? 0).toLocaleString("id-ID")} pcs terjual`}
+          icon="groups"
+          tone="amber"
+        />
+      </section>
+
+      {error ? (
+        <section className="rounded-2xl border border-error/25 bg-error-container/45 p-md text-error">
+          <div className="flex items-start gap-sm">
+            <MaterialIcon filled className="text-[22px]">
+              error
+            </MaterialIcon>
+            <div>
+              <p className="font-extrabold">Data transaksi belum bisa dimuat</p>
+              <p className="mt-xs text-sm">{error}</p>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      <section className="relative isolate flex min-h-0 flex-col overflow-hidden rounded-2xl border border-outline-variant/25 bg-surface-container-lowest shadow-sm">
+        <div className="shrink-0 flex flex-col gap-sm p-md lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h1 className="text-2xl font-extrabold text-on-surface">Riwayat Transaksi</h1>
-            <p className="text-sm text-on-surface-variant">Seluruh transaksi penjualan anggota koperasi</p>
+            <h2 className="text-lg font-extrabold text-on-surface">Tabel Data Transaksi</h2>
+            <p className="text-sm text-on-surface-variant">
+              {total.toLocaleString("id-ID")} transaksi dari tabel data backend
+            </p>
           </div>
+          <label className="flex min-h-11 w-full items-center gap-xs rounded-xl border border-outline-variant/20 bg-surface-container-low px-sm text-sm shadow-sm lg:w-[22rem]">
+            <MaterialIcon className="text-[18px] text-on-surface-variant">search</MaterialIcon>
+            <span className="sr-only">Cari data transaksi</span>
+            <input
+              type="search"
+              value={searchInput}
+              onChange={(event) => setSearchInput(event.target.value)}
+              placeholder="Cari pelanggan, produk, kota, ID..."
+              className="min-w-0 flex-1 bg-transparent py-2 font-semibold text-on-surface outline-none placeholder:text-on-surface-variant/45"
+            />
+            {searchInput ? (
+              <button
+                type="button"
+                onClick={() => setSearchInput("")}
+                aria-label="Bersihkan pencarian transaksi"
+                className="grid size-8 place-items-center rounded-lg text-on-surface-variant transition hover:bg-surface-container hover:text-primary"
+              >
+                <MaterialIcon className="text-[16px]">close</MaterialIcon>
+              </button>
+            ) : null}
+          </label>
         </div>
-        <button onClick={exportCsv} className="flex items-center gap-sm px-lg py-3 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 hover:shadow-lg hover:shadow-emerald-600/20 hover:-translate-y-0.5 transition-all">
-          <span className="material-symbols-outlined text-[20px]">download</span>
-          Export CSV
-        </button>
-      </div>
 
-      {/* KPI Cards */}
-      {summary && (
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-gutter">
-          {[
-            { label: "Total Transaksi", value: summary.total, icon: "receipt_long", color: "bg-sky-100 text-sky-700" },
-            { label: "Total Nilai", value: fmt(summary.totalValue), icon: "payments", color: "bg-emerald-100 text-emerald-700" },
-            { label: "Rata-rata / Transaksi", value: fmt(summary.avgValue), icon: "analytics", color: "bg-violet-100 text-violet-700" },
-            { label: "Selesai", value: `${summary.byStatus.SELESAI || 0}/${summary.total}`, icon: "check_circle", color: "bg-amber-100 text-amber-700" },
-          ].map(s => (
-            <div key={s.label} className="bg-surface-container-lowest rounded-2xl p-md border border-outline-variant/20 hover:shadow-md transition-shadow flex items-center gap-md">
-              <div className={`w-12 h-12 rounded-xl ${s.color} flex items-center justify-center shrink-0`}>
-                <span className="material-symbols-outlined text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>{s.icon}</span>
-              </div>
-              <div>
-                <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">{s.label}</p>
-                <p className="text-lg font-extrabold text-on-surface">{s.value}</p>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Filters */}
-      <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/20 p-md">
-        <div className="flex flex-wrap gap-md items-end">
-          {/* Date range */}
-          <div className="flex items-center gap-sm flex-wrap">
-            <div className="space-y-xs">
-              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Dari Tanggal</label>
-              <input type="date" value={startDate} onChange={e => setStartDate(e.target.value)} max={endDate}
-                className="px-md py-2 bg-surface-container border border-outline-variant/30 rounded-xl text-sm font-semibold text-on-surface focus:outline-none focus:border-primary transition-colors" />
-            </div>
-            <div className="self-end pb-2"><span className="text-on-surface-variant font-bold">→</span></div>
-            <div className="space-y-xs">
-              <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Sampai Tanggal</label>
-              <input type="date" value={endDate} onChange={e => setEndDate(e.target.value)} min={startDate}
-                className="px-md py-2 bg-surface-container border border-outline-variant/30 rounded-xl text-sm font-semibold text-on-surface focus:outline-none focus:border-primary transition-colors" />
-            </div>
-          </div>
-
-          {/* Category */}
-          <div className="space-y-xs">
-            <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Kategori</label>
-            <select value={filterCategory} onChange={e => setFilterCategory(e.target.value)}
-              className="px-md py-2.5 bg-surface-container border border-outline-variant/30 rounded-xl text-sm font-semibold text-on-surface focus:outline-none focus:border-primary transition-colors">
-              {categories.map(c => <option key={c} value={c}>{c}</option>)}
-            </select>
-          </div>
-
-          {/* Status */}
-          <div className="space-y-xs">
-            <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Status</label>
-            <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
-              className="px-md py-2.5 bg-surface-container border border-outline-variant/30 rounded-xl text-sm font-semibold text-on-surface focus:outline-none focus:border-primary transition-colors">
-              {["SEMUA", "SELESAI", "DIPROSES", "MENUNGGU"].map(s => <option key={s} value={s}>{s}</option>)}
-            </select>
-          </div>
-
-          {/* Search */}
-          <div className="space-y-xs flex-1 min-w-[180px]">
-            <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Cari</label>
-            <div className="flex items-center gap-xs px-md py-2 bg-surface-container border border-outline-variant/30 rounded-xl focus-within:border-primary transition-colors">
-              <span className="material-symbols-outlined text-[16px] text-on-surface-variant">search</span>
-              <input type="text" placeholder="Anggota, ID, atau barang..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-                className="flex-1 bg-transparent text-sm font-semibold text-on-surface outline-none placeholder:text-on-surface-variant/40" />
-              {searchQuery && <button onClick={() => setSearchQuery("")} className="material-symbols-outlined text-[14px] text-on-surface-variant hover:text-primary">close</button>}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Result count */}
-      <div className="flex items-center justify-between text-sm text-on-surface-variant">
-        <span>Menampilkan <strong className="text-on-surface">{sortedFiltered.length}</strong> transaksi</span>
-        {summary && <span>Total nilai: <strong className="text-primary">{fmt(sortedFiltered.reduce((a, t) => a + t.total, 0))}</strong></span>}
-      </div>
-
-      {/* Table */}
-      <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/20 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-surface-container border-b border-outline-variant/20">
-                <SortableHeader label="ID Transaksi"  colKey="id"            current={sortKey} dir={sortDir} onSort={toggleSort} />
-                <SortableHeader label="Tanggal"       colKey="date"          current={sortKey} dir={sortDir} onSort={toggleSort} />
-                <SortableHeader label="Anggota"       colKey="memberName"    current={sortKey} dir={sortDir} onSort={toggleSort} />
-                <th className="text-left px-md py-3 text-[10px] font-bold text-on-surface-variant uppercase tracking-wider whitespace-nowrap">Barang</th>
-                <SortableHeader label="Kategori"      colKey="category"      current={sortKey} dir={sortDir} onSort={toggleSort} />
-                <SortableHeader label="Total"         colKey="total"         current={sortKey} dir={sortDir} onSort={toggleSort} />
-                <SortableHeader label="Pembayaran"    colKey="paymentMethod" current={sortKey} dir={sortDir} onSort={toggleSort} />
-                <SortableHeader label="Status"        colKey="status"        current={sortKey} dir={sortDir} onSort={toggleSort} />
-                <th className="px-md py-3" />
+        <div className="max-w-full overflow-hidden" style={{ minHeight: "38rem" }}>
+          <table className="w-full table-fixed text-sm">
+            <colgroup>
+              <col className="w-[13%]" />
+              <col className="w-[12%]" />
+              <col className="w-[17%]" />
+              <col className="w-[28%]" />
+              <col className="w-[11%]" />
+              <col className="w-[9%]" />
+              <col className="w-[10%]" />
+            </colgroup>
+            <thead className="shadow-[0_12px_24px_rgba(47,63,38,0.18)]">
+              <tr className="border-y" style={{ backgroundColor: "var(--color-primary)", borderColor: "var(--color-primary)" }}>
+                <th className="px-md py-3 text-left text-[13px] font-extrabold uppercase tracking-normal text-white">
+                  <SortButton field="transaction_id" active={sortBy} order={sortOrder} onSort={handleSort}>
+                    ID
+                  </SortButton>
+                </th>
+                <th className="px-md py-3 text-left text-[13px] font-extrabold uppercase tracking-normal text-white">
+                  <SortButton field="transaction_at" active={sortBy} order={sortOrder} onSort={handleSort}>
+                    Tanggal
+                  </SortButton>
+                </th>
+                <th className="px-md py-3 text-left text-[13px] font-extrabold uppercase tracking-normal text-white">
+                  <SortButton field="customer_name" active={sortBy} order={sortOrder} onSort={handleSort}>
+                    Pelanggan
+                  </SortButton>
+                </th>
+                <th className="px-md py-3 text-left text-[13px] font-extrabold uppercase tracking-normal text-white">Produk</th>
+                <th className="px-md py-3 text-left text-[13px] font-extrabold uppercase tracking-normal text-white">
+                  <SortButton field="total_cost_idr" active={sortBy} order={sortOrder} onSort={handleSort}>
+                    Total
+                  </SortButton>
+                </th>
+                <th className="px-md py-3 text-left text-[13px] font-extrabold uppercase tracking-normal text-white">
+                  <SortButton field="payment_method" active={sortBy} order={sortOrder} onSort={handleSort}>
+                    Metode
+                  </SortButton>
+                </th>
+                <th className="px-md py-3 text-left text-[13px] font-extrabold uppercase tracking-normal text-white">Status</th>
               </tr>
             </thead>
             <tbody>
               {loading ? (
-                <tr><td colSpan={9} className="text-center py-2xl text-on-surface-variant">
-                  <span className="material-symbols-outlined text-3xl animate-spin block mb-sm">sync</span>Memuat data...
-                </td></tr>
-              ) : sortedFiltered.length === 0 ? (
-                <tr><td colSpan={9} className="text-center py-2xl text-on-surface-variant">
-                  <span className="material-symbols-outlined text-5xl text-outline block mb-md">inbox</span>Tidak ada transaksi
-                </td></tr>
-              ) : sortedFiltered.map(t => {
-                const s = statusMeta[t.status];
-                return (
-                  <tr key={t.id} className="border-b border-outline-variant/10 hover:bg-surface-container-low/50 transition-colors">
-                    <td className="px-md py-3 font-mono text-xs text-primary font-bold whitespace-nowrap">{t.id}</td>
-                    <td className="px-md py-3 text-xs text-on-surface-variant whitespace-nowrap">
-                      <p className="font-semibold text-on-surface">{t.date}</p>
-                      <p>{t.time} WIB</p>
+                <tr>
+                  <td colSpan={7} className="px-md py-xl">
+                    <LoadingState label="Memuat data transaksi" />
+                  </td>
+                </tr>
+              ) : items.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-md py-xl">
+                    <EmptyState
+                      title="Tidak ada transaksi"
+                      text="Belum ada data transaksi yang dapat ditampilkan."
+                      icon="receipt_long"
+                    />
+                  </td>
+                </tr>
+              ) : (
+                items.map((item) => (
+                  <tr key={item.id} className="border-b border-outline-variant/10 transition hover:bg-surface-container-low">
+                    <td className="px-md py-3">
+                      <p className="font-mono text-xs font-extrabold text-primary">{item.transaction_code}</p>
+                      <p className="text-[11px] text-on-surface-variant">{item.transaction_id}</p>
                     </td>
                     <td className="px-md py-3">
-                      <p className="font-bold text-on-surface whitespace-nowrap">{t.memberName}</p>
-                      <p className="text-[10px] font-mono text-on-surface-variant">{t.memberId}</p>
-                    </td>
-                    <td className="px-md py-3 text-xs text-on-surface-variant max-w-[180px]">
-                      {t.items.map((i, idx) => <p key={idx} className="truncate">{i.name} ({i.qty} {i.unit})</p>)}
-                    </td>
-                    <td className="px-md py-3"><span className="text-xs bg-surface-container px-2 py-1 rounded-full font-semibold text-on-surface-variant whitespace-nowrap">{t.category}</span></td>
-                    <td className="px-md py-3 font-extrabold text-primary whitespace-nowrap">{fmt(t.total)}</td>
-                    <td className="px-md py-3">
-                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full whitespace-nowrap ${paymentColors[t.paymentMethod] || "bg-gray-100 text-gray-700"}`}>{t.paymentMethod}</span>
+                      <p className="font-bold text-on-surface">{formatDate(item.transaction_date)}</p>
+                      <p className="text-xs text-on-surface-variant">{item.transaction_time} WIB</p>
                     </td>
                     <td className="px-md py-3">
-                      <span className={`inline-flex items-center gap-xs px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap ${s.color}`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />{s.label}
-                      </span>
+                      <p className="break-words font-extrabold leading-snug text-on-surface">{item.customer_name}</p>
+                      <p className="text-[11px] text-on-surface-variant">{displayLabel(item.customer_category)}</p>
                     </td>
                     <td className="px-md py-3">
-                      <button onClick={() => setDetailTrx(t)} className="w-8 h-8 flex items-center justify-center rounded-lg bg-sky-50 text-sky-600 hover:bg-sky-100 transition-colors" title="Detail">
-                        <span className="material-symbols-outlined text-[16px]">open_in_new</span>
+                      <div className="min-w-0">
+                        <p className="break-words text-sm font-bold leading-relaxed text-on-surface">{item.products.join(", ") || "-"}</p>
+                        <p className="text-xs text-on-surface-variant">
+                          {item.product_count} item - {item.total_pieces} pcs
+                        </p>
+                      </div>
+                    </td>
+                    <td className="px-md py-3 font-extrabold text-primary">{formatRupiah(item.total_cost_idr)}</td>
+                        <td className="px-md py-3 text-sm font-bold text-on-surface">{displayLabel(item.payment_method)}</td>
+                    <td className="px-md py-3">
+                      <div className="flex flex-wrap items-center gap-xs">
+                        <StatusBadge status={item.status} />
+                      <button
+                        type="button"
+                        onClick={() => setSelected(item)}
+                        aria-label={`Buka detail ${item.transaction_code}`}
+                        className="inline-flex size-10 items-center justify-center rounded-xl border border-outline-variant/20 bg-surface-container-lowest text-on-surface-variant shadow-sm transition hover:bg-primary hover:text-white"
+                      >
+                        <MaterialIcon className="text-[18px]">open_in_new</MaterialIcon>
                       </button>
+                      </div>
                     </td>
                   </tr>
-                );
-              })}
+                ))
+              )}
             </tbody>
           </table>
         </div>
-      </div>
 
-      {/* Detail Modal */}
-      {detailTrx && <DetailModal trx={detailTrx} onClose={() => setDetailTrx(null)} />}
+        <DataTablePagination
+          page={page}
+          pageSize={pageSize}
+          total={total}
+          totalPages={totalPages}
+          loading={loading}
+          itemLabel="transaksi"
+          onPageChange={setPage}
+          onPageSizeChange={(value) => {
+            setPageSize(value);
+            setPage(1);
+          }}
+        />
+      </section>
+
+      {selected ? <DetailDrawer transaction={selected} onClose={() => setSelected(null)} /> : null}
     </div>
   );
 }

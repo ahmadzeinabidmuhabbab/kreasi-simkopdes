@@ -1,475 +1,511 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
-import { SortableHeader } from "@/components/ui/SortableHeader";
-import { useSortable } from "@/hooks/useSortable";
+import { useCallback, useEffect, useState } from "react";
 
-// ── Types ──────────────────────────────────────────────────────────────────
+import {
+  DataTablePagination,
+  EmptyState,
+  LoadingState,
+  MaterialIcon,
+  SortButton,
+  type SortOrder,
+} from "@/components/dashboard/DashboardDataTable";
+
+type StockStatus = "SEMUA" | "AMAN" | "RENDAH" | "KRITIS" | "HABIS";
+type StockSortField =
+  | "product_name"
+  | "category"
+  | "region"
+  | "available_quantity"
+  | "reorder_point"
+  | "avg_daily_sales"
+  | "coverage_days"
+  | "status"
+  | "updated_at";
+
 interface StockItem {
-  id: number; sku: string; name: string; category: string;
-  stock: number; minStock: number; unit: string;
-  buyPrice: number; sellPrice: number;
-  supplier: string; lastRestock: string;
-  stockStatus: "AMAN" | "RENDAH" | "KRITIS" | "HABIS";
+  id: string;
+  sku: string;
+  product_name: string;
+  category: string | null;
+  region: string;
+  unit: string;
+  on_hand_quantity: number;
+  reserved_quantity: number;
+  available_quantity: number;
+  reorder_point: number;
+  safety_stock: number;
+  avg_daily_sales: number;
+  coverage_days: number | null;
+  status: Exclude<StockStatus, "SEMUA">;
+  updated_at: string;
 }
-interface Summary { totalSku: number; aman: number; rendah: number; kritis: number; habis: number; totalValue: number }
 
-// ── Helpers ────────────────────────────────────────────────────────────────
-function fmt(n: number) {
-  if (n >= 1_000_000_000) return `Rp ${(n / 1_000_000_000).toFixed(1)} M`;
-  if (n >= 1_000_000) return `Rp ${(n / 1_000_000).toFixed(1)} Jt`;
-  return `Rp ${n.toLocaleString("id-ID")}`;
+interface StockSummary {
+  total_sku: number;
+  safe: number;
+  low: number;
+  critical: number;
+  empty: number;
+  total_on_hand_quantity: number;
+  total_available_quantity: number;
+  total_reserved_quantity: number;
+  average_coverage_days: number | null;
+  by_status: Record<string, number>;
 }
 
-const statusMeta: Record<string, { label: string; color: string; dot: string; bar: string }> = {
-  AMAN:   { label: "Aman",   color: "bg-emerald-100 text-emerald-700", dot: "bg-emerald-500", bar: "bg-emerald-500" },
-  RENDAH: { label: "Rendah", color: "bg-amber-100 text-amber-700",     dot: "bg-amber-500",   bar: "bg-amber-500"  },
-  KRITIS: { label: "Kritis", color: "bg-red-100 text-red-700",         dot: "bg-red-500 animate-pulse", bar: "bg-red-500" },
-  HABIS:  { label: "Habis",  color: "bg-gray-100 text-gray-500",       dot: "bg-gray-400",    bar: "bg-gray-400"  },
+interface StockPayload {
+  success: boolean;
+  detail?: string;
+  items: StockItem[];
+  summary: StockSummary;
+  categories: string[];
+  statuses: StockStatus[];
+  page: number;
+  page_size: number;
+  total: number;
+  total_pages: number;
+}
+
+const statusMeta: Record<Exclude<StockStatus, "SEMUA">, { label: string; className: string; icon: string }> = {
+  AMAN: {
+    label: "Aman",
+    className: "border-primary/25 bg-primary/10 text-primary",
+    icon: "check_circle",
+  },
+  RENDAH: {
+    label: "Rendah",
+    className: "border-amber-200 bg-amber-100 text-amber-700",
+    icon: "warning",
+  },
+  KRITIS: {
+    label: "Kritis",
+    className: "border-red-200 bg-red-100 text-red-700",
+    icon: "error",
+  },
+  HABIS: {
+    label: "Habis",
+    className: "border-outline-variant/30 bg-surface-container text-on-surface-variant",
+    icon: "block",
+  },
 };
 
-// ── Restock Modal ──────────────────────────────────────────────────────────
-function RestockModal({ item, onClose, onSave }: { item: StockItem; onClose: () => void; onSave: (id: number, qty: number) => Promise<void> }) {
-  const [qty, setQty] = useState(0);
-  const [saving, setSaving] = useState(false);
+function formatQuantity(value: number, unit?: string) {
+  const formatted = value.toLocaleString("id-ID", {
+    maximumFractionDigits: value % 1 === 0 ? 0 : 1,
+  });
+  return unit ? `${formatted} ${unit}` : formatted;
+}
 
-  const nextStock = item.stock + qty;
-  let projectedStatus: "AMAN" | "RENDAH" | "KRITIS" | "HABIS" = "AMAN";
-  if (nextStock <= 0) projectedStatus = "HABIS";
-  else if (nextStock <= item.minStock / 2) projectedStatus = "KRITIS";
-  else if (nextStock <= item.minStock) projectedStatus = "RENDAH";
+function formatDateTime(value: string) {
+  return new Intl.DateTimeFormat("id-ID", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(value));
+}
 
-  const currentMeta = statusMeta[item.stockStatus];
-  const projectedMeta = statusMeta[projectedStatus];
+function displayLabel(value: string | null | undefined) {
+  if (!value) return "-";
+  return value
+    .replaceAll("_", " ")
+    .split(" ")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function stockMeta(item: StockItem) {
+  return [item.sku !== "-" ? item.sku : null, item.category, item.region].filter(Boolean).map(displayLabel).join(" - ");
+}
+
+function KpiCard({
+  label,
+  value,
+  helper,
+  icon,
+  tone,
+}: {
+  label: string;
+  value: string;
+  helper: string;
+  icon: string;
+  tone: "primary" | "amber" | "sky" | "danger";
+}) {
+  const toneClass = {
+    primary: "bg-primary/10 text-primary",
+    amber: "bg-secondary-container/35 text-on-secondary-container",
+    sky: "bg-sky-100 text-sky-700",
+    danger: "bg-red-100 text-red-700",
+  }[tone];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-md">
-      <div className="absolute inset-0 bg-black/45 backdrop-blur-md" onClick={onClose} />
-      <div className="relative bg-surface-container-lowest rounded-[28px] shadow-2xl border border-outline-variant/30 w-[95%] sm:w-full max-w-[448px] p-6 anim-scale-in">
-        {/* Header */}
-        <div className="flex items-center justify-between mb-md">
-          <div className="flex items-center gap-xs">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
-              <span className="material-symbols-outlined text-[22px]">local_shipping</span>
-            </div>
-            <div>
-              <h2 className="font-extrabold text-base text-on-surface">Restock Barang</h2>
-              <p className="text-[10px] font-medium text-on-surface-variant/80 uppercase tracking-wide">Penerimaan Inventaris</p>
-            </div>
-          </div>
-          <button onClick={onClose} className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-surface-container text-on-surface-variant hover:text-primary transition-all duration-200">
-            <span className="material-symbols-outlined text-[20px]">close</span>
-          </button>
-        </div>
-
-        {/* Item Details Info Card */}
-        <div className="bg-surface-container-low border border-outline-variant/10 rounded-2xl p-md mb-md">
-          <div className="flex items-start justify-between gap-sm mb-xs">
-            <div>
-              <p className="font-mono text-[10px] text-on-surface-variant font-bold">{item.sku}</p>
-              <p className="font-extrabold text-on-surface text-base leading-tight mt-0.5">{item.name}</p>
-            </div>
-            <span className={`inline-flex items-center gap-xs px-2 py-0.5 rounded-full text-[10px] font-bold ${currentMeta.color}`}>
-              <span className={`w-1.5 h-1.5 rounded-full ${currentMeta.dot}`} />
-              {currentMeta.label}
-            </span>
-          </div>
-          <div className="border-t border-outline-variant/10 mt-sm pt-xs flex justify-between text-xs text-on-surface-variant">
-            <span>Stok saat ini:</span>
-            <span className="font-bold text-on-surface">{item.stock} {item.unit} <span className="font-normal text-on-surface-variant/60">(Min: {item.minStock})</span></span>
-          </div>
-        </div>
-
-        {/* Quantity Form */}
-        <div className="space-y-sm mb-lg">
-          <div className="flex items-center justify-between">
-            <label className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Jumlah Penambahan</label>
-            <span className="text-[10px] text-on-surface-variant/80 font-bold bg-surface-container px-2 py-0.5 rounded-md">Satuan: {item.unit}</span>
-          </div>
-          
-          <div className="flex items-center gap-sm">
-            <button 
-              type="button"
-              onClick={() => setQty(q => Math.max(0, q - 1))} 
-              className="w-12 h-12 rounded-xl bg-surface-container border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high font-bold text-xl transition-all active:scale-95 shadow-sm"
-            >
-              −
-            </button>
-            <input 
-              type="number" 
-              value={qty || ""} 
-              min={0} 
-              placeholder="0"
-              onChange={e => setQty(Math.max(0, parseInt(e.target.value) || 0))}
-              className="flex-1 text-center px-md py-3 bg-surface-container border border-outline-variant/30 rounded-xl font-extrabold text-2xl text-on-surface focus:outline-none focus:border-primary focus:bg-surface-container-lowest transition-all placeholder:text-on-surface-variant/20" 
-            />
-            <button 
-              type="button"
-              onClick={() => setQty(q => q + 1)} 
-              className="w-12 h-12 rounded-xl bg-surface-container border border-outline-variant/30 flex items-center justify-center text-on-surface-variant hover:bg-surface-container-high font-bold text-xl transition-all active:scale-95 shadow-sm"
-            >
-              +
-            </button>
-          </div>
-
-          {/* Real-time Status Preview */}
-          <div className="bg-surface-container-lowest border border-outline-variant/20 rounded-xl p-sm space-y-xs">
-            <div className="flex justify-between text-xs">
-              <span className="text-on-surface-variant">Stok setelah restock:</span>
-              <strong className="text-primary font-extrabold">{nextStock} {item.unit}</strong>
-            </div>
-            {qty > 0 && (
-              <div className="flex justify-between items-center text-xs pt-xs border-t border-outline-variant/10">
-                <span className="text-on-surface-variant">Proyeksi status:</span>
-                <span className={`inline-flex items-center gap-xs px-2 py-0.5 rounded-full text-[10px] font-bold ${projectedMeta.color} transition-all duration-300`}>
-                  <span className={`w-1.5 h-1.5 rounded-full ${projectedMeta.dot}`} />
-                  {projectedMeta.label}
-                </span>
-              </div>
-            )}
-          </div>
-        </div>
-
-        {/* Buttons */}
-        <div className="flex gap-md">
-          <button 
-            type="button"
-            onClick={onClose} 
-            className="flex-1 py-3 border border-outline-variant/40 rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container transition-all active:scale-98"
-          >
-            Batal
-          </button>
-          <button
-            type="button"
-            onClick={async () => { setSaving(true); await onSave(item.id, nextStock); setSaving(false); onClose(); }}
-            disabled={qty === 0 || saving}
-            className="flex-1 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary/95 transition-all active:scale-98 disabled:opacity-50 disabled:pointer-events-none shadow-md shadow-primary/10 flex items-center justify-center gap-xs"
-          >
-            {saving ? (
-              <>
-                <span className="material-symbols-outlined text-[18px] animate-spin">sync</span>
-                <span>Menyimpan...</span>
-              </>
-            ) : (
-              <>
-                <span className="material-symbols-outlined text-[18px]">save</span>
-                <span>Simpan (+{qty})</span>
-              </>
-            )}
-          </button>
-        </div>
+    <div className="flex min-w-0 items-center gap-sm rounded-2xl border border-outline-variant/25 bg-surface-container-lowest p-sm shadow-sm">
+      <div className={`grid size-10 shrink-0 place-items-center rounded-xl ${toneClass}`}>
+        <MaterialIcon filled className="text-xl">
+          {icon}
+        </MaterialIcon>
+      </div>
+      <div className="min-w-0">
+        <p className="text-xs font-extrabold uppercase tracking-normal text-on-surface-variant">{label}</p>
+        <p className="mt-0.5 break-words text-xl font-extrabold text-on-surface">{value}</p>
+        <p className="mt-0.5 text-xs text-on-surface-variant">{helper}</p>
       </div>
     </div>
   );
 }
 
-// ── Main Component ─────────────────────────────────────────────────────────
+function StatusBadge({ status }: { status: Exclude<StockStatus, "SEMUA"> }) {
+  const meta = statusMeta[status];
+
+  return (
+    <span className={`inline-flex items-center gap-1 rounded-lg border px-2 py-1 text-xs font-extrabold ${meta.className}`}>
+      <MaterialIcon filled className="text-[14px]">
+        {meta.icon}
+      </MaterialIcon>
+      {meta.label}
+    </span>
+  );
+}
+
 export default function StockPage() {
   const [items, setItems] = useState<StockItem[]>([]);
-  const [summary, setSummary] = useState<Summary | null>(null);
-  const [categories, setCategories] = useState<string[]>([]);
+  const [summary, setSummary] = useState<StockSummary | null>(null);
   const [loading, setLoading] = useState(true);
-  const [filterCategory, setFilterCategory] = useState("SEMUA");
-  const [filterStatus, setFilterStatus] = useState("SEMUA");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [restockItem, setRestockItem] = useState<StockItem | null>(null);
-  const [toast, setToast] = useState<{ msg: string; type: "success" | "error" } | null>(null);
-  const [viewMode, setViewMode] = useState<"table" | "card">("table");
+  const [error, setError] = useState<string | null>(null);
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
 
-  const showToast = (msg: string, type: "success" | "error" = "success") => {
-    setToast({ msg, type });
-    setTimeout(() => setToast(null), 4000);
-  };
+  const [page, setPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
+  const [total, setTotal] = useState(0);
+  const [totalPages, setTotalPages] = useState(1);
+  const [sortBy, setSortBy] = useState<StockSortField>("status");
+  const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
 
-  const fetchData = useCallback(async () => {
+  useEffect(() => {
+    const timeout = window.setTimeout(() => {
+      setPage(1);
+      setSearch(searchInput.trim());
+    }, 350);
+
+    return () => window.clearTimeout(timeout);
+  }, [searchInput]);
+
+  const fetchStock = useCallback(async () => {
     setLoading(true);
+    setError(null);
+
+    const params = new URLSearchParams({
+      page: String(page),
+      page_size: String(pageSize),
+      sort_by: sortBy,
+      order: sortOrder,
+    });
+    if (search) params.set("search", search);
+
     try {
-      const params = new URLSearchParams({ category: filterCategory, status: filterStatus });
-      const res = await fetch(`/api/stock?${params}`);
-      const data = await res.json();
-      if (data.success) {
-        setItems(data.items);
-        setSummary(data.summary);
-        setCategories(["SEMUA", ...data.categories]);
+      const response = await fetch(`/api/stock?${params.toString()}`, { cache: "no-store" });
+      const data = (await response.json()) as StockPayload;
+
+      if (!response.ok || !data.success) {
+        throw new Error(data.detail ?? "Gagal memuat data stok");
       }
-    } catch { /* silent */ }
-    finally { setLoading(false); }
-  }, [filterCategory, filterStatus]);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+      setItems(data.items);
+      setSummary(data.summary);
+      setTotal(data.total);
+      setTotalPages(data.total_pages);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Gagal memuat data stok");
+      setItems([]);
+      setSummary(null);
+      setTotal(0);
+      setTotalPages(1);
+    } finally {
+      setLoading(false);
+    }
+  }, [page, pageSize, search, sortBy, sortOrder]);
 
-  const handleRestock = async (id: number, newStock: number) => {
-    try {
-      const res = await fetch("/api/stock", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id, stock: newStock }),
-      });
-      const data = await res.json();
-      if (data.success) { showToast(data.message); fetchData(); }
-      else showToast(data.message, "error");
-    } catch { showToast("Terjadi kesalahan", "error"); }
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    void fetchStock();
+  }, [fetchStock]);
+
+  const handleSort = (field: StockSortField) => {
+    setPage(1);
+    if (field === sortBy) {
+      setSortOrder((current) => (current === "asc" ? "desc" : "asc"));
+      return;
+    }
+    setSortBy(field);
+    setSortOrder(field === "available_quantity" || field === "coverage_days" || field === "updated_at" ? "desc" : "asc");
   };
 
   const exportCsv = () => {
-    const headers = ["SKU", "Nama Barang", "Kategori", "Stok", "Min Stok", "Satuan", "Harga Beli", "Harga Jual", "Status", "Supplier", "Terakhir Restock"];
-    const rows = filtered.map(i => [i.sku, i.name, i.category, i.stock, i.minStock, i.unit, i.buyPrice, i.sellPrice, i.stockStatus, i.supplier, i.lastRestock]);
-    const csv = [headers, ...rows].map(r => r.join(",")).join("\n");
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([csv], { type: "text/csv" }));
-    a.download = `stok_barang_${new Date().toISOString().split("T")[0]}.csv`;
-    a.click();
+    const header = ["SKU", "Produk", "Kategori", "Region", "Tersedia", "Reorder", "Safety", "Demand Harian", "Coverage", "Status"];
+    const rows = items.map((item) => [
+      item.sku,
+      item.product_name,
+      displayLabel(item.category),
+      item.region,
+      item.available_quantity,
+      item.reorder_point,
+      item.safety_stock,
+      item.avg_daily_sales,
+      item.coverage_days ?? "-",
+      item.status,
+    ]);
+    const csv = [header, ...rows]
+      .map((row) => row.map((cell) => `"${String(cell).replaceAll('"', '""')}"`).join(","))
+      .join("\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `data-stok-page-${page}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
   };
 
-  const filtered = items.filter(i =>
-    !searchQuery ||
-    i.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    i.sku.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    i.supplier.toLowerCase().includes(searchQuery.toLowerCase())
-  );
-
-  // Sort: kritis/habis first by default (overridable via column sort)
-  const statusSorted = [...filtered].sort((a, b) => {
-    const order = { HABIS: 0, KRITIS: 1, RENDAH: 2, AMAN: 3 };
-    return (order[a.stockStatus] ?? 4) - (order[b.stockStatus] ?? 4);
-  });
-
-  const { sorted, sortKey, sortDir, toggleSort } = useSortable(statusSorted);
-
   return (
-    <div className="space-y-lg w-full max-w-[1280px] mx-auto pb-2xl">
-
-      {/* Toast */}
-      {toast && (
-        <div className={`fixed bottom-6 right-6 z-50 flex items-center gap-sm px-md py-sm rounded-2xl shadow-2xl font-semibold text-sm border ${toast.type === "success" ? "bg-emerald-50 text-emerald-800 border-emerald-200" : "bg-red-50 text-red-800 border-red-200"}`}>
-          <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>{toast.type === "success" ? "check_circle" : "error"}</span>
-          {toast.msg}
-        </div>
-      )}
-
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-md">
-        <div className="flex items-center gap-sm">
-          <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center">
-            <span className="material-symbols-outlined text-amber-700 text-2xl" style={{ fontVariationSettings: "'FILL' 1" }}>warehouse</span>
+    <div className="dashboard-page dashboard-page-stock flex flex-col gap-md">
+      <section className="overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary via-[#315f25] to-[#19380f] p-lg text-white shadow-[0_18px_48px_-30px_rgba(24,53,15,0.85)]">
+        <div className="flex flex-col gap-md lg:flex-row lg:items-start lg:justify-between">
+          <div className="min-w-0">
+            <div className="mb-sm inline-flex items-center gap-xs rounded-full border border-white/15 bg-white/10 px-sm py-1 text-xs font-bold text-white/80">
+              <MaterialIcon filled className="text-[16px]">
+                warehouse
+              </MaterialIcon>
+              Inventory KDMP
+            </div>
+            <h1 className="text-2xl font-extrabold text-white">Data Stok</h1>
+            <p className="mt-xs max-w-3xl text-sm leading-relaxed text-white/78">
+              Monitoring stok barang dari tabel commodity stock dengan pencarian, pengurutan, dan pagination server-side.
+            </p>
           </div>
+          <div className="flex flex-wrap gap-xs">
+            <button
+              type="button"
+              onClick={() => void fetchStock()}
+              disabled={loading}
+              className="inline-flex min-h-11 items-center justify-center gap-xs rounded-xl border border-white/20 bg-white/10 px-md py-2 text-sm font-extrabold text-white transition hover:bg-white/15 disabled:opacity-60"
+            >
+              <MaterialIcon className={`text-[18px] ${loading ? "animate-spin" : ""}`}>sync</MaterialIcon>
+              Refresh
+            </button>
+            <button
+              type="button"
+              onClick={exportCsv}
+              disabled={items.length === 0}
+              className="inline-flex min-h-11 items-center justify-center gap-xs rounded-xl bg-white px-md py-2 text-sm font-extrabold text-primary shadow-sm transition hover:bg-white/90 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              <MaterialIcon className="text-[18px]">download</MaterialIcon>
+              Export CSV
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <section className="grid grid-cols-2 gap-gutter xl:grid-cols-4">
+        <KpiCard
+          label="Total SKU"
+          value={(summary?.total_sku ?? 0).toLocaleString("id-ID")}
+          helper="barang aktif di database"
+          icon="inventory_2"
+          tone="primary"
+        />
+        <KpiCard
+          label="Stok Tersedia"
+          value={formatQuantity(summary?.total_available_quantity ?? 0)}
+          helper={`${formatQuantity(summary?.total_reserved_quantity ?? 0)} unit reserved`}
+          icon="inventory"
+          tone="sky"
+        />
+        <KpiCard
+          label="Perlu Perhatian"
+          value={`${(summary?.low ?? 0) + (summary?.critical ?? 0) + (summary?.empty ?? 0)}`}
+          helper="rendah, kritis, atau habis"
+          icon="crisis_alert"
+          tone={(summary?.critical ?? 0) + (summary?.empty ?? 0) > 0 ? "danger" : "amber"}
+        />
+        <KpiCard
+          label="Coverage Rata-rata"
+          value={summary?.average_coverage_days == null ? "-" : `${summary.average_coverage_days} hari`}
+          helper="estimasi berdasarkan demand harian"
+          icon="event_available"
+          tone="amber"
+        />
+      </section>
+
+      {error ? (
+        <section className="rounded-2xl border border-error/25 bg-error-container/45 p-md text-error">
+          <div className="flex items-start gap-sm">
+            <MaterialIcon filled className="text-[22px]">
+              error
+            </MaterialIcon>
+            <div>
+              <p className="font-extrabold">Data stok belum bisa dimuat</p>
+              <p className="mt-xs text-sm">{error}</p>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      <section className="relative isolate flex min-h-0 flex-col overflow-hidden rounded-2xl border border-outline-variant/25 bg-surface-container-lowest shadow-sm">
+        <div className="shrink-0 flex flex-col gap-sm p-md lg:flex-row lg:items-center lg:justify-between">
           <div>
-            <h1 className="text-2xl font-extrabold text-on-surface">Stok Barang</h1>
-            <p className="text-sm text-on-surface-variant">Inventaris barang koperasi · Monitoring stok real-time</p>
+            <h2 className="text-lg font-extrabold text-on-surface">Tabel Data Stok</h2>
+            <p className="text-sm text-on-surface-variant">
+              {total.toLocaleString("id-ID")} barang dari tabel commodity_stock_levels
+            </p>
           </div>
-        </div>
-        <div className="flex items-center gap-sm">
-          {/* View toggle */}
-          <div className="flex gap-xs bg-surface-container-low rounded-xl p-0.5">
-            {([["table", "table_rows"], ["card", "grid_view"]] as const).map(([mode, icon]) => (
-              <button key={mode} onClick={() => setViewMode(mode)}
-                className={`w-9 h-9 flex items-center justify-center rounded-lg transition-all ${viewMode === mode ? "bg-primary text-white shadow-sm" : "text-on-surface-variant hover:bg-surface-container-high"}`}>
-                <span className="material-symbols-outlined text-[18px]">{icon}</span>
+          <label className="flex min-h-11 w-full items-center gap-xs rounded-xl border border-outline-variant/20 bg-surface-container-low px-sm text-sm shadow-sm lg:w-[22rem]">
+            <MaterialIcon className="text-[18px] text-on-surface-variant">search</MaterialIcon>
+            <span className="sr-only">Cari data stok</span>
+            <input
+              type="search"
+              value={searchInput}
+              onChange={(event) => setSearchInput(event.target.value)}
+              placeholder="Cari produk, SKU, kategori, region..."
+              className="min-w-0 flex-1 bg-transparent py-2 font-semibold text-on-surface outline-none placeholder:text-on-surface-variant/45"
+            />
+            {searchInput ? (
+              <button
+                type="button"
+                onClick={() => setSearchInput("")}
+                aria-label="Bersihkan pencarian stok"
+                className="grid size-8 place-items-center rounded-lg text-on-surface-variant transition hover:bg-surface-container hover:text-primary"
+              >
+                <MaterialIcon className="text-[16px]">close</MaterialIcon>
               </button>
-            ))}
-          </div>
-          <button onClick={fetchData} className="flex items-center gap-xs px-md py-2 bg-surface-container-low border border-outline-variant/30 rounded-xl text-sm font-semibold text-on-surface-variant hover:bg-surface-container hover:text-primary transition-all">
-            <span className="material-symbols-outlined text-[18px]">sync</span>Refresh
-          </button>
-          <button onClick={exportCsv} className="flex items-center gap-sm px-md py-2 bg-emerald-600 text-white rounded-xl font-bold text-sm hover:bg-emerald-700 transition-all">
-            <span className="material-symbols-outlined text-[18px]">download</span>Export CSV
-          </button>
+            ) : null}
+          </label>
         </div>
-      </div>
 
-      {/* KPI Cards */}
-      {summary && (
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-gutter">
-          {[
-            { label: "Total SKU",    value: summary.totalSku,        icon: "inventory_2",   color: "bg-violet-100 text-violet-700" },
-            { label: "Stok Aman",   value: summary.aman,            icon: "check_circle",  color: "bg-emerald-100 text-emerald-700" },
-            { label: "Stok Rendah", value: summary.rendah,          icon: "warning",       color: "bg-amber-100 text-amber-700" },
-            { label: "Stok Kritis", value: summary.kritis,          icon: "error",         color: "bg-red-100 text-red-700" },
-            { label: "Nilai Inv.",  value: fmt(summary.totalValue),  icon: "payments",      color: "bg-sky-100 text-sky-700" },
-          ].map(s => (
-            <div key={s.label} className="bg-surface-container-lowest rounded-2xl p-md border border-outline-variant/20 hover:shadow-md transition-shadow">
-              <div className={`w-10 h-10 rounded-xl ${s.color} flex items-center justify-center mb-sm`}>
-                <span className="material-symbols-outlined text-xl" style={{ fontVariationSettings: "'FILL' 1" }}>{s.icon}</span>
-              </div>
-              <p className="text-xl font-extrabold text-on-surface">{s.value}</p>
-              <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">{s.label}</p>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Critical alert banner */}
-      {summary && (summary.kritis > 0 || summary.habis > 0) && (
-        <div className="flex items-center gap-sm p-md bg-red-50 border border-red-200 rounded-2xl">
-          <span className="material-symbols-outlined text-red-600 text-[24px] shrink-0" style={{ fontVariationSettings: "'FILL' 1" }}>warning</span>
-          <div>
-            <p className="font-bold text-red-700">Perhatian: {summary.kritis} barang kritis & {summary.habis} barang habis stok</p>
-            <p className="text-xs text-red-600">Segera lakukan restock untuk memastikan ketersediaan barang.</p>
-          </div>
-          <button onClick={() => setFilterStatus("KRITIS")} className="ml-auto px-md py-2 bg-red-600 text-white rounded-xl text-xs font-bold hover:bg-red-700 transition-colors whitespace-nowrap">
-            Lihat Stok Kritis
-          </button>
-        </div>
-      )}
-
-      {/* Filters */}
-      <div className="flex flex-wrap gap-md items-end bg-surface-container-lowest border border-outline-variant/20 rounded-2xl p-md">
-        <div className="space-y-xs">
-          <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Kategori</label>
-          <select value={filterCategory} onChange={e => setFilterCategory(e.target.value)}
-            className="px-md py-2.5 bg-surface-container border border-outline-variant/30 rounded-xl text-sm font-semibold text-on-surface focus:outline-none focus:border-primary transition-colors">
-            {categories.map(c => <option key={c} value={c}>{c}</option>)}
-          </select>
-        </div>
-        <div className="space-y-xs">
-          <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Status Stok</label>
-          <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
-            className="px-md py-2.5 bg-surface-container border border-outline-variant/30 rounded-xl text-sm font-semibold text-on-surface focus:outline-none focus:border-primary transition-colors">
-            {["SEMUA", "AMAN", "RENDAH", "KRITIS", "HABIS"].map(s => <option key={s} value={s}>{s}</option>)}
-          </select>
-        </div>
-        <div className="space-y-xs flex-1 min-w-[180px]">
-          <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Cari Barang</label>
-          <div className="flex items-center gap-xs px-md py-2 bg-surface-container border border-outline-variant/30 rounded-xl focus-within:border-primary transition-colors">
-            <span className="material-symbols-outlined text-[16px] text-on-surface-variant">search</span>
-            <input type="text" placeholder="Nama barang, SKU, atau supplier..." value={searchQuery} onChange={e => setSearchQuery(e.target.value)}
-              className="flex-1 bg-transparent text-sm font-semibold text-on-surface outline-none placeholder:text-on-surface-variant/40" />
-            {searchQuery && <button onClick={() => setSearchQuery("")} className="material-symbols-outlined text-[14px] text-on-surface-variant hover:text-primary">close</button>}
-          </div>
-        </div>
-        <p className="text-sm text-on-surface-variant self-center">
-          <strong className="text-on-surface">{sorted.length}</strong> item
-        </p>
-      </div>
-
-      {/* ══ TABLE VIEW ══ */}
-      {viewMode === "table" && (
-        <div className="bg-surface-container-lowest rounded-2xl border border-outline-variant/20 overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-surface-container border-b border-outline-variant/20">
-                  <SortableHeader label="SKU"              colKey="sku"         current={sortKey} dir={sortDir} onSort={toggleSort} />
-                  <SortableHeader label="Nama Barang"      colKey="name"        current={sortKey} dir={sortDir} onSort={toggleSort} />
-                  <SortableHeader label="Kategori"         colKey="category"    current={sortKey} dir={sortDir} onSort={toggleSort} />
-                  <SortableHeader label="Stok / Min"       colKey="stock"       current={sortKey} dir={sortDir} onSort={toggleSort} />
-                  <SortableHeader label="Satuan"           colKey="unit"        current={sortKey} dir={sortDir} onSort={toggleSort} />
-                  <SortableHeader label="Harga Beli"       colKey="buyPrice"    current={sortKey} dir={sortDir} onSort={toggleSort} />
-                  <SortableHeader label="Harga Jual"       colKey="sellPrice"   current={sortKey} dir={sortDir} onSort={toggleSort} />
-                  <SortableHeader label="Supplier"         colKey="supplier"    current={sortKey} dir={sortDir} onSort={toggleSort} />
-                  <SortableHeader label="Terakhir Restock" colKey="lastRestock" current={sortKey} dir={sortDir} onSort={toggleSort} />
-                  <SortableHeader label="Status"           colKey="stockStatus" current={sortKey} dir={sortDir} onSort={toggleSort} />
-                  <th className="px-md py-3 text-[10px] font-bold text-on-surface-variant uppercase tracking-wider">Aksi</th>
+        <div className="max-w-full overflow-hidden" style={{ minHeight: "38rem" }}>
+          <table className="w-full table-fixed text-sm">
+            <colgroup>
+              <col className="w-[24%]" />
+              <col className="w-[14%]" />
+              <col className="stock-desktop-col w-[13%]" />
+              <col className="stock-desktop-col w-[13%]" />
+              <col className="stock-desktop-col w-[12%]" />
+              <col className="stock-desktop-col w-[12%]" />
+              <col className="w-[12%]" />
+            </colgroup>
+            <thead className="shadow-[0_12px_24px_rgba(47,63,38,0.18)]">
+              <tr className="border-y" style={{ backgroundColor: "var(--color-primary)", borderColor: "var(--color-primary)" }}>
+                <th className="px-md py-3 text-left text-[13px] font-extrabold uppercase tracking-normal text-white">
+                  <SortButton field="product_name" active={sortBy} order={sortOrder} onSort={handleSort}>
+                    Produk
+                  </SortButton>
+                </th>
+                <th className="px-md py-3 text-left text-[13px] font-extrabold uppercase tracking-normal text-white">
+                  <SortButton field="available_quantity" active={sortBy} order={sortOrder} onSort={handleSort}>
+                    Stok
+                  </SortButton>
+                </th>
+                <th className="stock-desktop-col px-md py-3 text-left text-[13px] font-extrabold uppercase tracking-normal text-white">
+                  <SortButton field="reorder_point" active={sortBy} order={sortOrder} onSort={handleSort}>
+                    Reorder
+                  </SortButton>
+                </th>
+                <th className="stock-desktop-col px-md py-3 text-left text-[13px] font-extrabold uppercase tracking-normal text-white">
+                  <SortButton field="avg_daily_sales" active={sortBy} order={sortOrder} onSort={handleSort}>
+                    Demand
+                  </SortButton>
+                </th>
+                <th className="stock-desktop-col px-md py-3 text-left text-[13px] font-extrabold uppercase tracking-normal text-white">
+                  <SortButton field="coverage_days" active={sortBy} order={sortOrder} onSort={handleSort}>
+                    Coverage
+                  </SortButton>
+                </th>
+                <th className="stock-desktop-col px-md py-3 text-left text-[13px] font-extrabold uppercase tracking-normal text-white">
+                  <SortButton field="updated_at" active={sortBy} order={sortOrder} onSort={handleSort}>
+                    Update
+                  </SortButton>
+                </th>
+                <th className="px-md py-3 text-left text-[13px] font-extrabold uppercase tracking-normal text-white">
+                  <SortButton field="status" active={sortBy} order={sortOrder} onSort={handleSort}>
+                    Status
+                  </SortButton>
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {loading ? (
+                <tr>
+                  <td colSpan={7} className="px-md py-xl">
+                    <LoadingState label="Memuat data stok" />
+                  </td>
                 </tr>
-              </thead>
-              <tbody>
-                {loading ? (
-                  <tr><td colSpan={11} className="text-center py-2xl text-on-surface-variant">
-                    <span className="material-symbols-outlined text-3xl animate-spin block mb-sm">sync</span>Memuat data...
-                  </td></tr>
-                ) : sorted.length === 0 ? (
-                  <tr><td colSpan={11} className="text-center py-2xl text-on-surface-variant">
-                    <span className="material-symbols-outlined text-5xl text-outline block mb-md">inventory_2</span>Tidak ada data
-                  </td></tr>
-                ) : sorted.map(item => {
-                  const s = statusMeta[item.stockStatus];
-                  const pct = Math.min(100, Math.round((item.stock / Math.max(item.minStock * 2, 1)) * 100));
-                  return (
-                    <tr key={item.id} className={`border-b border-outline-variant/10 hover:bg-surface-container-low/50 transition-colors ${item.stockStatus === "KRITIS" ? "bg-red-50/30" : item.stockStatus === "HABIS" ? "bg-gray-50" : ""}`}>
-                      <td className="px-md py-3 font-mono text-xs text-on-surface-variant">{item.sku}</td>
-                      <td className="px-md py-3 font-bold text-on-surface whitespace-nowrap">{item.name}</td>
-                      <td className="px-md py-3"><span className="text-xs bg-surface-container px-2 py-1 rounded-full font-semibold text-on-surface-variant">{item.category}</span></td>
-                      <td className="px-md py-3">
-                        <div className="space-y-0.5">
-                          <p className="font-extrabold text-on-surface text-sm">{item.stock} <span className="text-xs text-on-surface-variant font-normal">/ {item.minStock}</span></p>
-                          <div className="h-1.5 w-20 bg-outline-variant/20 rounded-full overflow-hidden">
-                            <div className={`h-full rounded-full transition-all ${s.bar}`} style={{ width: `${pct}%` }} />
-                          </div>
-                        </div>
-                      </td>
-                      <td className="px-md py-3 text-xs text-on-surface-variant">{item.unit}</td>
-                      <td className="px-md py-3 text-xs text-on-surface-variant">{fmt(item.buyPrice)}</td>
-                      <td className="px-md py-3 font-semibold text-emerald-600 text-xs">{fmt(item.sellPrice)}</td>
-                      <td className="px-md py-3 text-xs text-on-surface-variant max-w-[130px] truncate">{item.supplier}</td>
-                      <td className="px-md py-3 text-xs text-on-surface-variant whitespace-nowrap">{item.lastRestock}</td>
-                      <td className="px-md py-3">
-                        <span className={`inline-flex items-center gap-xs px-2.5 py-1 rounded-full text-[10px] font-bold whitespace-nowrap ${s.color}`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />{s.label}
-                        </span>
-                      </td>
-                      <td className="px-md py-3">
-                        <button onClick={() => setRestockItem(item)} className="flex items-center gap-xs px-sm py-1.5 bg-primary text-white rounded-lg text-[11px] font-bold hover:bg-primary/90 transition-all whitespace-nowrap">
-                          <span className="material-symbols-outlined text-[14px]">add</span>Restock
-                        </button>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+              ) : items.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-md py-xl">
+                    <EmptyState
+                      title="Tidak ada data stok"
+                      text="Tidak ada barang yang cocok dengan pencarian saat ini."
+                      icon="inventory_2"
+                    />
+                  </td>
+                </tr>
+              ) : (
+                items.map((item) => (
+                  <tr key={item.id} className="border-b border-outline-variant/10 transition hover:bg-surface-container-low">
+                    <td className="px-md py-3">
+                      <p className="break-words font-extrabold leading-snug text-on-surface">{item.product_name}</p>
+                      <p className="mt-0.5 break-words text-[11px] text-on-surface-variant">
+                        {stockMeta(item)}
+                      </p>
+                    </td>
+                    <td className="px-md py-3">
+                      <p className="font-extrabold text-primary">{formatQuantity(item.available_quantity, item.unit)}</p>
+                      <p className="text-[11px] text-on-surface-variant">
+                        on hand {formatQuantity(item.on_hand_quantity)}
+                      </p>
+                    </td>
+                    <td className="stock-desktop-col px-md py-3">
+                      <p className="font-bold text-on-surface">{formatQuantity(item.reorder_point, item.unit)}</p>
+                      <p className="text-[11px] text-on-surface-variant">safety {formatQuantity(item.safety_stock)}</p>
+                    </td>
+                    <td className="stock-desktop-col px-md py-3 font-bold text-on-surface">
+                      {formatQuantity(item.avg_daily_sales, `${item.unit}/hari`)}
+                    </td>
+                    <td className="stock-desktop-col px-md py-3">
+                      <p className="font-extrabold text-on-surface">
+                        {item.coverage_days == null ? "-" : `${item.coverage_days} hari`}
+                      </p>
+                    </td>
+                    <td className="stock-desktop-col px-md py-3 text-xs font-bold leading-relaxed text-on-surface-variant">
+                      {formatDateTime(item.updated_at)}
+                    </td>
+                    <td className="px-md py-3">
+                      <StatusBadge status={item.status} />
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
         </div>
-      )}
 
-      {/* ══ CARD VIEW ══ */}
-      {viewMode === "card" && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
-          {loading ? (
-            <div className="col-span-full text-center py-2xl text-on-surface-variant">
-              <span className="material-symbols-outlined text-3xl animate-spin block mb-sm">sync</span>Memuat data...
-            </div>
-          ) : sorted.map(item => {
-            const s = statusMeta[item.stockStatus];
-            const pct = Math.min(100, Math.round((item.stock / Math.max(item.minStock * 2, 1)) * 100));
-            return (
-              <div key={item.id} className={`bg-surface-container-lowest rounded-2xl border p-md space-y-sm hover:shadow-md transition-shadow ${item.stockStatus === "KRITIS" ? "border-red-200" : "border-outline-variant/20"}`}>
-                <div className="flex items-start justify-between">
-                  <div>
-                    <p className="font-mono text-[10px] text-on-surface-variant">{item.sku}</p>
-                    <p className="font-extrabold text-sm text-on-surface leading-tight">{item.name}</p>
-                  </div>
-                  <span className={`inline-flex items-center gap-xs px-2 py-1 rounded-full text-[10px] font-bold shrink-0 ${s.color}`}>
-                    <span className={`w-1.5 h-1.5 rounded-full ${s.dot}`} />{s.label}
-                  </span>
-                </div>
-
-                <div className="space-y-xs">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="text-on-surface-variant">Stok</span>
-                    <span className="font-extrabold text-on-surface">{item.stock} {item.unit}</span>
-                  </div>
-                  <div className="h-2 bg-outline-variant/20 rounded-full overflow-hidden">
-                    <div className={`h-full rounded-full transition-all ${s.bar}`} style={{ width: `${pct}%` }} />
-                  </div>
-                  <p className="text-[10px] text-on-surface-variant">Min: {item.minStock} {item.unit}</p>
-                </div>
-
-                <div className="border-t border-outline-variant/10 pt-sm space-y-xs">
-                  <div className="flex justify-between text-xs">
-                    <span className="text-on-surface-variant">Harga Beli</span>
-                    <span className="font-semibold text-on-surface">{fmt(item.buyPrice)}</span>
-                  </div>
-                  <div className="flex justify-between text-xs">
-                    <span className="text-on-surface-variant">Harga Jual</span>
-                    <span className="font-semibold text-emerald-600">{fmt(item.sellPrice)}</span>
-                  </div>
-                </div>
-
-                <div className="pt-xs">
-                  <button onClick={() => setRestockItem(item)} className="w-full flex items-center justify-center gap-xs py-2 bg-primary text-white rounded-xl text-xs font-bold hover:bg-primary/90 transition-all">
-                    <span className="material-symbols-outlined text-[14px]">add</span>Tambah Stok
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
-      {/* Restock Modal */}
-      {restockItem && (
-        <RestockModal item={restockItem} onClose={() => setRestockItem(null)} onSave={handleRestock} />
-      )}
+        <DataTablePagination
+          page={page}
+          pageSize={pageSize}
+          total={total}
+          totalPages={totalPages}
+          loading={loading}
+          itemLabel="barang"
+          onPageChange={setPage}
+          onPageSizeChange={(value) => {
+            setPageSize(value);
+            setPage(1);
+          }}
+        />
+      </section>
     </div>
   );
 }

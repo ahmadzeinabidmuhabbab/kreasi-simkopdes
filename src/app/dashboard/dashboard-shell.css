@@ -424,11 +424,71 @@
 }
 
 .dashboard-page [class*="overflow-x-auto"] {
-  max-width: 100%;
-  width: 100%;
-  overflow-x: auto;
-  overscroll-behavior-x: contain;
-  scrollbar-width: thin;
+max-width: 100%;
+width: 100%;
+overflow-x: auto;
+overscroll-behavior-x: contain;
+scrollbar-width: thin;
+}
+
+.dashboard-page-transactions table {
+  min-width: 0 !important;
+  max-width: 100% !important;
+  table-layout: fixed;
+}
+
+@media (max-width: 767px) {
+  .dashboard-page-stock table,
+  .dashboard-page-users table {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    table-layout: fixed;
+  }
+
+  .dashboard-page-stock .stock-desktop-col,
+  .dashboard-page-users .users-desktop-col {
+    display: none !important;
+  }
+
+  .dashboard-page-stock th,
+  .dashboard-page-stock td,
+  .dashboard-page-users th,
+  .dashboard-page-users td {
+    padding: 0.625rem 0.5rem !important;
+    white-space: normal;
+  }
+
+  .dashboard-page-stock col:first-child {
+    width: 46% !important;
+  }
+
+  .dashboard-page-stock col:nth-child(2) {
+    width: 29% !important;
+  }
+
+  .dashboard-page-stock col:last-child {
+    width: 25% !important;
+  }
+
+  .dashboard-page-users col:first-child {
+    width: 40% !important;
+  }
+
+  .dashboard-page-users col:nth-child(3) {
+    width: 24% !important;
+  }
+
+  .dashboard-page-users col:nth-child(5) {
+    width: 23% !important;
+  }
+
+  .dashboard-page-users col:last-child {
+    width: 13% !important;
+  }
+}
+
+.dashboard-page-transactions [class*="overflow-x"] {
+overflow-x: hidden !important;
 }
 
 .dashboard-page [class*="py-2xl"] {
