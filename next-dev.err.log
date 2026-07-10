@@ -1,0 +1,1422 @@
+⚠ Blocked cross-origin request to Next.js dev resource /_next/webpack-hmr from "127.0.0.1".
+Cross-origin access to Next.js dev resources is blocked by default for safety.
+
+To allow this host in development, add it to "allowedDevOrigins" in next.config.js and restart the dev server:
+
+// next.config.js
+module.exports = {
+  allowedDevOrigins: ['127.0.0.1'],
+}
+
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+⚠ Blocked cross-origin request to Next.js dev resource /__nextjs_font/geist-latin.woff2 from "127.0.0.1".
+Cross-origin access to Next.js dev resources is blocked by default for safety.
+
+To allow this host in development, add it to "allowedDevOrigins" in next.config.js and restart the dev server:
+
+// next.config.js
+module.exports = {
+  allowedDevOrigins: ['127.0.0.1'],
+}
+
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+⚠ Found a change in next.config.ts. Restarting the server to apply the changes...
+⚠ Slow filesystem detected. The benchmark took 405ms. If C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\.next/dev is a network drive, consider moving it to a local folder.
+See more: https://nextjs.org/docs/app/guides/local-development
+⨯ Error: Could not find the module "[project]/src/app/page.tsx#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '4083375606'
+}
+⨯ Error: Could not find the module "[project]/node_modules/next/dist/client/components/builtin/global-error.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '1310186202'
+}
+⨯ Error: Could not find the module "[project]/node_modules/next/dist/client/components/builtin/global-error.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '1134518166'
+}
+[0m[7m Server [0m Error: Could not find the module "[project]/node_modules/next/dist/client/components/builtin/global-error.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>:1:18) {
+  environmentName: 'Server',
+  digest: '1134518166'
+}
+⨯ Error: Could not find the module "[project]/node_modules/next/dist/client/components/builtin/global-error.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>:1:18) {
+  environmentName: 'Server',
+  digest: '1134518166'
+}
+⨯ Error: Could not find the module "[project]/node_modules/next/dist/client/components/builtin/global-error.js#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>:1:18) {
+  environmentName: 'Server',
+  digest: '1134518166',
+  page: '/'
+}
+⨯ Error: Failed to load external module @swc/helpers-7709a27735f6e3f8/_/_interop_require_default: Error: Cannot find module '@swc/helpers-7709a27735f6e3f8/_/_interop_require_default'
+Require stack:
+- C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\.next\dev\server\chunks\ssr\[root-of-the-server]__1xhmddl._.js
+- C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\.next\dev\server\chunks\ssr\[turbopack]_runtime.js
+- C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\.next\dev\server\app\page.js
+- C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\node_modules\next\dist\server\require.js
+- C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\node_modules\next\dist\server\load-components.js
+- C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\node_modules\next\dist\build\utils.js
+- C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\node_modules\next\dist\server\lib\router-server.js
+- C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\node_modules\next\dist\server\lib\start-server.js
+    at module evaluation (C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\.next\dev\server\chunks\ssr\[root-of-the-server]__1xhmddl._.js:28:35)
+    at Object.<anonymous> (C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\.next\dev\server\pages\_document.js:3:3)
+[browser] Uncaught Error: Failed to load external module @swc/helpers-7709a27735f6e3f8/_/_interop_require_default: Error: Cannot find module '@swc/helpers-7709a27735f6e3f8/_/_interop_require_default'
+Require stack:
+- C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\.next\dev\server\chunks\ssr\[root-of-the-server]__1xhmddl._.js
+- C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\.next\dev\server\chunks\ssr\[turbopack]_runtime.js
+- C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\.next\dev\server\app\page.js
+- C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\node_modules\next\dist\server\require.js
+- C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\node_modules\next\dist\server\load-components.js
+- C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\node_modules\next\dist\build\utils.js
+- C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\node_modules\next\dist\server\lib\router-utils\setup-dev-bundler.js
+- C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\node_modules\next\dist\server\lib\router-server.js
+- C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\node_modules\next\dist\server\lib\start-server.js
+    at module evaluation (.next\dev\server\chunks\ssr\[root-of-the-server]__1xhmddl._.js:28:35)
+    at module evaluation (file://C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\.next\dev\server\chunks\ssr\[root-of-the-server]__1xhmddl._.js:377:56)
+    at module evaluation (file://C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\.next\dev\server\chunks\ssr\[root-of-the-server]__1xhmddl._.js:2307:42)
+    at module evaluation (file://C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\.next\dev\server\chunks\ssr\[root-of-the-server]__1xhmddl._.js:2957:40)
+    at Object.<anonymous> (.next\dev\server\pages\_document.js:3:3)
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+    at dispatchAppRouterAction (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:916:37)
+    at <unknown> (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:11923:61)
+    at startTransition (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_1amofcm._.js:1279:31)
+    at Object.hmrRefresh (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:11922:40)
+    at <unknown> (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:14090:64)
+    at startTransition (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_1amofcm._.js:1279:31)
+    at processMessage (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:14089:44)
+    at WebSocket.handleMessage (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:13458:52)
+[browser] Uncaught Error: Internal Next.js error: Router action dispatched before initialization.
+    at dispatchAppRouterAction (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:916:37)
+    at <unknown> (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:11923:61)
+    at startTransition (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_1amofcm._.js:1279:31)
+    at Object.hmrRefresh (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:11922:40)
+    at <unknown> (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:14090:64)
+    at startTransition (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_1amofcm._.js:1279:31)
+    at processMessage (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:14089:44)
+    at WebSocket.handleMessage (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:13458:52)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/dashboard..." notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head headCacheNode={{rsc:{...}, ...}}>
+                    <__next_viewport_boundary__>
+                    <MetadataWrapper>
+                      <div
+                        hidden={true}
+-                       bis_skin_checked="1"
+                      >
+                  ...
+                    <InnerLayoutRouter url="/dashboard..." tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} ...>
+                      <SegmentViewNode type="layout" pagePath="dashboard/...">
+                        <SegmentTrieNode>
+                        <link>
+                        <script>
+                        <script>
+                        <ClientSegmentRoot Component={function DashboardLayout} slots={{children:{...}}} ...>
+                          <DashboardLayout params={Promise}>
+                            <div
+                              className="dashboard-shell h-dvh overflow-hidden bg-surface-container-low text-on-surface"
+-                             bis_skin_checked="1"
+                            >
+                              <header className="fixed inse...">
+                                <div
+                                  className="flex h-14 items-center justify-between gap-3 px-3 sm:px-4 lg:px-5"
+-                                 bis_skin_checked="1"
+                                >
+                                  <div
+                                    className="flex min-w-0 items-center gap-sm"
+-                                   bis_skin_checked="1"
+                                  >
+                                    <button>
+                                    <LinkComponent>
+                                    <MaterialIcon>
+                                    <div
+                                      className="min-w-0"
+-                                     bis_skin_checked="1"
+                                    >
+                                  <div
+                                    className="relative flex items-center gap-xs"
+-                                   bis_skin_checked="1"
+                                  >
+                                    <button>
+                                    <div
+                                      className="hidden h-7 w-px bg-outline-variant/35 sm:block"
+-                                     bis_skin_checked="1"
+                                    >
+                                    <div
+                                      className="hidden items-center gap-sm rounded-lg border border-outline-variant/3..."
+-                                     bis_skin_checked="1"
+                                    >
+                              <div
+                                className="flex h-dvh overflow-hidden pt-14"
+-                               bis_skin_checked="1"
+                              >
+                                <aside className="fixed left...">
+                                  <Sidebar pathname="/dashboard...">
+                                    <div
+                                      className="flex h-full flex-col bg-surface-container-lowest"
+-                                     bis_skin_checked="1"
+                                    >
+                                      <div
+                                        className="border-b border-outline-variant/35 px-md py-sm"
+-                                       bis_skin_checked="1"
+                                      >
+                                      <div
+                                        className="border-b border-outline-variant/25 px-md py-sm"
+-                                       bis_skin_checked="1"
+                                      >
+                                        <div
+                                          className="flex items-center justify-between gap-sm rounded-lg bg-surface-co..."
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="min-w-0"
+-                                           bis_skin_checked="1"
+                                          >
+                                          ...
+                                      <nav className="custom-scr..." aria-label="Navigasi d...">
+                                        <p>
+                                        <div
+                                          className="flex flex-col gap-1"
+-                                         bis_skin_checked="1"
+                                        >
+                                      <div
+                                        className="border-t border-outline-variant/30 p-sm"
+-                                       bis_skin_checked="1"
+                                      >
+                                        <div
+                                          className="flex items-center gap-sm rounded-lg border border-outline-variant..."
+-                                         bis_skin_checked="1"
+                                        >
+                                <main id="main-content" className="custom-scr...">
+                                  <div
+                                    className="mx-auto w-full max-w-[1440px] px-3 py-3 sm:px-4 sm:py-4 lg:px-5"
+-                                   bis_skin_checked="1"
+                                  >
+                                    ...
+                                      <SegmentViewNode type="page" pagePath="dashboard/...">
+                                        <SegmentTrieNode>
+                                        <ClientPageRoot Component={function DemandIntelligence} ...>
+                                          <DemandIntelligence params={Promise} searchParams={Promise}>
+                                            <div
+                                              className="dashboard-page dashboard-page-demand mx-auto w-full max-w-[14..."
+-                                             bis_skin_checked="1"
+                                            >
+                                              <RfqDrawer>
+                                              <div
+                                                className="rounded-2xl border border-outline-variant/30 bg-surface-con..."
+-                                               bis_skin_checked="1"
+                                              >
+                                                <div
+                                                  className="flex flex-col gap-md lg:flex-row lg:items-center lg:justi..."
+-                                                 bis_skin_checked="1"
+                                                >
+                                                  <div
+                                                    className="flex items-center gap-md"
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                    <div
+                                                      className="grid h-14 w-14 shrink-0 place-items-center rounded-2x..."
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                    <div
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                  ...
+                                              <section className="rounded-2x...">
+                                                <p>
+                                                <EmptyState title="Belum ada ..." text="Produk ter...">
+                                                  <div
+                                                    className="flex min-h-[220px] flex-col items-center justify-center..."
+-                                                   bis_skin_checked="1"
+                                                  >
+                                              <div
+                                                className="flex flex-wrap gap-xs rounded-2xl bg-surface-container-low p-1"
+-                                               bis_skin_checked="1"
+                                              >
+                                              <section className="space-y-md">
+                                                <div
+                                                  className="flex flex-col gap-md sm:flex-row sm:items-center sm:justi..."
+-                                                 bis_skin_checked="1"
+                                                >
+                                                  <div
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                  <div
+                                                    className="flex flex-wrap gap-xs"
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                <div
+                                                  className="space-y-sm"
+-                                                 bis_skin_checked="1"
+                                                >
+                                                  <div
+                                                    className="h-16 animate-pulse rounded-xl bg-surface-container"
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                  <div
+                                                    className="h-16 animate-pulse rounded-xl bg-surface-container"
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                  <div
+                                                    className="h-16 animate-pulse rounded-xl bg-surface-container"
+-                                                   bis_skin_checked="1"
+                                                  >
+                  ...
+ 
+    at <unknown> (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3439:25)
+    at runWithFiberInDEV (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:965:74)
+    at emitPendingHydrationWarnings (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3438:13)
+    at completeWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6885:102)
+    at runWithFiberInDEV (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:965:131)
+    at completeUnitOfWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9622:23)
+    at performUnitOfWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9557:28)
+    at workLoopConcurrentByScheduler (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9551:58)
+    at renderRootConcurrent (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9534:71)
+    at performWorkOnRoot (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9061:150)
+    at performWorkOnRootViaSchedulerTask (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10255:9)
+    at MessagePort.performWorkUntilDeadline (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_1amofcm._.js:2647:64) (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3439:25)
+[browser] Each child in a list should have a unique "key" prop.
+
+Check the render method of `DemandIntelligence`. See https://react.dev/link/warning-keys for more information. 
+    at <unknown> (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:15127:29)
+    at runWithFiberInDEV (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:965:74)
+    at warnForMissingKey (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:15126:17)
+    at warnOnInvalidKey (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:4091:21)
+    at reconcileChildrenArray (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:4129:160)
+    at reconcileChildFibersImpl (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:4236:51)
+    at <unknown> (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:4261:39)
+    at reconcileChildren (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:5898:51)
+    at beginWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6758:1573)
+    at runWithFiberInDEV (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:965:74)
+    at performUnitOfWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9555:97)
+    at workLoopSync (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9449:40)
+    at renderRootSync (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9433:13)
+    at performWorkOnRoot (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9061:186)
+    at performSyncWorkOnRoot (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10263:9)
+    at flushSyncWorkAcrossRoots_impl (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10179:316)
+    at processRootScheduleInMicrotask (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10200:106)
+    at <unknown> (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10274:158) (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:15127:29)
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⨯ Error: Could not find the module "[project]/src/app/page.tsx#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '4083375606'
+}
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Server is approaching the used memory threshold, restarting...
+⚠ Slow filesystem detected. The benchmark took 769ms. If C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\.next/dev is a network drive, consider moving it to a local folder.
+See more: https://nextjs.org/docs/app/guides/local-development
+[browser] Each child in a list should have a unique "key" prop.
+
+Check the render method of `DemandIntelligence`. See https://react.dev/link/warning-keys for more information. 
+    at <unknown> (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:15127:29)
+    at runWithFiberInDEV (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:965:74)
+    at warnForMissingKey (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:15126:17)
+    at warnOnInvalidKey (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:4091:21)
+    at reconcileChildrenArray (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:4129:160)
+    at reconcileChildFibersImpl (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:4236:51)
+    at <unknown> (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:4261:39)
+    at reconcileChildren (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:5898:51)
+    at beginWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6758:1573)
+    at runWithFiberInDEV (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:965:74)
+    at performUnitOfWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9555:97)
+    at workLoopSync (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9449:40)
+    at renderRootSync (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9433:13)
+    at performWorkOnRoot (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9061:186)
+    at performSyncWorkOnRoot (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10263:9)
+    at flushSyncWorkAcrossRoots_impl (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10179:316)
+    at processRootScheduleInMicrotask (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10200:106)
+    at <unknown> (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10274:158) (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:15127:29)
+⨯ Error: Could not find the module "[project]/src/app/page.tsx#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '4083375606'
+}
+[browser] Uncaught Error: Could not find the module "[project]/src/app/page.tsx#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>:1:18)
+    at resolveErrorDev (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_164kp-6._.js:1919:105)
+    at processFullStringRow (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_164kp-6._.js:2434:29)
+    at processFullBinaryRow (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_164kp-6._.js:2393:9)
+    at processBinaryChunk (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_164kp-6._.js:2502:221)
+    at progress (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_164kp-6._.js:2689:13)
+⨯ Error: Could not find the module "[project]/src/app/page.tsx#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>) {
+  digest: '4083375606'
+}
+[browser] Uncaught Error: Could not find the module "[project]/src/app/page.tsx#default" in the React Client Manifest. This is probably a bug in the React Server Components bundler.
+    at stringify (<anonymous>:1:18)
+    at resolveErrorDev (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_164kp-6._.js:1919:105)
+    at processFullStringRow (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_164kp-6._.js:2434:29)
+    at processFullBinaryRow (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_164kp-6._.js:2393:9)
+    at processBinaryChunk (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_164kp-6._.js:2502:221)
+    at progress (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-server-dom-turbopack_164kp-6._.js:2689:13)
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head headCacheNode={{rsc:{...}, ...}}>
+                    <__next_viewport_boundary__>
+                    <MetadataWrapper>
+                      <div
+                        hidden={true}
+-                       bis_skin_checked="1"
+                      >
+                  ...
+                    <RedirectErrorBoundary router={{...}}>
+                      <InnerLayoutRouter url="/" tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} ...>
+                        <SegmentViewNode type="page" pagePath="page.tsx">
+                          <SegmentTrieNode>
+                          <ClientPageRoot Component={function LandingPage} serverProvidedParams={{...}}>
+                            <LandingPage params={Promise} searchParams={Promise}>
+                              <div
+                                className="min-h-screen bg-background text-on-surface flex flex-col font-sans overflow..."
+-                               bis_skin_checked="1"
+                              >
+                                <header className="sticky top...">
+                                  <div
+                                    className="max-w-[1280px] mx-auto px-lg h-full flex justify-between items-center"
+-                                   bis_skin_checked="1"
+                                  >
+                                    <div
+                                      className="flex items-center gap-2.5 select-none"
+-                                     bis_skin_checked="1"
+                                    >
+                                      <div
+                                        className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center shad..."
+-                                       bis_skin_checked="1"
+                                      >
+                                      ...
+                                    <nav>
+                                    <div
+                                      className="flex items-center gap-md"
+-                                     bis_skin_checked="1"
+                                    >
+                                <main className="w-full fle...">
+                                  <section className="relative m...">
+                                    <canvas>
+                                    <div
+                                      className="orb w-[600px] h-[600px] bg-primary/8 -top-40 -right-40"
+-                                     bis_skin_checked="1"
+                                    >
+                                    <div
+                                      className="orb w-[400px] h-[400px] bg-secondary-container/20 -bottom-20 -left-20"
+-                                     bis_skin_checked="1"
+                                    >
+                                    <div
+                                      className="max-w-[1280px] mx-auto px-lg w-full grid lg:grid-cols-2 gap-xl items-..."
+-                                     bis_skin_checked="1"
+                                    >
+                                      <div
+                                        className="space-y-lg"
+-                                       bis_skin_checked="1"
+                                      >
+                                        <div
+                                          className="space-y-sm anim-fade-in-up"
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="inline-flex items-center gap-sm px-md py-2 bg-primary/10 text-p..."
+-                                           bis_skin_checked="1"
+                                          >
+                                          ...
+                                        <p>
+                                        <div
+                                          className="flex flex-col sm:flex-row items-start gap-md anim-fade-in-up"
+                                          style={{animationDelay:"0.3s",opacity:0,animationFillMode:"forwards"}}
+-                                         bis_skin_checked="1"
+                                        >
+                                        <div
+                                          className="flex flex-wrap gap-sm pt-sm anim-fade-in-up"
+                                          style={{animationDelay:"0.45s",opacity:0,animationFillMode:"forwards"}}
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="flex items-center gap-xs px-3 py-1.5 bg-surface-container-low r..."
+-                                           bis_skin_checked="1"
+                                          >
+                                          <div
+                                            className="flex items-center gap-xs px-3 py-1.5 bg-surface-container-low r..."
+-                                           bis_skin_checked="1"
+                                          >
+                                          <div
+                                            className="flex items-center gap-xs px-3 py-1.5 bg-surface-container-low r..."
+-                                           bis_skin_checked="1"
+                                          >
+                                          <div
+                                            className="flex items-center gap-xs px-3 py-1.5 bg-surface-container-low r..."
+-                                           bis_skin_checked="1"
+                                          >
+                                          <div
+                                            className="flex items-center gap-xs px-3 py-1.5 bg-surface-container-low r..."
+-                                           bis_skin_checked="1"
+                                          >
+                                      <div
+                                        className="relative hidden lg:block anim-slide-left"
+-                                       bis_skin_checked="1"
+                                      >
+                                        <div
+                                          className="relative w-full rounded-[2rem] overflow-hidden shadow-[0_32px_80p..."
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="p-sm bg-surface-container border-b border-outline-variant/20 fl..."
+-                                           bis_skin_checked="1"
+                                          >
+                                            <div
+                                              className="flex gap-1.5"
+-                                             bis_skin_checked="1"
+                                            >
+                                            <div
+                                              className="flex-1 mx-sm bg-surface-container-low h-5 rounded-lg px-sm fl..."
+-                                             bis_skin_checked="1"
+                                            >
+                                          <div
+                                            className="bg-gradient-to-br from-surface to-surface-container-low p-md sp..."
+-                                           bis_skin_checked="1"
+                                          >
+                                            <div
+                                              className="flex items-center justify-between"
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+                                                className="flex items-center gap-xs px-3 py-1.5 bg-emerald-100 text-em..."
+-                                               bis_skin_checked="1"
+                                              >
+                                            <div
+                                              className="flex items-end gap-1 h-24"
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="flex-1 rounded-t-sm"
+                                                style={{height:"65%",background:"rgba(46,89...",animation:"barGrow 0....", ...}}
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+                                                className="flex-1 rounded-t-sm"
+                                                style={{height:"80%",background:"rgba(46,89...",animation:"barGrow 0....", ...}}
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+                                                className="flex-1 rounded-t-sm"
+                                                style={{height:"55%",background:"rgba(251,1...",animation:"barGrow 0....", ...}}
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+                                                className="flex-1 rounded-t-sm"
+                                                style={{height:"90%",background:"rgba(46,89...",animation:"barGrow 0....", ...}}
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+                                                className="flex-1 rounded-t-sm"
+                                                style={{height:"70%",background:"rgba(46,89...",animation:"barGrow 0....", ...}}
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+                                                className="flex-1 rounded-t-sm"
+                                                style={{height:"85%",background:"rgba(251,1...",animation:"barGrow 0....", ...}}
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+                                                className="flex-1 rounded-t-sm"
+                                                style={{height:"95%",background:"rgba(46,89...",animation:"barGrow 0....", ...}}
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+                                                className="flex-1 rounded-t-sm"
+                                                style={{height:"75%",background:"rgba(46,89...",animation:"barGrow 0....", ...}}
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+                                                className="flex-1 rounded-t-sm"
+                                                style={{height:"88%",background:"rgba(251,1...",animation:"barGrow 0....", ...}}
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+                                                className="flex-1 rounded-t-sm"
+                                                style={{height:"60%",background:"rgba(46,89...",animation:"barGrow 0....", ...}}
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+                                                className="flex-1 rounded-t-sm"
+                                                style={{height:"92%",background:"rgba(46,89...",animation:"barGrow 0....", ...}}
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+                                                className="flex-1 rounded-t-sm"
+                                                style={{height:"78%",background:"rgba(251,1...",animation:"barGrow 0....", ...}}
+-                                               bis_skin_checked="1"
+                                              >
+                                            <div
+                                              className="grid grid-cols-3 gap-sm"
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="bg-surface-container rounded-xl p-sm text-center"
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+                                                className="bg-surface-container rounded-xl p-sm text-center"
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+                                                className="bg-surface-container rounded-xl p-sm text-center"
+-                                               bis_skin_checked="1"
+                                              >
+                                            <div
+                                              className="space-y-1.5"
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="flex items-center justify-between px-sm py-1.5 bg-surface-c..."
+-                                               bis_skin_checked="1"
+                                              >
+                                                <div
+-                                                 bis_skin_checked="1"
+                                                >
+                                                <div
+                                                  className="flex items-center gap-xs"
+-                                                 bis_skin_checked="1"
+                                                >
+                                              <div
+                                                className="flex items-center justify-between px-sm py-1.5 bg-surface-c..."
+-                                               bis_skin_checked="1"
+                                              >
+                                                <div
+-                                                 bis_skin_checked="1"
+                                                >
+                                                <div
+                                                  className="flex items-center gap-xs"
+-                                                 bis_skin_checked="1"
+                                                >
+                                              <div
+                                                className="flex items-center justify-between px-sm py-1.5 bg-surface-c..."
+-                                               bis_skin_checked="1"
+                                              >
+                                                <div
+-                                                 bis_skin_checked="1"
+                                                >
+                                                <div
+                                                  className="flex items-center gap-xs"
+-                                                 bis_skin_checked="1"
+                                                >
+                                        <div
+                                          className="absolute -bottom-6 -left-10 glass-ai p-md rounded-2xl shadow-2xl ..."
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="flex items-center gap-sm mb-sm"
+-                                           bis_skin_checked="1"
+                                          >
+                                            <div
+                                              className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-..."
+-                                             bis_skin_checked="1"
+                                            >
+                                            <div
+-                                             bis_skin_checked="1"
+                                            >
+                                          <div
+                                            className="h-1.5 bg-outline-variant/30 rounded-full overflow-hidden"
+-                                           bis_skin_checked="1"
+                                          >
+                                            <div
+                                              className="h-full bg-primary w-[75%] rounded-full"
+-                                             bis_skin_checked="1"
+                                            >
+                                          ...
+                                        <div
+                                          className="absolute -top-4 -right-8 glass-ai p-sm rounded-2xl shadow-xl w-52..."
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="flex items-center gap-xs mb-xs"
+-                                           bis_skin_checked="1"
+                                          >
+                                          <p>
+                                          <div
+                                            className="flex items-center gap-xs mt-xs"
+-                                           bis_skin_checked="1"
+                                          >
+                                    <div
+                                      className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-cente..."
+-                                     bis_skin_checked="1"
+                                    >
+                                  <section id="stats" className="py-xl bg-p...">
+                                    <div
+                                      className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(190,2..."
+-                                     bis_skin_checked="1"
+                                    >
+                                    <div
+                                      className="max-w-[1280px] mx-auto px-lg relative z-10"
+-                                     bis_skin_checked="1"
+                                    >
+                                      <div
+                                        className="grid grid-cols-2 md:grid-cols-4 gap-gutter"
+-                                       bis_skin_checked="1"
+                                      >
+                                        <div
+                                          className="reveal text-center space-y-sm p-md rounded-2xl hover:bg-white/5 t..."
+                                          style={{transitionDelay:"0s"}}
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-cen..."
+-                                           bis_skin_checked="1"
+                                          >
+                                          ...
+                                        <div
+                                          className="reveal text-center space-y-sm p-md rounded-2xl hover:bg-white/5 t..."
+                                          style={{transitionDelay:"0.1s"}}
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-cen..."
+-                                           bis_skin_checked="1"
+                                          >
+                                          ...
+                                        <div
+                                          className="reveal text-center space-y-sm p-md rounded-2xl hover:bg-white/5 t..."
+                                          style={{transitionDelay:"0.2s"}}
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-cen..."
+-                                           bis_skin_checked="1"
+                                          >
+                                          ...
+                                        <div
+                                          className="reveal text-center space-y-sm p-md rounded-2xl hover:bg-white/5 t..."
+                                          style={{transitionDelay:"0.30000000..."}}
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-cen..."
+-                                           bis_skin_checked="1"
+                                          >
+                                          ...
+                                  <section id="features" className="py-2xl bg-...">
+                                    <div
+                                      className="max-w-[1280px] mx-auto px-lg"
+-                                     bis_skin_checked="1"
+                                    >
+                                      <div
+                                        className="text-center mb-2xl space-y-md reveal"
+-                                       bis_skin_checked="1"
+                                      >
+                                        <div
+                                          className="inline-flex items-center gap-sm px-md py-2 bg-primary/10 text-pri..."
+-                                         bis_skin_checked="1"
+                                        >
+                                        ...
+                                      <div
+                                        className="grid grid-cols-1 md:grid-cols-12 gap-gutter"
+-                                       bis_skin_checked="1"
+                                      >
+                                        <LinkComponent href="/dashboard..." className="md:col-spa..." style={{...}}>
+                                          <a className="md:col-spa..." style={{...}} ref={function} ...>
+                                            <div
+                                              className="space-y-md relative z-10"
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="flex items-start justify-between"
+-                                               bis_skin_checked="1"
+                                              >
+                                                <div
+                                                  className="w-14 h-14 bg-emerald-100 text-emerald-700 rounded-2xl fle..."
+-                                                 bis_skin_checked="1"
+                                                >
+                                                ...
+                                              <div
+-                                               bis_skin_checked="1"
+                                              >
+                                              ...
+                                            <div
+                                              className="mt-md flex items-center justify-between relative z-10"
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="flex flex-wrap gap-xs"
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+                                                className="w-8 h-8 rounded-full bg-white/60 flex items-center justify-..."
+-                                               bis_skin_checked="1"
+                                              >
+                                            <div
+                                              className="absolute -bottom-4 -right-4 opacity-[0.04] group-hover:opacit..."
+-                                             bis_skin_checked="1"
+                                            >
+                                        <LinkComponent href="/dashboard..." className="md:col-spa..." style={{...}}>
+                                          <a className="md:col-spa..." style={{...}} ref={function} ...>
+                                            <div
+                                              className="space-y-md relative z-10"
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="flex items-start justify-between"
+-                                               bis_skin_checked="1"
+                                              >
+                                                <div
+                                                  className="w-14 h-14 bg-amber-100 text-amber-700 rounded-2xl flex it..."
+-                                                 bis_skin_checked="1"
+                                                >
+                                                ...
+                                              <div
+-                                               bis_skin_checked="1"
+                                              >
+                                              ...
+                                            <div
+                                              className="mt-md flex items-center justify-between relative z-10"
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="flex flex-wrap gap-xs"
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+                                                className="w-8 h-8 rounded-full bg-white/60 flex items-center justify-..."
+-                                               bis_skin_checked="1"
+                                              >
+                                            <div
+                                              className="absolute -bottom-4 -right-4 opacity-[0.04] group-hover:opacit..."
+-                                             bis_skin_checked="1"
+                                            >
+                                        <LinkComponent href="/dashboard..." className="md:col-spa..." style={{...}}>
+                                          <a className="md:col-spa..." style={{...}} ref={function} ...>
+                                            <div
+                                              className="space-y-md relative z-10"
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="flex items-start justify-between"
+-                                               bis_skin_checked="1"
+                                              >
+                                                <div
+                                                  className="w-14 h-14 bg-sky-100 text-sky-700 rounded-2xl flex items-..."
+-                                                 bis_skin_checked="1"
+                                                >
+                                                ...
+                                              <div
+-                                               bis_skin_checked="1"
+                                              >
+                                              ...
+                                            <div
+                                              className="mt-md flex items-center justify-between relative z-10"
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="flex flex-wrap gap-xs"
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+                                                className="w-8 h-8 rounded-full bg-white/60 flex items-center justify-..."
+-                                               bis_skin_checked="1"
+                                              >
+                                            <div
+                                              className="absolute -bottom-4 -right-4 opacity-[0.04] group-hover:opacit..."
+-                                             bis_skin_checked="1"
+                                            >
+                                        <LinkComponent href="/dashboard..." className="md:col-spa..." style={{...}}>
+                                          <a className="md:col-spa..." style={{...}} ref={function} ...>
+                                            <div
+                                              className="space-y-md relative z-10"
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="flex items-start justify-between"
+-                                               bis_skin_checked="1"
+                                              >
+                                                <div
+                                                  className="w-14 h-14 bg-violet-100 text-violet-700 rounded-2xl flex ..."
+-                                                 bis_skin_checked="1"
+                                                >
+                                                ...
+                                              <div
+-                                               bis_skin_checked="1"
+                                              >
+                                              ...
+                                            <div
+                                              className="mt-md flex items-center justify-between relative z-10"
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="flex flex-wrap gap-xs"
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+                                                className="w-8 h-8 rounded-full bg-white/60 flex items-center justify-..."
+-                                               bis_skin_checked="1"
+                                              >
+                                            <div
+                                              className="absolute -bottom-4 -right-4 opacity-[0.04] group-hover:opacit..."
+-                                             bis_skin_checked="1"
+                                            >
+                                        <LinkComponent href="/dashboard..." className="md:col-spa..." style={{...}}>
+                                          <a className="md:col-spa..." style={{...}} ref={function} ...>
+                                            <div
+                                              className="space-y-md relative z-10"
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="flex items-start justify-between"
+-                                               bis_skin_checked="1"
+                                              >
+                                                <div
+                                                  className="w-14 h-14 bg-rose-100 text-rose-700 rounded-2xl flex item..."
+-                                                 bis_skin_checked="1"
+                                                >
+                                                ...
+                                              <div
+-                                               bis_skin_checked="1"
+                                              >
+                                              ...
+                                            <div
+                                              className="mt-md flex items-center justify-between relative z-10"
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="flex flex-wrap gap-xs"
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+                                                className="w-8 h-8 rounded-full bg-white/60 flex items-center justify-..."
+-                                               bis_skin_checked="1"
+                                              >
+                                            <div
+                                              className="absolute -bottom-4 -right-4 opacity-[0.04] group-hover:opacit..."
+-                                             bis_skin_checked="1"
+                                            >
+                                  <section className="py-2xl bg-...">
+                                    <div
+                                      className="max-w-[1280px] mx-auto px-lg"
+-                                     bis_skin_checked="1"
+                                    >
+                                      <div
+                                        className="text-center mb-2xl reveal"
+-                                       bis_skin_checked="1"
+                                      >
+                                      <div
+                                        className="grid md:grid-cols-3 gap-gutter relative"
+-                                       bis_skin_checked="1"
+                                      >
+                                        <div
+                                          className="hidden md:block absolute top-16 left-1/6 right-1/6 h-0.5 bg-gradi..."
+-                                         bis_skin_checked="1"
+                                        >
+                                        <div
+                                          className="reveal flex flex-col items-center text-center gap-md"
+                                          style={{transitionDelay:"0s"}}
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="relative"
+-                                           bis_skin_checked="1"
+                                          >
+                                            <div
+                                              className="w-16 h-16 bg-emerald-500 rounded-2xl flex items-center justif..."
+-                                             bis_skin_checked="1"
+                                            >
+                                            <div
+                                              className="absolute -top-2 -right-2 w-7 h-7 bg-surface rounded-full bord..."
+-                                             bis_skin_checked="1"
+                                            >
++                                             01
+                                          <div
+                                            className="space-y-sm"
+-                                           bis_skin_checked="1"
+                                          >
+                                        <div
+                                          className="reveal flex flex-col items-center text-center gap-md"
+                                          style={{transitionDelay:"0.15s"}}
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="relative"
+-                                           bis_skin_checked="1"
+                                          >
+                                            <div
+                                              className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-ce..."
+-                                             bis_skin_checked="1"
+                                            >
+                                            <div
+                                              className="absolute -top-2 -right-2 w-7 h-7 bg-surface rounded-full bord..."
+-                                             bis_skin_checked="1"
+                                            >
++                                             02
+                                          <div
+                                            className="space-y-sm"
+-                                           bis_skin_checked="1"
+                                          >
+                                        <div
+                                          className="reveal flex flex-col items-center text-center gap-md"
+                                          style={{transitionDelay:"0.3s"}}
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="relative"
+-                                           bis_skin_checked="1"
+                                          >
+                                            <div
+                                              className="w-16 h-16 bg-secondary rounded-2xl flex items-center justify-..."
+-                                             bis_skin_checked="1"
+                                            >
+                                            <div
+                                              className="absolute -top-2 -right-2 w-7 h-7 bg-surface rounded-full bord..."
+-                                             bis_skin_checked="1"
+                                            >
++                                             03
+                                          <div
+                                            className="space-y-sm"
+-                                           bis_skin_checked="1"
+                                          >
+                                  <section id="connectivity" className="py-2xl bg-...">
+                                    <div
+                                      className="max-w-[1280px] mx-auto px-lg"
+-                                     bis_skin_checked="1"
+                                    >
+                                      <div
+                                        className="flex flex-col lg:flex-row items-center gap-2xl"
+-                                       bis_skin_checked="1"
+                                      >
+                                        <div
+                                          className="lg:w-1/2 space-y-lg reveal-left"
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="inline-flex items-center gap-sm px-md py-2 bg-primary/10 text-p..."
+-                                           bis_skin_checked="1"
+                                          >
+                                          <h2>
+                                          <p>
+                                          <div
+                                            className="grid sm:grid-cols-2 gap-md"
+-                                           bis_skin_checked="1"
+                                          >
+                                            <div
+                                              className="flex items-start gap-sm p-md rounded-2xl bg-surface-container..."
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justif..."
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+-                                               bis_skin_checked="1"
+                                              >
+                                            <div
+                                              className="flex items-start gap-sm p-md rounded-2xl bg-surface-container..."
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justif..."
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+-                                               bis_skin_checked="1"
+                                              >
+                                            <div
+                                              className="flex items-start gap-sm p-md rounded-2xl bg-surface-container..."
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justif..."
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+-                                               bis_skin_checked="1"
+                                              >
+                                            <div
+                                              className="flex items-start gap-sm p-md rounded-2xl bg-surface-container..."
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justif..."
+-                                               bis_skin_checked="1"
+                                              >
+                                              <div
+-                                               bis_skin_checked="1"
+                                              >
+                                        <div
+                                          className="lg:w-1/2 w-full relative reveal-right"
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="relative rounded-[2rem] overflow-hidden shadow-2xl border borde..."
+-                                           bis_skin_checked="1"
+                                          >
+                                            <div
+                                              className="bg-gradient-to-br from-primary to-tertiary-container aspect-[..."
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="absolute inset-0 flex items-center justify-center"
+-                                               bis_skin_checked="1"
+                                              >
+                                                <div
+                                                  className="relative"
+-                                                 bis_skin_checked="1"
+                                                >
+                                                  <div
+                                                    className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm fle..."
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                  <div
+                                                    className="absolute w-10 h-10 rounded-full bg-white/15 backdrop-bl..."
+                                                    style={{top:"50%",left:"95%",transform:"translate(..."}}
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                  <div
+                                                    className="absolute w-10 h-10 rounded-full bg-white/15 backdrop-bl..."
+                                                    style={{top:"88.97%",left:"72.5%",transform:"translate(..."}}
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                  <div
+                                                    className="absolute w-10 h-10 rounded-full bg-white/15 backdrop-bl..."
+                                                    style={{top:"88.97%",left:"27.5%",transform:"translate(..."}}
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                  <div
+                                                    className="absolute w-10 h-10 rounded-full bg-white/15 backdrop-bl..."
+                                                    style={{top:"50%",left:"5%",transform:"translate(..."}}
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                  <div
+                                                    className="absolute w-10 h-10 rounded-full bg-white/15 backdrop-bl..."
+                                                    style={{top:"11.03%",left:"27.5%",transform:"translate(..."}}
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                  <div
+                                                    className="absolute w-10 h-10 rounded-full bg-white/15 backdrop-bl..."
+                                                    style={{top:"11.03%",left:"72.5%",transform:"translate(..."}}
+-                                                   bis_skin_checked="1"
+                                                  >
+                                              <div
+                                                className="relative z-10 text-white text-center space-y-sm mt-24"
+-                                               bis_skin_checked="1"
+                                              >
+                                  <section className="py-2xl bg-...">
+                                    <div
+                                      className="absolute inset-0"
+-                                     bis_skin_checked="1"
+                                    >
+                                      <div
+                                        className="orb w-[500px] h-[500px] bg-white/5 -top-40 -right-20"
+-                                       bis_skin_checked="1"
+                                      >
+                                      <div
+                                        className="orb w-[300px] h-[300px] bg-secondary-container/10 bottom-0 left-20"
+-                                       bis_skin_checked="1"
+                                      >
+                                    <div
+                                      className="max-w-[1280px] mx-auto px-lg relative z-10 text-center space-y-lg reveal"
+-                                     bis_skin_checked="1"
+                                    >
+                                      <div
+                                        className="inline-flex items-center gap-sm px-md py-2 bg-white/15 text-white r..."
+-                                       bis_skin_checked="1"
+                                      >
+                                      <h2>
+                                      <p>
+                                      <div
+                                        className="flex flex-col sm:flex-row items-center justify-center gap-md pt-sm"
+-                                       bis_skin_checked="1"
+                                      >
+                                <footer className="bg-surface...">
+                                  <div
+                                    className="max-w-[1280px] mx-auto px-lg"
+-                                   bis_skin_checked="1"
+                                  >
+                                    <div
+                                      className="grid grid-cols-2 md:grid-cols-4 gap-xl text-left mb-xl"
+-                                     bis_skin_checked="1"
+                                    >
+                                      <div
+                                        className="col-span-2 space-y-md"
+-                                       bis_skin_checked="1"
+                                      >
+                                        <div
+                                          className="flex items-center gap-2.5"
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center"
+-                                           bis_skin_checked="1"
+                                          >
+                                          ...
+                                        <p>
+                                        <div
+                                          className="flex gap-sm"
+-                                         bis_skin_checked="1"
+                                        >
+                                      <div
+-                                       bis_skin_checked="1"
+                                      >
+                                      <div
+-                                       bis_skin_checked="1"
+                                      >
+                                    <div
+                                      className="border-t border-outline-variant/20 pt-lg text-center text-xs text-on-..."
+-                                     bis_skin_checked="1"
+                                    >
+                        ...
+                      ...
+                  ...
+ 
+    at <unknown> (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3439:25)
+    at runWithFiberInDEV (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:965:74)
+    at emitPendingHydrationWarnings (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3438:13)
+    at completeWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6885:102)
+    at runWithFiberInDEV (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:965:131)
+    at completeUnitOfWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9622:23)
+    at performUnitOfWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9557:28)
+    at workLoopConcurrentByScheduler (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9551:58)
+    at renderRootConcurrent (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9534:71)
+    at performWorkOnRoot (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9061:150)
+    at performWorkOnRootViaSchedulerTask (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10255:9)
+    at MessagePort.performWorkUntilDeadline (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_1amofcm._.js:2647:64) (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3439:25)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/dashboard..." notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head headCacheNode={{rsc:{...}, ...}}>
+                    <__next_viewport_boundary__>
+                    <MetadataWrapper>
+                      <div
+                        hidden={true}
+-                       bis_skin_checked="1"
+                      >
+                  ...
+                    <InnerLayoutRouter url="/dashboard..." tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} ...>
+                      <SegmentViewNode type="layout" pagePath="dashboard/...">
+                        <SegmentTrieNode>
+                        <link>
+                        <script>
+                        <script>
+                        <ClientSegmentRoot Component={function DashboardLayout} slots={{children:{...}}} ...>
+                          <DashboardLayout params={Promise}>
+                            <div
+                              className="dashboard-shell h-dvh overflow-hidden bg-surface-container-low text-on-surface"
+-                             bis_skin_checked="1"
+                            >
+                              <header className="fixed inse...">
+                                <div
+                                  className="flex h-14 items-center justify-between gap-3 px-3 sm:px-4 lg:px-5"
+-                                 bis_skin_checked="1"
+                                >
+                                  <div
+                                    className="flex min-w-0 items-center gap-sm"
+-                                   bis_skin_checked="1"
+                                  >
+                                    <button>
+                                    <LinkComponent>
+                                    <MaterialIcon>
+                                    <div
+                                      className="min-w-0"
+-                                     bis_skin_checked="1"
+                                    >
+                                  <div
+                                    className="relative flex items-center gap-xs"
+-                                   bis_skin_checked="1"
+                                  >
+                                    <button>
+                                    <div
+                                      className="hidden h-7 w-px bg-outline-variant/35 sm:block"
+-                                     bis_skin_checked="1"
+                                    >
+                                    <div
+                                      className="hidden items-center gap-sm rounded-lg border border-outline-variant/3..."
+-                                     bis_skin_checked="1"
+                                    >
+                              <div
+                                className="flex h-dvh overflow-hidden pt-14"
+-                               bis_skin_checked="1"
+                              >
+                                <aside className="fixed left...">
+                                  <Sidebar pathname="/dashboard...">
+                                    <div
+                                      className="flex h-full flex-col bg-surface-container-lowest"
+-                                     bis_skin_checked="1"
+                                    >
+                                      <div
+                                        className="border-b border-outline-variant/35 px-md py-sm"
+-                                       bis_skin_checked="1"
+                                      >
+                                      <div
+                                        className="border-b border-outline-variant/25 px-md py-sm"
+-                                       bis_skin_checked="1"
+                                      >
+                                        <div
+                                          className="flex items-center justify-between gap-sm rounded-lg bg-surface-co..."
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="min-w-0"
+-                                           bis_skin_checked="1"
+                                          >
+                                          ...
+                                      <nav className="custom-scr..." aria-label="Navigasi d...">
+                                        <p>
+                                        <div
+                                          className="flex flex-col gap-1"
+-                                         bis_skin_checked="1"
+                                        >
+                                      <div
+                                        className="border-t border-outline-variant/30 p-sm"
+-                                       bis_skin_checked="1"
+                                      >
+                                        <div
+                                          className="flex items-center gap-sm rounded-lg border border-outline-variant..."
+-                                         bis_skin_checked="1"
+                                        >
+                                <main id="main-content" className="custom-scr...">
+                                  <div
+                                    className="mx-auto w-full max-w-[1440px] px-3 py-3 sm:px-4 sm:py-4 lg:px-5"
+-                                   bis_skin_checked="1"
+                                  >
+                                    ...
+                                      <SegmentViewNode type="page" pagePath="dashboard/...">
+                                        <SegmentTrieNode>
+                                        <ClientPageRoot Component={function DemandIntelligence} ...>
+                                          <DemandIntelligence params={Promise} searchParams={Promise}>
+                                            <div
+                                              className="dashboard-page dashboard-page-demand mx-auto w-full max-w-[14..."
+-                                             bis_skin_checked="1"
+                                            >
+                                              <RfqDrawer>
+                                              <div
+                                                className="rounded-2xl border border-outline-variant/30 bg-surface-con..."
+-                                               bis_skin_checked="1"
+                                              >
+                                                <div
+                                                  className="flex flex-col gap-md lg:flex-row lg:items-center lg:justi..."
+-                                                 bis_skin_checked="1"
+                                                >
+                                                  <div
+                                                    className="flex items-center gap-md"
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                    <div
+                                                      className="grid h-14 w-14 shrink-0 place-items-center rounded-2x..."
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                    <div
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                  ...
+                                              <section className="rounded-2x...">
+                                                <p>
+                                                <EmptyState title="Belum ada ..." text="Produk ter...">
+                                                  <div
+                                                    className="flex min-h-[220px] flex-col items-center justify-center..."
+-                                                   bis_skin_checked="1"
+                                                  >
+                                              <div
+                                                className="flex flex-wrap gap-xs rounded-2xl bg-surface-container-low p-1"
+-                                               bis_skin_checked="1"
+                                              >
+                                              <section className="space-y-md">
+                                                <div
+                                                  className="flex flex-col gap-md sm:flex-row sm:items-center sm:justi..."
+-                                                 bis_skin_checked="1"
+                                                >
+                                                  <div
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                  <div
+                                                    className="flex flex-wrap gap-xs"
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                <div
+                                                  className="space-y-sm"
+-                                                 bis_skin_checked="1"
+                                                >
+                                                  <div
+                                                    className="h-16 animate-pulse rounded-xl bg-surface-container"
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                  <div
+                                                    className="h-16 animate-pulse rounded-xl bg-surface-container"
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                  <div
+                                                    className="h-16 animate-pulse rounded-xl bg-surface-container"
+-                                                   bis_skin_checked="1"
+                                                  >
+                  ...
+ 
+    at <unknown> (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3439:25)
+    at runWithFiberInDEV (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:965:74)
+    at emitPendingHydrationWarnings (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3438:13)
+    at completeWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6885:102)
+    at runWithFiberInDEV (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:965:131)
+    at completeUnitOfWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9622:23)
+    at performUnitOfWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9557:28)
+    at workLoopConcurrentByScheduler (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9551:58)
+    at renderRootConcurrent (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9534:71)
+    at performWorkOnRoot (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9061:150)
+    at performWorkOnRootViaSchedulerTask (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10255:9)
+    at MessagePort.performWorkUntilDeadline (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_1amofcm._.js:2647:64) (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3439:25)
+⚠ Server is approaching the used memory threshold, restarting...
+⚠ Slow filesystem detected. The benchmark took 1250ms. If C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\.next/dev is a network drive, consider moving it to a local folder.
+See more: https://nextjs.org/docs/app/guides/local-development
+[browser] "⨯ unhandledRejection:" [object Event] 
+
+⚠ Fast Refresh had to perform a full reload due to a runtime error.

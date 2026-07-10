@@ -170,8 +170,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   );
 
   return (
-    <div className="dashboard-shell min-h-screen bg-surface-container-low text-on-surface">
-      <header className="sticky top-0 z-40 border-b border-outline-variant/35 bg-surface-container-lowest/95 backdrop-blur">
+    <div className="dashboard-shell h-dvh overflow-hidden bg-surface-container-low text-on-surface">
+      <header className="fixed inset-x-0 top-0 z-40 border-b border-outline-variant/35 bg-surface-container-lowest/95 backdrop-blur">
       <div className="flex h-14 items-center justify-between gap-3 px-3 sm:px-4 lg:px-5">
           <div className="flex min-w-0 items-center gap-sm">
             <button
@@ -255,8 +255,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
       </header>
 
-      <div className="flex min-h-[calc(100vh-3.5rem)]">
-        <aside className="hidden w-[220px] shrink-0 border-r border-outline-variant/35 lg:block">
+      <div className="flex h-dvh overflow-hidden pt-14">
+        <aside className="fixed left-0 top-14 z-30 hidden h-[calc(100dvh-3.5rem)] w-[220px] shrink-0 overflow-hidden border-r border-outline-variant/35 lg:block">
           <Sidebar pathname={pathname} />
         </aside>
 
@@ -274,7 +274,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </>
         ) : null}
 
-        <main id="main-content" className="custom-scrollbar min-w-0 flex-1 overflow-y-auto">
+        <main id="main-content" className="custom-scrollbar h-[calc(100dvh-3.5rem)] min-w-0 flex-1 overflow-y-auto lg:ml-[220px]">
           <div className="mx-auto w-full max-w-[1440px] px-3 py-3 sm:px-4 sm:py-4 lg:px-5">{children}</div>
         </main>
       </div>
