@@ -199,7 +199,7 @@ export default function DemandIntelligence() {
   const { sorted: sortedHistory, sortKey: histSortKey, sortDir: histSortDir, toggleSort: toggleHistSort } = useSortable(filteredHistory, "date");
 
   return (
-    <div className="space-y-lg w-full max-w-[1280px] mx-auto pb-2xl">
+    <div className="dashboard-page dashboard-page-demand space-y-lg w-full max-w-[1280px] mx-auto pb-2xl">
       {toast && <Toast message={toast.message} type={toast.type} />}
 
       {/* Full Text Modal */}

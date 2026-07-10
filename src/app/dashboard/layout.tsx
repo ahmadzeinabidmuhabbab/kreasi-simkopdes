@@ -1,17 +1,162 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import "./dashboard-shell.css";
+
+type Tone = "primary" | "amber" | "sky" | "violet" | "rose" | "cyan" | "orange" | "purple";
 
 interface NavItem {
   name: string;
   href: string;
   icon: string;
   description: string;
-  accentBg: string;
-  accentText: string;
-  activeBg: string;
+  tone: Tone;
+}
+
+const navItems: NavItem[] = [
+  { name: "AI Demand Intelligence", href: "/dashboard/demand", icon: "psychology", description: "Prediksi demand & RFQ", tone: "primary" },
+  { name: "RFM Segmentation", href: "/dashboard/rfm", icon: "groups", description: "Profil anggota", tone: "amber" },
+  { name: "Smart Bundle & Stock", href: "/dashboard/bundle", icon: "inventory_2", description: "Pengadaan & pricing", tone: "sky" },
+  { name: "Arus SAK-EP", href: "/dashboard/finance", icon: "account_balance_wallet", description: "Keuangan & PDF", tone: "violet" },
+  { name: "Distribusi SHU", href: "/dashboard/shu", icon: "payments", description: "Kalkulasi SHU", tone: "rose" },
+  { name: "Riwayat Transaksi", href: "/dashboard/transactions", icon: "receipt_long", description: "Penjualan anggota", tone: "cyan" },
+  { name: "Stok Barang", href: "/dashboard/stock", icon: "warehouse", description: "Inventaris", tone: "orange" },
+  { name: "Manajemen User", href: "/dashboard/users", icon: "manage_accounts", description: "Akun & akses", tone: "purple" },
+];
+
+const toneClass: Record<Tone, string> = {
+  primary: "bg-primary/10 text-primary",
+  amber: "bg-secondary-container/25 text-on-secondary-container",
+  sky: "bg-sky-100 text-sky-700",
+  violet: "bg-violet-100 text-violet-700",
+  rose: "bg-rose-100 text-rose-700",
+  cyan: "bg-cyan-100 text-cyan-700",
+  orange: "bg-orange-100 text-orange-700",
+  purple: "bg-purple-100 text-purple-700",
+};
+
+const notifications = [
+  { title: "Stok LPG kritis", body: "Sisa 5 tabung. Restock disarankan hari ini.", icon: "warning", tone: "border-error/35 bg-error-container/45 text-error" },
+  { title: "Demand naik", body: "Semen Gresik diproyeksikan +28% minggu depan.", icon: "trending_up", tone: "border-primary/25 bg-primary/5 text-primary" },
+  { title: "SHU siap", body: "Rp 1.5M SHU bersih siap didistribusikan.", icon: "payments", tone: "border-emerald-200 bg-emerald-50 text-emerald-700" },
+] as const;
+
+function MaterialIcon({
+  children,
+  className = "",
+  filled = false,
+}: {
+  children: string;
+  className?: string;
+  filled?: boolean;
+}) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`material-symbols-outlined ${className}`}
+      style={{ fontVariationSettings: filled ? "'FILL' 1" : "'FILL' 0" }}
+    >
+      {children}
+    </span>
+  );
+}
+
+function Sidebar({ pathname, onClose }: { pathname: string; onClose?: () => void }) {
+  return (
+    <div className="flex h-full flex-col bg-surface-container-lowest">
+      <div className="border-b border-outline-variant/35 px-md py-sm">
+        <Link
+          href="/"
+          onClick={onClose}
+          className="flex min-h-11 items-center gap-sm rounded-lg px-1 text-on-surface transition-colors hover:bg-surface-container focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35"
+        >
+          <span className="flex size-9 items-center justify-center rounded-lg bg-primary text-on-primary">
+            <MaterialIcon filled className="text-[21px]">
+              agriculture
+            </MaterialIcon>
+          </span>
+          <span className="min-w-0">
+            <span className="block truncate text-base font-extrabold leading-none text-primary">KREASI</span>
+            <span className="mt-0.5 block truncate text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
+              Operations Console
+            </span>
+          </span>
+        </Link>
+      </div>
+
+      <div className="border-b border-outline-variant/25 px-md py-sm">
+        <div className="flex items-center justify-between gap-sm rounded-lg bg-surface-container-low px-sm py-2">
+          <div className="min-w-0">
+            <p className="truncate text-xs font-extrabold text-on-surface">Koperasi Sumber Makmur</p>
+            <p className="truncate text-[10px] text-on-surface-variant">Workspace aktif</p>
+          </div>
+          <span className="inline-flex items-center gap-1 rounded-md border border-primary/20 bg-primary/10 px-2 py-1 text-[10px] font-bold text-primary">
+            <span className="size-1.5 rounded-full bg-primary" />
+            Live
+          </span>
+        </div>
+      </div>
+
+      <nav className="custom-scrollbar flex-1 overflow-y-auto px-sm py-sm" aria-label="Navigasi dashboard">
+        <p className="px-sm pb-xs text-[10px] font-bold uppercase tracking-wider text-on-surface-variant/70">
+          Modul
+        </p>
+        <div className="flex flex-col gap-1">
+          {navItems.map((item) => {
+            const active = pathname === item.href;
+
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                onClick={onClose}
+                aria-current={active ? "page" : undefined}
+                className={`group flex min-h-12 items-center gap-sm rounded-lg border px-sm py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35 ${
+                  active
+                    ? "border-primary/25 bg-primary/8 text-on-surface"
+                    : "border-transparent text-on-surface-variant hover:border-outline-variant/35 hover:bg-surface-container-low hover:text-on-surface"
+                }`}
+              >
+                <span
+                  className={`flex size-8 shrink-0 items-center justify-center rounded-md ${
+                    active ? toneClass[item.tone] : "bg-surface-container text-on-surface-variant group-hover:text-primary"
+                  }`}
+                >
+                  <MaterialIcon filled={active} className="text-[19px]">
+                    {item.icon}
+                  </MaterialIcon>
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-[13px] font-extrabold leading-tight">{item.name}</span>
+                  <span className="block truncate text-[10px] leading-tight text-on-surface-variant">{item.description}</span>
+                </span>
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
+
+      <div className="border-t border-outline-variant/30 p-sm">
+        <div className="flex items-center gap-sm rounded-lg border border-outline-variant/25 bg-surface-container-low p-sm">
+          <span className="flex size-8 items-center justify-center rounded-md bg-primary text-xs font-extrabold text-on-primary">A</span>
+          <span className="min-w-0 flex-1">
+            <span className="block truncate text-xs font-extrabold text-on-surface">Admin Kopdes</span>
+            <span className="block truncate text-[10px] text-on-surface-variant">Full access</span>
+          </span>
+          <Link
+            href="/"
+            onClick={onClose}
+            aria-label="Kembali ke landing"
+            className="flex size-10 items-center justify-center rounded-md text-on-surface-variant hover:bg-surface-container-high hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35"
+          >
+            <MaterialIcon className="text-[18px]">logout</MaterialIcon>
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
 }
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -19,267 +164,118 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [notificationsOpen, setNotificationsOpen] = useState(false);
 
-  const navItems: NavItem[] = [
-    {
-      name: "AI Demand Intelligence",
-      href: "/dashboard/demand",
-      icon: "psychology",
-      description: "Prediksi demand & RFQ",
-      accentBg: "bg-emerald-100",
-      accentText: "text-emerald-700",
-      activeBg: "bg-emerald-50 border-l-4 border-emerald-500",
-    },
-    {
-      name: "RFM Segmentation",
-      href: "/dashboard/rfm",
-      icon: "groups",
-      description: "Profil & rekomendasi anggota",
-      accentBg: "bg-amber-100",
-      accentText: "text-amber-700",
-      activeBg: "bg-amber-50 border-l-4 border-amber-500",
-    },
-    {
-      name: "Smart Bundle & Stock",
-      href: "/dashboard/bundle",
-      icon: "inventory_2",
-      description: "Pengadaan, rak & pricing",
-      accentBg: "bg-sky-100",
-      accentText: "text-sky-700",
-      activeBg: "bg-sky-50 border-l-4 border-sky-500",
-    },
-    {
-      name: "Arus SAK-EP",
-      href: "/dashboard/finance",
-      icon: "account_balance_wallet",
-      description: "Laporan keuangan & PDF",
-      accentBg: "bg-violet-100",
-      accentText: "text-violet-700",
-      activeBg: "bg-violet-50 border-l-4 border-violet-500",
-    },
-    {
-      name: "Distribusi SHU",
-      href: "/dashboard/shu",
-      icon: "payments",
-      description: "Kalkulasi & blast SHU",
-      accentBg: "bg-rose-100",
-      accentText: "text-rose-700",
-      activeBg: "bg-rose-50 border-l-4 border-rose-500",
-    },
-    {
-      name: "Riwayat Transaksi",
-      href: "/dashboard/transactions",
-      icon: "receipt_long",
-      description: "Transaksi penjualan anggota",
-      accentBg: "bg-cyan-100",
-      accentText: "text-cyan-700",
-      activeBg: "bg-cyan-50 border-l-4 border-cyan-500",
-    },
-    {
-      name: "Stok Barang",
-      href: "/dashboard/stock",
-      icon: "warehouse",
-      description: "Inventaris & monitoring stok",
-      accentBg: "bg-orange-100",
-      accentText: "text-orange-700",
-      activeBg: "bg-orange-50 border-l-4 border-orange-500",
-    },
-    {
-      name: "Manajemen User",
-      href: "/dashboard/users",
-      icon: "manage_accounts",
-      description: "Kelola akun & hak akses",
-      accentBg: "bg-purple-100",
-      accentText: "text-purple-700",
-      activeBg: "bg-purple-50 border-l-4 border-purple-500",
-    },
-  ];
-
-
-  const notifications = [
-    { title: "Stok Gas LPG Kritis!", body: "Sisa 5 tabung — segera lakukan restock 300 unit.", color: "border-red-500", icon: "warning", iconColor: "text-red-500" },
-    { title: "Prediksi Demand Baru", body: "Semen Gresik diproyeksikan naik +28% minggu depan.", color: "border-primary", icon: "trending_up", iconColor: "text-primary" },
-    { title: "SHU Siap Dibagikan", body: "Rp 1.5M SHU bersih siap diblast ke 785 anggota.", color: "border-emerald-500", icon: "payments", iconColor: "text-emerald-600" },
-    { title: "Laporan SAK-EP Tersedia", body: "Laporan Q2 2026 telah selesai di-generate otomatis.", color: "border-violet-500", icon: "picture_as_pdf", iconColor: "text-violet-600" },
-  ];
-
-  const SidebarContent = ({ onClose }: { onClose?: () => void }) => (
-    <div className="flex flex-col h-full">
-      {/* Brand */}
-      <div className="px-md py-lg border-b border-outline-variant/20 shrink-0">
-        <Link href="/" className="flex items-center gap-sm" onClick={onClose}>
-          <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center shadow-md">
-            <span className="material-symbols-outlined text-white text-lg" style={{ fontVariationSettings: "'FILL' 1" }}>agriculture</span>
-          </div>
-          <div>
-            <p className="font-extrabold text-lg text-primary leading-none">KREASI</p>
-            <p className="text-[9px] font-semibold text-on-surface-variant uppercase tracking-widest">Portal AI Desa</p>
-          </div>
-        </Link>
-      </div>
-
-      {/* Nav */}
-      <nav className="flex-1 py-sm px-sm overflow-y-auto custom-scrollbar">
-        <p className="text-[9px] font-extrabold text-on-surface-variant uppercase tracking-widest px-sm py-sm opacity-60">
-          Modul AI Koperasi
-        </p>
-        <div className="flex flex-col gap-xs">
-          {navItems.map((item) => {
-            const active = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={onClose}
-                className={`flex items-center gap-sm px-sm py-2.5 rounded-xl transition-all group ${
-                  active
-                    ? `${item.activeBg} shadow-sm`
-                    : "text-on-surface-variant hover:bg-surface-container hover:text-on-surface"
-                }`}
-              >
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center shrink-0 transition-all ${
-                  active ? `${item.accentBg} shadow-sm` : `bg-surface-container group-hover:${item.accentBg}`
-                }`}>
-                  <span
-                    className={`material-symbols-outlined text-xl ${active ? item.accentText : "text-on-surface-variant"}`}
-                    style={{ fontVariationSettings: active ? "'FILL' 1" : "'FILL' 0" }}
-                  >
-                    {item.icon}
-                  </span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className={`text-sm font-${active ? "extrabold" : "semibold"} leading-tight ${active ? "text-on-surface" : ""} truncate`}>
-                    {item.name}
-                  </p>
-                  <p className={`text-[10px] font-medium leading-none mt-0.5 ${active ? "text-on-surface-variant" : "text-on-surface-variant/70"} truncate`}>
-                    {item.description}
-                  </p>
-                </div>
-                {active && (
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
-                )}
-              </Link>
-            );
-          })}
-        </div>
-      </nav>
-
-      {/* Footer */}
-      <div className="border-t border-outline-variant/20 p-sm shrink-0 space-y-xs">
-        <div className="flex items-center gap-sm px-sm py-2 rounded-xl bg-surface-container">
-          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-sm font-extrabold shrink-0">A</div>
-          <div className="flex-1 min-w-0">
-            <p className="text-xs font-bold text-on-surface truncate">Admin Kopdes</p>
-            <p className="text-[10px] text-on-surface-variant truncate">Koperasi Desa Sumber Makmur</p>
-          </div>
-        </div>
-        <Link
-          href="/"
-          onClick={onClose}
-          className="flex items-center gap-sm px-sm py-2 text-on-surface-variant hover:bg-red-50 hover:text-red-700 rounded-xl font-semibold transition-all text-sm"
-        >
-          <span className="material-symbols-outlined text-[18px]">logout</span>
-          <span>Kembali ke Landing</span>
-        </Link>
-      </div>
-    </div>
+  const activeItem = useMemo(
+    () => navItems.find((item) => pathname === item.href) ?? navItems[0],
+    [pathname],
   );
 
   return (
-    <div className="min-h-screen bg-background text-on-surface flex flex-col font-sans">
-      {/* Top Header */}
-      <header className="sticky top-0 z-40 bg-surface/95 backdrop-blur-md border-b border-outline-variant/20 h-14 flex items-center justify-between px-md gap-md shrink-0">
-        <div className="flex items-center gap-sm">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="md:hidden w-9 h-9 flex items-center justify-center hover:bg-surface-container-high rounded-xl transition-colors text-on-surface-variant"
-          >
-            <span className="material-symbols-outlined">menu</span>
-          </button>
-          {/* Active page breadcrumb */}
-          <div className="hidden sm:flex items-center gap-xs text-sm">
-            <Link href="/" className="text-on-surface-variant hover:text-primary transition-colors font-semibold">KREASI</Link>
-            <span className="material-symbols-outlined text-[14px] text-on-surface-variant">chevron_right</span>
-            <span className="font-bold text-on-surface">
-              {navItems.find(n => n.href === pathname)?.name ?? "Dashboard"}
-            </span>
+    <div className="dashboard-shell min-h-screen bg-surface-container-low text-on-surface">
+      <header className="sticky top-0 z-40 border-b border-outline-variant/35 bg-surface-container-lowest/95 backdrop-blur">
+      <div className="flex h-14 items-center justify-between gap-3 px-3 sm:px-4 lg:px-5">
+          <div className="flex min-w-0 items-center gap-sm">
+            <button
+              type="button"
+              onClick={() => setSidebarOpen(true)}
+              aria-label="Buka navigasi"
+              className="flex size-10 items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35 md:hidden"
+            >
+              <MaterialIcon className="text-[22px]">menu</MaterialIcon>
+            </button>
+
+            <Link
+              href="/"
+              className="hidden rounded-md px-2 py-1 text-sm font-extrabold text-primary hover:bg-primary/8 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35 sm:inline-flex"
+            >
+              KREASI
+            </Link>
+            <MaterialIcon className="hidden text-[16px] text-outline sm:inline-flex">chevron_right</MaterialIcon>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-extrabold text-on-surface">{activeItem.name}</p>
+              <p className="truncate text-[11px] text-on-surface-variant sm:hidden">{activeItem.description}</p>
+            </div>
           </div>
-        </div>
 
-        <div className="flex items-center gap-sm relative">
-          {/* Notification button */}
-          <button
-            onClick={() => setNotificationsOpen(!notificationsOpen)}
-            className="relative w-9 h-9 flex items-center justify-center hover:bg-surface-container-high rounded-xl transition-colors text-on-surface-variant"
-          >
-            <span className="material-symbols-outlined text-[20px]">notifications</span>
-            <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-surface animate-pulse" />
-          </button>
+          <div className="relative flex items-center gap-xs">
+            <button
+              type="button"
+              onClick={() => setNotificationsOpen((open) => !open)}
+              aria-label="Buka notifikasi"
+              aria-expanded={notificationsOpen}
+              className="relative flex size-10 items-center justify-center rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35"
+            >
+              <MaterialIcon className="text-[21px]">notifications</MaterialIcon>
+              <span className="absolute right-2 top-2 size-2 rounded-full bg-error" />
+            </button>
 
-          {/* Notifications Dropdown */}
-          {notificationsOpen && (
-            <>
-              <div className="fixed inset-0 z-40" onClick={() => setNotificationsOpen(false)} />
-              <div className="absolute right-0 top-11 w-80 bg-surface-container-lowest border border-outline-variant/20 rounded-2xl shadow-2xl p-md z-50">
-                <div className="flex items-center justify-between mb-md">
-                  <h3 className="font-extrabold text-sm text-on-surface">Notifikasi Terkini</h3>
-                  <span className="text-[10px] font-bold bg-red-100 text-red-700 px-2 py-0.5 rounded-full">{notifications.length} baru</span>
-                </div>
-                <div className="space-y-xs max-h-72 overflow-y-auto custom-scrollbar">
-                  {notifications.map((n, i) => (
-                    <div key={i} className={`flex items-start gap-sm p-sm hover:bg-surface-container-low rounded-xl border-l-4 ${n.color} cursor-pointer transition-colors`}>
-                      <span className={`material-symbols-outlined text-[18px] shrink-0 mt-0.5 ${n.iconColor}`} style={{ fontVariationSettings: "'FILL' 1" }}>{n.icon}</span>
-                      <div>
-                        <p className="text-xs font-bold text-on-surface">{n.title}</p>
-                        <p className="text-[11px] text-on-surface-variant mt-0.5 leading-relaxed">{n.body}</p>
-                      </div>
+            {notificationsOpen ? (
+              <>
+                <button
+                  type="button"
+                  aria-label="Tutup notifikasi"
+                  className="fixed inset-0 cursor-default"
+                  onClick={() => setNotificationsOpen(false)}
+                />
+                <div className="absolute right-0 top-12 z-50 w-[min(21rem,calc(100vw-1rem))] rounded-lg border border-outline-variant/35 bg-surface-container-lowest p-sm shadow-lg">
+                  <div className="mb-sm flex items-center justify-between gap-sm px-xs">
+                    <div>
+                      <h2 className="text-sm font-extrabold text-on-surface">Notifikasi</h2>
+                      <p className="text-[11px] text-on-surface-variant">Operasional terbaru</p>
                     </div>
-                  ))}
+                    <span className="rounded-md bg-surface-container px-2 py-1 text-[10px] font-bold text-on-surface-variant">
+                      {notifications.length}
+                    </span>
+                  </div>
+                  <div className="flex flex-col gap-xs">
+                    {notifications.map((notification) => (
+                      <div
+                        key={notification.title}
+                        className={`flex items-start gap-sm rounded-md border p-sm ${notification.tone}`}
+                      >
+                        <MaterialIcon filled className="mt-0.5 text-[18px]">
+                          {notification.icon}
+                        </MaterialIcon>
+                        <div className="min-w-0">
+                          <p className="truncate text-xs font-extrabold text-on-surface">{notification.title}</p>
+                          <p className="mt-0.5 text-[11px] leading-relaxed text-on-surface-variant">{notification.body}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-              </div>
-            </>
-          )}
+              </>
+            ) : null}
 
-          <div className="h-6 w-px bg-outline-variant/30" />
-          <div className="flex items-center gap-sm">
-            <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center text-white text-sm font-extrabold">A</div>
-            <span className="hidden md:inline text-xs font-bold text-on-surface-variant">Admin Kopdes</span>
+            <div className="hidden h-7 w-px bg-outline-variant/35 sm:block" />
+            <div className="hidden items-center gap-sm rounded-lg border border-outline-variant/30 bg-surface-container-low px-2 py-1 sm:flex">
+              <span className="flex size-7 items-center justify-center rounded-md bg-primary text-[11px] font-extrabold text-on-primary">A</span>
+              <span className="hidden text-xs font-bold text-on-surface lg:inline">Admin Kopdes</span>
+            </div>
           </div>
         </div>
       </header>
 
-      <div className="flex flex-1 overflow-hidden">
-        {/* Desktop Sidebar */}
-        <aside className="hidden md:flex flex-col w-60 bg-surface-container-lowest border-r border-outline-variant/20 shrink-0 overflow-hidden">
-          <SidebarContent />
+      <div className="flex min-h-[calc(100vh-3.5rem)]">
+        <aside className="hidden w-[220px] shrink-0 border-r border-outline-variant/35 lg:block">
+          <Sidebar pathname={pathname} />
         </aside>
 
-        {/* Mobile Sidebar Drawer */}
-        {sidebarOpen && (
+        {sidebarOpen ? (
           <>
-            <div
+            <button
+              type="button"
+              aria-label="Tutup navigasi"
               onClick={() => setSidebarOpen(false)}
-              className="md:hidden fixed inset-0 bg-black/40 z-40 backdrop-blur-sm"
+              className="fixed inset-0 z-40 bg-black/45 lg:hidden"
             />
-            <aside className="md:hidden fixed top-0 left-0 h-full w-64 bg-surface-container-lowest border-r border-outline-variant/20 flex flex-col z-50 shadow-2xl">
-              <div className="flex justify-between items-center px-md pt-md pb-sm border-b border-outline-variant/20">
-                <span className="font-extrabold text-primary">KREASI Portal</span>
-                <button
-                  onClick={() => setSidebarOpen(false)}
-                  className="w-8 h-8 flex items-center justify-center hover:bg-surface-container rounded-lg text-on-surface-variant transition-colors"
-                >
-                  <span className="material-symbols-outlined text-[20px]">close</span>
-                </button>
-              </div>
-              <SidebarContent onClose={() => setSidebarOpen(false)} />
+            <aside className="fixed inset-y-0 left-0 z-50 w-[min(17rem,88vw)] border-r border-outline-variant/35 shadow-xl lg:hidden">
+              <Sidebar pathname={pathname} onClose={() => setSidebarOpen(false)} />
             </aside>
           </>
-        )}
+        ) : null}
 
-        {/* Main Content */}
-        <main className="flex-1 overflow-y-auto bg-surface-container-low/20 custom-scrollbar">
-          <div className="p-md md:p-lg min-h-full">
-            {children}
-          </div>
+        <main id="main-content" className="custom-scrollbar min-w-0 flex-1 overflow-y-auto">
+          <div className="mx-auto w-full max-w-[1440px] px-3 py-3 sm:px-4 sm:py-4 lg:px-5">{children}</div>
         </main>
       </div>
     </div>

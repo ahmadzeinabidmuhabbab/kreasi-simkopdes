@@ -129,7 +129,7 @@ export default function SmartBundle() {
   const restockTotal = inventory.reduce((a, i) => a + i.restock, 0);
 
   return (
-    <div className="space-y-lg w-full max-w-[1280px] mx-auto pb-2xl">
+    <div className="dashboard-page dashboard-page-bundle space-y-lg w-full max-w-[1280px] mx-auto pb-2xl">
       {/* Toast */}
       {toast && (
         <div className="fixed bottom-6 right-6 z-50 flex items-center gap-sm px-md py-sm bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-2xl shadow-2xl font-semibold text-sm anim-fade-in-up">

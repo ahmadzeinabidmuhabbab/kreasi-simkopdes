@@ -1,8 +1,34 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+
+const demoAccounts = [
+  { role: "Super Admin", username: "admin", password: "admin123" },
+  { role: "Operator", username: "op1", password: "op1pass" },
+  { role: "Viewer", username: "rw", password: "rwpass" },
+] as const;
+
+function MaterialIcon({
+  children,
+  className = "",
+  filled = false,
+}: {
+  children: string;
+  className?: string;
+  filled?: boolean;
+}) {
+  return (
+    <span
+      aria-hidden="true"
+      className={`material-symbols-outlined ${className}`}
+      style={{ fontVariationSettings: filled ? "'FILL' 1" : "'FILL' 0" }}
+    >
+      {children}
+    </span>
+  );
+}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -11,19 +37,17 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    // If already logged in, redirect
     const session = localStorage.getItem("kreasi_session");
     if (session) router.replace("/dashboard/demand");
   }, [router]);
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = async (event: React.FormEvent) => {
+    event.preventDefault();
+
     if (!username.trim() || !password.trim()) {
-      setError("Username dan password wajib diisi");
+      setError("Username dan password wajib diisi.");
       return;
     }
 
@@ -31,145 +55,204 @@ export default function LoginPage() {
     setError("");
 
     try {
-      const res = await fetch("/api/auth/login", {
+      const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password }),
       });
-      const data = await res.json();
+      const data = await response.json();
 
       if (data.success) {
         localStorage.setItem("kreasi_session", JSON.stringify(data.user));
         router.push("/dashboard/demand");
       } else {
-        setError(data.message || "Login gagal");
+        setError(data.message || "Login gagal. Periksa kredensial Anda.");
       }
     } catch {
-      setError("Koneksi gagal, coba lagi");
+      setError("Koneksi gagal. Coba lagi dalam beberapa saat.");
     } finally {
       setLoading(false);
     }
   };
 
-  if (!mounted) return null;
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#f0f7ec] via-background to-[#fef9ec] flex items-center justify-center p-md relative overflow-hidden">
-      {/* Background orbs */}
-      <div className="absolute w-[500px] h-[500px] rounded-full bg-primary/5 -top-32 -right-32 pointer-events-none" />
-      <div className="absolute w-[400px] h-[400px] rounded-full bg-secondary-container/10 -bottom-20 -left-20 pointer-events-none" />
-
-      <div className="w-full max-w-[384px] relative">
-        {/* Brand header */}
-        <div className="text-center mb-xl">
-          <Link href="/" className="inline-flex flex-col items-center gap-sm group">
-            <div className="w-16 h-16 bg-primary rounded-2xl flex items-center justify-center shadow-xl shadow-primary/20 group-hover:shadow-primary/30 group-hover:scale-105 transition-all">
-              <span className="material-symbols-outlined text-white text-3xl" style={{ fontVariationSettings: "'FILL' 1" }}>agriculture</span>
-            </div>
-            <div>
-              <p className="font-extrabold text-3xl text-primary tracking-tight">KREASI</p>
-              <p className="text-xs font-semibold text-on-surface-variant uppercase tracking-widest">Platform AI Koperasi Desa</p>
-            </div>
+    <main className="min-h-screen overflow-x-hidden bg-surface-container-low text-on-surface">
+      <div className="mx-auto flex min-h-screen w-full max-w-[1080px] flex-col px-md py-md lg:grid lg:grid-cols-[0.9fr_1fr] lg:items-center lg:gap-xl lg:px-lg">
+        <header className="mb-lg flex h-12 items-center justify-between lg:absolute lg:left-lg lg:top-lg lg:mb-0">
+          <Link
+            href="/"
+            className="flex items-center gap-sm rounded-lg p-1 transition-colors hover:bg-surface-container focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35"
+          >
+            <span className="flex size-9 items-center justify-center rounded-lg bg-primary text-on-primary">
+              <MaterialIcon filled className="text-[21px]">
+                agriculture
+              </MaterialIcon>
+            </span>
+            <span>
+              <span className="block text-base font-extrabold leading-none text-primary">KREASI</span>
+              <span className="mt-0.5 block text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">
+                Operations Console
+              </span>
+            </span>
           </Link>
-        </div>
+          <Link
+            href="/"
+            className="flex min-h-10 items-center rounded-lg border border-outline-variant/35 bg-surface-container-lowest px-3 text-xs font-bold text-on-surface-variant hover:bg-surface-container focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35"
+          >
+            Landing
+          </Link>
+        </header>
 
-        {/* Login card */}
-        <div className="bg-surface-container-lowest rounded-3xl shadow-2xl shadow-black/5 border border-outline-variant/20 p-xl">
-          <div className="mb-lg">
-            <h1 className="text-xl font-extrabold text-on-surface">Masuk ke Portal</h1>
-            <p className="text-sm text-on-surface-variant mt-xs">Gunakan akun yang telah diberikan admin</p>
-          </div>
+        <section className="hidden lg:block">
+          <div className="rounded-xl border border-outline-variant/35 bg-surface-container-lowest p-lg shadow-sm">
+            <p className="text-xs font-bold uppercase tracking-wider text-primary">Secure access</p>
+            <h1 className="mt-sm text-3xl font-extrabold leading-tight tracking-tight text-on-surface">
+              Console kerja untuk operasional koperasi.
+            </h1>
+            <p className="mt-sm max-w-[360px] text-sm leading-relaxed text-on-surface-variant">
+              Masuk untuk memantau demand, stok, transaksi, laporan SAK-EP, dan distribusi SHU dari dashboard yang sama.
+            </p>
 
-          <form onSubmit={handleLogin} className="space-y-md">
-            {/* Error */}
-            {error && (
-              <div className="flex items-center gap-sm p-sm bg-red-50 border border-red-200 rounded-xl text-sm font-semibold text-red-700">
-                <span className="material-symbols-outlined text-[18px]" style={{ fontVariationSettings: "'FILL' 1" }}>error</span>
-                {error}
-              </div>
-            )}
-
-            {/* Username */}
-            <div className="space-y-xs">
-              <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Username</label>
-              <div className="flex items-center gap-sm px-md py-3 bg-surface-container border border-outline-variant/30 rounded-xl focus-within:border-primary focus-within:bg-surface-container-lowest transition-all">
-                <span className="material-symbols-outlined text-[20px] text-on-surface-variant shrink-0">person</span>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={e => setUsername(e.target.value)}
-                  placeholder="Masukkan username"
-                  autoComplete="username"
-                  className="flex-1 bg-transparent text-sm font-semibold text-on-surface outline-none placeholder:text-on-surface-variant/40"
-                />
-              </div>
-            </div>
-
-            {/* Password */}
-            <div className="space-y-xs">
-              <label className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Password</label>
-              <div className="flex items-center gap-sm px-md py-3 bg-surface-container border border-outline-variant/30 rounded-xl focus-within:border-primary focus-within:bg-surface-container-lowest transition-all">
-                <span className="material-symbols-outlined text-[20px] text-on-surface-variant shrink-0">lock</span>
-                <input
-                  type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  placeholder="Masukkan password"
-                  autoComplete="current-password"
-                  className="flex-1 bg-transparent text-sm font-semibold text-on-surface outline-none placeholder:text-on-surface-variant/40"
-                />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="material-symbols-outlined text-[18px] text-on-surface-variant hover:text-primary transition-colors">
-                  {showPassword ? "visibility_off" : "visibility"}
-                </button>
-              </div>
-            </div>
-
-            {/* Demo accounts hint */}
-            <div className="bg-primary/5 border border-primary/15 rounded-xl p-sm space-y-xs">
-              <p className="text-[10px] font-bold text-primary uppercase tracking-wider">Akun Demo</p>
+            <div className="mt-lg grid grid-cols-3 gap-sm">
               {[
-                { role: "Super Admin", username: "admin", password: "admin123" },
-                { role: "Operator", username: "op1", password: "op1pass" },
-                { role: "Viewer", username: "rw", password: "rwpass" },
-              ].map(a => (
-                <button
-                  key={a.username}
-                  type="button"
-                  onClick={() => { setUsername(a.username); setPassword(a.password); }}
-                  className="w-full flex items-center justify-between px-sm py-1.5 rounded-lg hover:bg-primary/10 transition-colors group"
-                >
-                  <span className="text-[11px] font-semibold text-on-surface-variant group-hover:text-primary transition-colors">{a.role}</span>
-                  <span className="font-mono text-[10px] text-on-surface-variant/70">@{a.username}</span>
-                </button>
+                { label: "Modules", value: "8", icon: "widgets" },
+                { label: "Status", value: "Live", icon: "monitoring" },
+                { label: "Access", value: "RBAC", icon: "shield" },
+              ].map((item) => (
+                <div key={item.label} className="rounded-lg border border-outline-variant/25 bg-surface-container-low p-sm">
+                  <MaterialIcon className="text-[20px] text-primary">{item.icon}</MaterialIcon>
+                  <p className="mt-sm text-lg font-extrabold text-on-surface">{item.value}</p>
+                  <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">{item.label}</p>
+                </div>
               ))}
             </div>
+          </div>
+        </section>
 
-            {/* Submit */}
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full flex items-center justify-center gap-sm py-3.5 bg-primary text-white rounded-xl font-extrabold text-sm hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-0.5 transition-all disabled:opacity-60 disabled:cursor-not-allowed disabled:translate-y-0"
-            >
-              {loading ? (
-                <>
-                  <span className="material-symbols-outlined text-[20px] animate-spin">autorenew</span>
-                  Masuk...
-                </>
-              ) : (
-                <>
-                  <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>login</span>
-                  Masuk ke Portal
-                </>
-              )}
-            </button>
-          </form>
-        </div>
+        <section className="mx-auto flex w-full max-w-[420px] flex-1 items-center lg:max-w-none lg:justify-end">
+          <div className="w-full max-w-[400px] rounded-xl border border-outline-variant/35 bg-surface-container-lowest p-md shadow-sm md:p-lg">
+            <div className="mb-md flex items-start justify-between gap-md">
+              <div>
+                <p className="text-xs font-bold uppercase tracking-wider text-primary">Login</p>
+                <h2 className="mt-xs text-2xl font-extrabold tracking-tight text-on-surface">Masuk ke Portal</h2>
+                <p className="mt-1 text-sm text-on-surface-variant">Gunakan akun yang diberikan admin.</p>
+              </div>
+              <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                <MaterialIcon filled className="text-[22px]">
+                  lock
+                </MaterialIcon>
+              </span>
+            </div>
 
-        {/* Footer */}
-        <p className="text-center text-[11px] text-on-surface-variant mt-lg font-medium">
-          © 2026 KREASI · <strong className="text-primary">Tim Xensushi</strong> · Hackathon Simkopdes 2026
-        </p>
+            <form onSubmit={handleLogin} className="flex flex-col gap-sm">
+              {error ? (
+                <div
+                  role="alert"
+                  className="flex items-start gap-sm rounded-lg border border-error/25 bg-error-container/55 p-sm text-sm font-semibold text-on-error-container"
+                >
+                  <MaterialIcon filled className="mt-0.5 text-[18px]">
+                    error
+                  </MaterialIcon>
+                  <span>{error}</span>
+                </div>
+              ) : null}
+
+              <div className="flex flex-col gap-xs">
+                <label htmlFor="username" className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">
+                  Username
+                </label>
+                <div className="flex min-h-11 items-center gap-sm rounded-lg border border-outline-variant/35 bg-surface-container px-sm transition-colors focus-within:border-primary focus-within:bg-surface-container-lowest focus-within:ring-2 focus-within:ring-primary/10">
+                  <MaterialIcon className="text-[19px] text-on-surface-variant">person</MaterialIcon>
+                  <input
+                    id="username"
+                    type="text"
+                    value={username}
+                    onChange={(event) => setUsername(event.target.value)}
+                    placeholder="admin"
+                    autoComplete="username"
+                    className="min-h-10 min-w-0 flex-1 bg-transparent text-sm font-semibold text-on-surface outline-none placeholder:text-on-surface-variant/45"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-xs">
+                <label htmlFor="password" className="text-[11px] font-bold uppercase tracking-wider text-on-surface-variant">
+                  Password
+                </label>
+                <div className="flex min-h-11 items-center gap-sm rounded-lg border border-outline-variant/35 bg-surface-container px-sm transition-colors focus-within:border-primary focus-within:bg-surface-container-lowest focus-within:ring-2 focus-within:ring-primary/10">
+                  <MaterialIcon className="text-[19px] text-on-surface-variant">lock</MaterialIcon>
+                  <input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
+                    placeholder="Password"
+                    autoComplete="current-password"
+                    className="min-h-10 min-w-0 flex-1 bg-transparent text-sm font-semibold text-on-surface outline-none placeholder:text-on-surface-variant/45"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword((show) => !show)}
+                    aria-label={showPassword ? "Sembunyikan password" : "Tampilkan password"}
+                    className="flex size-9 items-center justify-center rounded-md text-on-surface-variant hover:bg-surface-container-high hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35"
+                  >
+                    <MaterialIcon className="text-[19px]">{showPassword ? "visibility_off" : "visibility"}</MaterialIcon>
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="mt-xs flex min-h-11 w-full items-center justify-center gap-sm rounded-lg bg-primary px-md py-2.5 text-sm font-extrabold text-on-primary transition-colors hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/35 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {loading ? (
+                  <>
+                    <MaterialIcon className="animate-spin text-[19px]">autorenew</MaterialIcon>
+                    Masuk...
+                  </>
+                ) : (
+                  <>
+                    <MaterialIcon filled className="text-[19px]">
+                      login
+                    </MaterialIcon>
+                    Masuk
+                  </>
+                )}
+              </button>
+            </form>
+
+            <div className="mt-md rounded-lg border border-outline-variant/30 bg-surface-container-low p-sm">
+              <div className="mb-xs flex items-center justify-between gap-sm">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-on-surface-variant">Demo account</p>
+                <span className="text-[10px] font-bold text-primary">Click to fill</span>
+              </div>
+              <div className="grid gap-xs">
+                {demoAccounts.map((account) => (
+                  <button
+                    key={account.username}
+                    type="button"
+                    onClick={() => {
+                      setUsername(account.username);
+                      setPassword(account.password);
+                      setError("");
+                    }}
+                    className="flex min-h-10 items-center justify-between gap-sm rounded-md px-sm text-left hover:bg-surface-container focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+                  >
+                    <span className="min-w-0">
+                      <span className="block truncate text-xs font-extrabold text-on-surface">{account.role}</span>
+                      <span className="block truncate font-mono text-[11px] text-on-surface-variant">@{account.username}</span>
+                    </span>
+                    <span className="rounded-md border border-outline-variant/25 bg-surface-container-lowest px-2 py-1 text-[10px] font-bold text-on-surface-variant">
+                      demo
+                    </span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 }

@@ -228,7 +228,7 @@ export default function RfmSegmentation() {
   const total = segments.reduce((a, s) => a + s.count, 0);
 
   return (
-    <div className="space-y-lg w-full max-w-[1280px] mx-auto pb-2xl">
+    <div className="dashboard-page dashboard-page-rfm space-y-lg w-full max-w-[1280px] mx-auto pb-2xl">
       {/* Header */}
       <div className="anim-fade-in-up">
         <div className="flex items-center gap-sm mb-xs">
