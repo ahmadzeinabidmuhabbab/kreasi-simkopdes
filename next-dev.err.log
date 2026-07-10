@@ -1420,3 +1420,857 @@ See more: https://nextjs.org/docs/app/guides/local-development
 [browser] "⨯ unhandledRejection:" [object Event] 
 
 ⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Server is approaching the used memory threshold, restarting...
+⚠ Slow filesystem detected. The benchmark took 948ms. If C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\.next/dev is a network drive, consider moving it to a local folder.
+See more: https://nextjs.org/docs/app/guides/local-development
+⚠ Server is approaching the used memory threshold, restarting...
+⚠ Server is approaching the used memory threshold, restarting...
+⚠ Slow filesystem detected. The benchmark took 517ms. If C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\.next/dev is a network drive, consider moving it to a local folder.
+See more: https://nextjs.org/docs/app/guides/local-development
+[browser] Uncaught ReferenceError: SortButton is not defined
+    at RfmSegmentation (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/src_app_dashboard_rfm_page_tsx_20m7ipp._.js?id=%255Bproject%255D%252Fsrc%252Fapp%252Fdashboard%252Frfm%252Fpage.tsx+%255Bapp-client%255D+%2528ecmascript%2529:1777:262)
+    at Object.react_stack_bottom_frame (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:15037:24)
+    at renderWithHooks (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:4620:24)
+    at updateFunctionComponent (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6081:21)
+    at beginWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6691:24)
+    at runWithFiberInDEV (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:965:74)
+    at performUnitOfWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9555:97)
+    at workLoopSync (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9449:40)
+    at renderRootSync (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9433:13)
+    at performWorkOnRoot (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9061:186)
+    at performSyncWorkOnRoot (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10263:9)
+    at flushSyncWorkAcrossRoots_impl (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10179:316)
+    at processRootScheduleInMicrotask (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10200:106)
+    at <unknown> (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10274:158)
+    at ClientPageRoot (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_1e9_p6y._.js:4461:50)
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <ScrollAndMaybeFocusHandler cacheNode={{rsc:{...}, ...}}>
+      <InnerScrollAndFocusHandlerOld focusAndScrollRef={{scrollRef:null, ...}} cacheNode={{rsc:{...}, ...}}>
+        <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+          <LoadingBoundary name="/" loading={null}>
+            <HTTPAccessFallbackBoundary notFound={{...}} forbidden={undefined} unauthorized={undefined}>
+              <HTTPAccessFallbackErrorBoundary pathname="/dashboard..." notFound={{...}} forbidden={undefined} ...>
+                <RedirectBoundary>
+                  <RedirectErrorBoundary router={{...}}>
+                    <InnerLayoutRouter url="/dashboard..." tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} ...>
+                      <SegmentViewNode type="layout" pagePath="dashboard/...">
+                        <SegmentTrieNode>
+                        <link>
+                        <script>
+                        <script>
+                        <ClientSegmentRoot Component={function DashboardLayout} slots={{children:{...}}} ...>
+                          <DashboardLayout params={Promise}>
+                            <div
+                              className="dashboard-shell h-dvh overflow-hidden bg-surface-container-low text-on-surface"
+-                             bis_skin_checked="1"
+                            >
+                              <header className="fixed inse...">
+                                <div
+                                  className="flex h-14 items-center justify-between gap-3 px-3 sm:px-4 lg:px-5"
+-                                 bis_skin_checked="1"
+                                >
+                                  <div
+                                    className="flex min-w-0 items-center gap-sm"
+-                                   bis_skin_checked="1"
+                                  >
+                                    <button>
+                                    <LinkComponent>
+                                    <MaterialIcon>
+                                    <div
+                                      className="min-w-0"
+-                                     bis_skin_checked="1"
+                                    >
+                                  <div
+                                    className="relative flex items-center gap-xs"
+-                                   bis_skin_checked="1"
+                                  >
+                                    <button>
+                                    <div
+                                      className="hidden h-7 w-px bg-outline-variant/35 sm:block"
+-                                     bis_skin_checked="1"
+                                    >
+                                    <div
+                                      className="hidden items-center gap-sm rounded-lg border border-outline-variant/3..."
+-                                     bis_skin_checked="1"
+                                    >
+                              <div
+                                className="flex h-dvh overflow-hidden pt-14"
+-                               bis_skin_checked="1"
+                              >
+                                <aside className="fixed left...">
+                                  <Sidebar pathname="/dashboard...">
+                                    <div
+                                      className="flex h-full flex-col bg-surface-container-lowest"
+-                                     bis_skin_checked="1"
+                                    >
+                                      <div
+                                        className="border-b border-outline-variant/35 px-md py-sm"
+-                                       bis_skin_checked="1"
+                                      >
+                                      <div
+                                        className="border-b border-outline-variant/25 px-md py-sm"
+-                                       bis_skin_checked="1"
+                                      >
+                                        <div
+                                          className="flex items-center justify-between gap-sm rounded-lg bg-surface-co..."
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="min-w-0"
+-                                           bis_skin_checked="1"
+                                          >
+                                          ...
+                                      <nav className="custom-scr..." aria-label="Navigasi d...">
+                                        <p>
+                                        <div
+                                          className="flex flex-col gap-1"
+-                                         bis_skin_checked="1"
+                                        >
+                                      <div
+                                        className="border-t border-outline-variant/30 p-sm"
+-                                       bis_skin_checked="1"
+                                      >
+                                        <div
+                                          className="flex items-center gap-sm rounded-lg border border-outline-variant..."
+-                                         bis_skin_checked="1"
+                                        >
+                                <main id="main-content" className="custom-scr...">
+                                  <div
+                                    className="mx-auto w-full max-w-[1440px] px-3 py-3 sm:px-4 sm:py-4 lg:px-5"
+-                                   bis_skin_checked="1"
+                                  >
+                                    ...
+                                      <ClientPageRoot Component={function RfmSegmentation} serverProvidedParams={{...}}>
+                                        <RfmSegmentation params={Promise} searchParams={Promise}>
+                                          <LoadingState>
+                                            <div
+                                              className="flex min-h-[220px] w-full items-center justify-center rounded..."
+                                              role="status"
+                                              aria-live="polite"
+                                              aria-label="Memuat data RFM"
+-                                             bis_skin_checked="1"
+                                            >
+                                              <div
+                                                className="grid size-11 place-items-center rounded-full bg-primary/10 ..."
+-                                               bis_skin_checked="1"
+                                              >
+                    ...
+        ...
+ 
+    at <unknown> (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3439:25)
+    at runWithFiberInDEV (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:965:74)
+    at emitPendingHydrationWarnings (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3438:13)
+    at completeWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6885:102)
+    at runWithFiberInDEV (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:965:131)
+    at completeUnitOfWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9622:23)
+    at performUnitOfWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9557:28)
+    at workLoopConcurrentByScheduler (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9551:58)
+    at renderRootConcurrent (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9534:71)
+    at performWorkOnRoot (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9061:150)
+    at performWorkOnRootViaSchedulerTask (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10255:9)
+    at MessagePort.performWorkUntilDeadline (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_1amofcm._.js:2647:64) (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3439:25)
+[browser] Uncaught ReferenceError: SortButton is not defined
+    at RfmSegmentation (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/src_app_dashboard_rfm_page_tsx_20m7ipp._.js:1770:262)
+    at Object.react_stack_bottom_frame (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:15037:24)
+    at renderWithHooks (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:4620:24)
+    at updateFunctionComponent (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6081:21)
+    at beginWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6691:24)
+    at runWithFiberInDEV (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:965:74)
+    at performUnitOfWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9555:97)
+    at workLoopSync (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9449:40)
+    at renderRootSync (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9433:13)
+    at performWorkOnRoot (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9098:47)
+    at performWorkOnRootViaSchedulerTask (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10255:9)
+    at MessagePort.performWorkUntilDeadline (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_1amofcm._.js:2647:64)
+    at ClientPageRoot (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_1e9_p6y._.js:4461:50)
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+⚠ Server is approaching the used memory threshold, restarting...
+⚠ Slow filesystem detected. The benchmark took 486ms. If C:\Users\lenovo\Documents\HACKATHON SIMKOPDES\kreasi-simkopdes\.next/dev is a network drive, consider moving it to a local folder.
+See more: https://nextjs.org/docs/app/guides/local-development
+[browser] Uncaught TypeError: network error
+TypeError: network error
+[browser] Uncaught TypeError: network error
+    at RedirectBoundary (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:12704:46)
+    at OuterLayoutRouter (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_1e9_p6y._.js:721:74)
+[browser] Uncaught TypeError: network error
+    at RedirectBoundary (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:12704:46)
+    at OuterLayoutRouter (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_1e9_p6y._.js:721:74)
+[browser] Uncaught TypeError: network error
+    at RedirectBoundary (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:12704:46)
+    at OuterLayoutRouter (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_1e9_p6y._.js:721:74)
+[browser] Uncaught TypeError: network error
+    at HTTPAccessFallbackBoundary (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:13205:50)
+    at OuterLayoutRouter (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_1e9_p6y._.js:717:69)
+[browser] Uncaught TypeError: network error
+    at RedirectBoundary (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:12704:46)
+    at Router (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:14652:54)
+    at AppRouter (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:14718:54)
+    at ServerRoot (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:15202:54)
+[browser] Uncaught TypeError: network error
+    at HTTPAccessFallbackBoundary (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:13205:50)
+    at DevRootHTTPAccessFallbackBoundary (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:13266:46)
+    at Router (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:14672:57)
+    at AppRouter (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:14718:54)
+    at ServerRoot (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:15202:54)
+[browser] Uncaught TypeError: network error
+    at HTTPAccessFallbackBoundary (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:13205:50)
+    at DevRootHTTPAccessFallbackBoundary (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:13266:46)
+    at Router (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:14672:57)
+    at AppRouter (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:14718:54)
+    at ServerRoot (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_client_0r5nbpw._.js:15202:54)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <LoadingBoundary name="/" loading={null}>
+      <HTTPAccessFallbackBoundary notFound={{...}} forbidden={undefined} unauthorized={undefined}>
+        <HTTPAccessFallbackErrorBoundary pathname="/dashboard..." notFound={{...}} forbidden={undefined} ...>
+          <RedirectBoundary>
+            <RedirectErrorBoundary router={{...}}>
+              <InnerLayoutRouter url="/dashboard..." tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} ...>
+                <SegmentViewNode type="layout" pagePath="dashboard/...">
+                  <SegmentTrieNode>
+                  <link>
+                  <script>
+                  <script>
+                  <ClientSegmentRoot Component={function DashboardLayout} slots={{children:{...}}} ...>
+                    <DashboardLayout params={Promise}>
+                      <div className="dashboard-...">
+                        <header>
+                        <div className="flex h-dvh...">
+                          <aside className="fixed left...">
+                            <Sidebar pathname="/dashboard...">
+                              <div className="flex h-ful...">
+                                <div>
+                                <div
+                                  className="border-b border-outline-variant/25 px-md py-sm"
+-                                 bis_skin_checked="1"
+                                >
+                                  <div
+                                    className="flex items-center justify-between gap-sm rounded-lg bg-surface-containe..."
+-                                   bis_skin_checked="1"
+                                  >
+                                    <div
+                                      className="min-w-0"
+-                                     bis_skin_checked="1"
+                                    >
+                                    ...
+                                <nav className="custom-scr..." aria-label="Navigasi d...">
+                                  <p>
+                                  <div
+                                    className="flex flex-col gap-1"
+-                                   bis_skin_checked="1"
+                                  >
+                                <div
+                                  className="border-t border-outline-variant/30 p-sm"
+-                                 bis_skin_checked="1"
+                                >
+                                  <div
+                                    className="flex items-center gap-sm rounded-lg border border-outline-variant/25 bg..."
+-                                   bis_skin_checked="1"
+                                  >
+                          <main id="main-content" className="custom-scr...">
+                            <div
+                              className="mx-auto w-full max-w-[1440px] px-3 py-3 sm:px-4 sm:py-4 lg:px-5"
+-                             bis_skin_checked="1"
+                            >
+                              ...
+                                <ClientPageRoot Component={function RfmSegmentation} serverProvidedParams={{...}}>
+                                  <RfmSegmentation params={Promise} searchParams={Promise}>
+                                    <LoadingState>
+                                      <div
+                                        className="flex min-h-[220px] w-full items-center justify-center rounded-xl bo..."
+                                        role="status"
+                                        aria-live="polite"
+                                        aria-label="Memuat data RFM"
+-                                       bis_skin_checked="1"
+                                      >
+                                        <div
+                                          className="grid size-11 place-items-center rounded-full bg-primary/10 text-p..."
+-                                         bis_skin_checked="1"
+                                        >
+              ...
+ 
+    at <unknown> (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3439:25)
+    at runWithFiberInDEV (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:965:74)
+    at emitPendingHydrationWarnings (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3438:13)
+    at completeWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6885:102)
+    at runWithFiberInDEV (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:965:131)
+    at completeUnitOfWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9622:23)
+    at performUnitOfWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9557:28)
+    at workLoopConcurrentByScheduler (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9551:58)
+    at renderRootConcurrent (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9534:71)
+    at performWorkOnRoot (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9061:150)
+    at performWorkOnRootViaSchedulerTask (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10255:9)
+    at MessagePort.performWorkUntilDeadline (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_1amofcm._.js:2647:64) (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3439:25)
+⚠ Server is approaching the used memory threshold, restarting...
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <HotReload globalError={[...]} webSocket={WebSocket} staticIndicatorState={{pathname:null, ...}}>
+      <AppDevOverlayErrorBoundary globalError={[...]}>
+        <ReplaySsrOnlyErrors>
+        <DevRootHTTPAccessFallbackBoundary>
+          <HTTPAccessFallbackBoundary notFound={<NotAllowedRootHTTPFallbackError>}>
+            <HTTPAccessFallbackErrorBoundary pathname="/dashboard..." notFound={<NotAllowedRootHTTPFallbackError>} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <Head headCacheNode={{rsc:{...}, ...}}>
+                    <__next_viewport_boundary__>
+                    <MetadataWrapper>
+                      <div
+                        hidden={true}
+-                       bis_skin_checked="1"
+                      >
+                  ...
+                    <InnerLayoutRouter url="/dashboard..." tree={[...]} params={{}} cacheNode={{rsc:{...}, ...}} ...>
+                      <SegmentViewNode type="layout" pagePath="dashboard/...">
+                        <SegmentTrieNode>
+                        <link>
+                        <script>
+                        <script>
+                        <ClientSegmentRoot Component={function DashboardLayout} slots={{children:{...}}} ...>
+                          <DashboardLayout params={Promise}>
+                            <div
+                              className="dashboard-shell h-dvh overflow-hidden bg-surface-container-low text-on-surface"
+-                             bis_skin_checked="1"
+                            >
+                              <header className="fixed inse...">
+                                <div
+                                  className="flex h-14 items-center justify-between gap-3 px-3 sm:px-4 lg:px-5"
+-                                 bis_skin_checked="1"
+                                >
+                                  <div
+                                    className="flex min-w-0 items-center gap-sm"
+-                                   bis_skin_checked="1"
+                                  >
+                                    <button>
+                                    <LinkComponent>
+                                    <MaterialIcon>
+                                    <div
+                                      className="min-w-0"
+-                                     bis_skin_checked="1"
+                                    >
+                                  <div
+                                    className="relative flex items-center gap-xs"
+-                                   bis_skin_checked="1"
+                                  >
+                                    <button>
+                                    <div
+                                      className="hidden h-7 w-px bg-outline-variant/35 sm:block"
+-                                     bis_skin_checked="1"
+                                    >
+                                    <div
+                                      className="hidden items-center gap-sm rounded-lg border border-outline-variant/3..."
+-                                     bis_skin_checked="1"
+                                    >
+                              <div
+                                className="flex h-dvh overflow-hidden pt-14"
+-                               bis_skin_checked="1"
+                              >
+                                <aside className="fixed left...">
+                                  <Sidebar pathname="/dashboard...">
+                                    <div
+                                      className="flex h-full flex-col bg-surface-container-lowest"
+-                                     bis_skin_checked="1"
+                                    >
+                                      <div
+                                        className="border-b border-outline-variant/35 px-md py-sm"
+-                                       bis_skin_checked="1"
+                                      >
+                                      <div
+                                        className="border-b border-outline-variant/25 px-md py-sm"
+-                                       bis_skin_checked="1"
+                                      >
+                                        <div
+                                          className="flex items-center justify-between gap-sm rounded-lg bg-surface-co..."
+-                                         bis_skin_checked="1"
+                                        >
+                                          <div
+                                            className="min-w-0"
+-                                           bis_skin_checked="1"
+                                          >
+                                          ...
+                                      <nav className="custom-scr..." aria-label="Navigasi d...">
+                                        <p>
+                                        <div
+                                          className="flex flex-col gap-1"
+-                                         bis_skin_checked="1"
+                                        >
+                                      <div
+                                        className="border-t border-outline-variant/30 p-sm"
+-                                       bis_skin_checked="1"
+                                      >
+                                        <div
+                                          className="flex items-center gap-sm rounded-lg border border-outline-variant..."
+-                                         bis_skin_checked="1"
+                                        >
+                                <main id="main-content" className="custom-scr...">
+                                  <div
+                                    className="mx-auto w-full max-w-[1440px] px-3 py-3 sm:px-4 sm:py-4 lg:px-5"
+-                                   bis_skin_checked="1"
+                                  >
+                                    ...
+                                      <SegmentViewNode type="page" pagePath="dashboard/...">
+                                        <SegmentTrieNode>
+                                        <ClientPageRoot Component={function DemandIntelligence} ...>
+                                          <DemandIntelligence params={Promise} searchParams={Promise}>
+                                            <div
+                                              className="dashboard-page dashboard-page-demand mx-auto w-full max-w-[14..."
+-                                             bis_skin_checked="1"
+                                            >
+                                              <RfqDrawer>
+                                              <div
+                                                className="rounded-2xl border border-outline-variant/30 bg-surface-con..."
+-                                               bis_skin_checked="1"
+                                              >
+                                                <div
+                                                  className="flex flex-col gap-md lg:flex-row lg:items-center lg:justi..."
+-                                                 bis_skin_checked="1"
+                                                >
+                                                  <div
+                                                    className="flex items-center gap-md"
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                    <div
+                                                      className="grid h-14 w-14 shrink-0 place-items-center rounded-2x..."
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                    <div
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                  ...
+                                              <SummaryCardsSkeleton>
+                                                <div
+                                                  className="grid grid-cols-1 gap-gutter sm:grid-cols-2 xl:grid-cols-4"
+                                                  role="status"
+                                                  aria-live="polite"
+                                                  aria-label="Memuat ringkasan demand"
+-                                                 bis_skin_checked="1"
+                                                >
+                                                  <div
+                                                    className="flex min-h-[92px] items-center gap-md rounded-2xl borde..."
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                    <SkeletonBlock className="size-12 sh...">
+                                                      <div
+                                                        className="animate-pulse rounded-xl bg-surface-container size-..."
+                                                        aria-hidden="true"
+-                                                       bis_skin_checked="1"
+                                                      >
+                                                    <div
+                                                      className="min-w-0 flex-1"
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                      <SkeletonBlock className="h-3 w-28 r...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container h-3..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                                      <SkeletonBlock className="mt-sm h-7 ...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container mt-..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                                  <div
+                                                    className="flex min-h-[92px] items-center gap-md rounded-2xl borde..."
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                    <SkeletonBlock className="size-12 sh...">
+                                                      <div
+                                                        className="animate-pulse rounded-xl bg-surface-container size-..."
+                                                        aria-hidden="true"
+-                                                       bis_skin_checked="1"
+                                                      >
+                                                    <div
+                                                      className="min-w-0 flex-1"
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                      <SkeletonBlock className="h-3 w-28 r...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container h-3..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                                      <SkeletonBlock className="mt-sm h-7 ...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container mt-..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                                  <div
+                                                    className="flex min-h-[92px] items-center gap-md rounded-2xl borde..."
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                    <SkeletonBlock className="size-12 sh...">
+                                                      <div
+                                                        className="animate-pulse rounded-xl bg-surface-container size-..."
+                                                        aria-hidden="true"
+-                                                       bis_skin_checked="1"
+                                                      >
+                                                    <div
+                                                      className="min-w-0 flex-1"
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                      <SkeletonBlock className="h-3 w-28 r...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container h-3..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                                      <SkeletonBlock className="mt-sm h-7 ...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container mt-..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                                  <div
+                                                    className="flex min-h-[92px] items-center gap-md rounded-2xl borde..."
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                    <SkeletonBlock className="size-12 sh...">
+                                                      <div
+                                                        className="animate-pulse rounded-xl bg-surface-container size-..."
+                                                        aria-hidden="true"
+-                                                       bis_skin_checked="1"
+                                                      >
+                                                    <div
+                                                      className="min-w-0 flex-1"
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                      <SkeletonBlock className="h-3 w-28 r...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container h-3..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                                      <SkeletonBlock className="mt-sm h-7 ...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container mt-..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                              <section className="rounded-2x...">
+                                                <p>
+                                                <TopProductsSkeleton>
+                                                  <div
+                                                    className="grid gap-md md:grid-cols-5"
+                                                    role="status"
+                                                    aria-live="polite"
+                                                    aria-label="Memuat produk paling banyak RFQ"
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                    <div
+                                                      className="flex min-h-44 flex-col justify-end rounded-xl bg-surf..."
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                      <SkeletonBlock className="h-16 round...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container h-1..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                                      <SkeletonBlock className="mx-auto mt...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container mx-..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                                      <SkeletonBlock className="mx-auto mt...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container mx-..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                                    <div
+                                                      className="flex min-h-44 flex-col justify-end rounded-xl bg-surf..."
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                      <SkeletonBlock className="h-24 round...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container h-2..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                                      <SkeletonBlock className="mx-auto mt...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container mx-..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                                      <SkeletonBlock className="mx-auto mt...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container mx-..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                                    <div
+                                                      className="flex min-h-44 flex-col justify-end rounded-xl bg-surf..."
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                      <SkeletonBlock className="h-32 round...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container h-3..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                                      <SkeletonBlock className="mx-auto mt...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container mx-..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                                      <SkeletonBlock className="mx-auto mt...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container mx-..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                                    <div
+                                                      className="flex min-h-44 flex-col justify-end rounded-xl bg-surf..."
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                      <SkeletonBlock className="h-20 round...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container h-2..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                                      <SkeletonBlock className="mx-auto mt...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container mx-..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                                      <SkeletonBlock className="mx-auto mt...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container mx-..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                                    <div
+                                                      className="flex min-h-44 flex-col justify-end rounded-xl bg-surf..."
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                      <SkeletonBlock className="h-28 round...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container h-2..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                                      <SkeletonBlock className="mx-auto mt...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container mx-..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                                      <SkeletonBlock className="mx-auto mt...">
+                                                        <div
+                                                          className="animate-pulse rounded-xl bg-surface-container mx-..."
+                                                          aria-hidden="true"
+-                                                         bis_skin_checked="1"
+                                                        >
+                                              <div
+                                                className="flex flex-wrap gap-xs rounded-2xl bg-surface-container-low p-1"
+-                                               bis_skin_checked="1"
+                                              >
+                                              <section className="space-y-md">
+                                                <div
+                                                  className="flex flex-col gap-md sm:flex-row sm:items-center sm:justi..."
+-                                                 bis_skin_checked="1"
+                                                >
+                                                  <div
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                  <div
+                                                    className="flex flex-wrap gap-xs"
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                <HistoryRowsSkeleton>
+                                                  <div
+                                                    className="flex flex-col gap-sm"
+                                                    role="status"
+                                                    aria-live="polite"
+                                                    aria-label="Memuat history RFQ"
+-                                                   bis_skin_checked="1"
+                                                  >
+                                                    <div
+                                                      className="rounded-2xl border border-outline-variant/20 bg-surfa..."
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                      <div
+                                                        className="flex flex-col gap-sm sm:flex-row sm:items-center"
+-                                                       bis_skin_checked="1"
+                                                      >
+                                                        <SkeletonBlock className="h-4 w-28 r...">
+                                                          <div
+                                                            className="animate-pulse rounded-xl bg-surface-container h..."
+                                                            aria-hidden="true"
+-                                                           bis_skin_checked="1"
+                                                          >
+                                                        <SkeletonBlock className="h-4 w-44 r...">
+                                                          <div
+                                                            className="animate-pulse rounded-xl bg-surface-container h..."
+                                                            aria-hidden="true"
+-                                                           bis_skin_checked="1"
+                                                          >
+                                                        <SkeletonBlock className="h-4 w-32 r...">
+                                                          <div
+                                                            className="animate-pulse rounded-xl bg-surface-container h..."
+                                                            aria-hidden="true"
+-                                                           bis_skin_checked="1"
+                                                          >
+                                                        <SkeletonBlock className="h-7 w-24 r...">
+                                                          <div
+                                                            className="animate-pulse rounded-xl bg-surface-container h..."
+                                                            aria-hidden="true"
+-                                                           bis_skin_checked="1"
+                                                          >
+                                                    <div
+                                                      className="rounded-2xl border border-outline-variant/20 bg-surfa..."
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                      <div
+                                                        className="flex flex-col gap-sm sm:flex-row sm:items-center"
+-                                                       bis_skin_checked="1"
+                                                      >
+                                                        <SkeletonBlock className="h-4 w-28 r...">
+                                                          <div
+                                                            className="animate-pulse rounded-xl bg-surface-container h..."
+                                                            aria-hidden="true"
+-                                                           bis_skin_checked="1"
+                                                          >
+                                                        <SkeletonBlock className="h-4 w-44 r...">
+                                                          <div
+                                                            className="animate-pulse rounded-xl bg-surface-container h..."
+                                                            aria-hidden="true"
+-                                                           bis_skin_checked="1"
+                                                          >
+                                                        <SkeletonBlock className="h-4 w-32 r...">
+                                                          <div
+                                                            className="animate-pulse rounded-xl bg-surface-container h..."
+                                                            aria-hidden="true"
+-                                                           bis_skin_checked="1"
+                                                          >
+                                                        <SkeletonBlock className="h-7 w-24 r...">
+                                                          <div
+                                                            className="animate-pulse rounded-xl bg-surface-container h..."
+                                                            aria-hidden="true"
+-                                                           bis_skin_checked="1"
+                                                          >
+                                                    <div
+                                                      className="rounded-2xl border border-outline-variant/20 bg-surfa..."
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                      <div
+                                                        className="flex flex-col gap-sm sm:flex-row sm:items-center"
+-                                                       bis_skin_checked="1"
+                                                      >
+                                                        <SkeletonBlock className="h-4 w-28 r...">
+                                                          <div
+                                                            className="animate-pulse rounded-xl bg-surface-container h..."
+                                                            aria-hidden="true"
+-                                                           bis_skin_checked="1"
+                                                          >
+                                                        <SkeletonBlock className="h-4 w-44 r...">
+                                                          <div
+                                                            className="animate-pulse rounded-xl bg-surface-container h..."
+                                                            aria-hidden="true"
+-                                                           bis_skin_checked="1"
+                                                          >
+                                                        <SkeletonBlock className="h-4 w-32 r...">
+                                                          <div
+                                                            className="animate-pulse rounded-xl bg-surface-container h..."
+                                                            aria-hidden="true"
+-                                                           bis_skin_checked="1"
+                                                          >
+                                                        <SkeletonBlock className="h-7 w-24 r...">
+                                                          <div
+                                                            className="animate-pulse rounded-xl bg-surface-container h..."
+                                                            aria-hidden="true"
+-                                                           bis_skin_checked="1"
+                                                          >
+                                                    <div
+                                                      className="rounded-2xl border border-outline-variant/20 bg-surfa..."
+-                                                     bis_skin_checked="1"
+                                                    >
+                                                      <div
+                                                        className="flex flex-col gap-sm sm:flex-row sm:items-center"
+-                                                       bis_skin_checked="1"
+                                                      >
+                                                        <SkeletonBlock className="h-4 w-28 r...">
+                                                          <div
+                                                            className="animate-pulse rounded-xl bg-surface-container h..."
+                                                            aria-hidden="true"
+-                                                           bis_skin_checked="1"
+                                                          >
+                                                        <SkeletonBlock className="h-4 w-44 r...">
+                                                          <div
+                                                            className="animate-pulse rounded-xl bg-surface-container h..."
+                                                            aria-hidden="true"
+-                                                           bis_skin_checked="1"
+                                                          >
+                                                        <SkeletonBlock className="h-4 w-32 r...">
+                                                          <div
+                                                            className="animate-pulse rounded-xl bg-surface-container h..."
+                                                            aria-hidden="true"
+-                                                           bis_skin_checked="1"
+                                                          >
+                                                        <SkeletonBlock className="h-7 w-24 r...">
+                                                          <div
+                                                            className="animate-pulse rounded-xl bg-surface-container h..."
+                                                            aria-hidden="true"
+-                                                           bis_skin_checked="1"
+                                                          >
+                  ...
+ 
+    at <unknown> (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3439:25)
+    at runWithFiberInDEV (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:965:74)
+    at emitPendingHydrationWarnings (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3438:13)
+    at completeWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:6885:102)
+    at runWithFiberInDEV (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:965:131)
+    at completeUnitOfWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9622:23)
+    at performUnitOfWork (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9557:28)
+    at workLoopConcurrentByScheduler (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9551:58)
+    at renderRootConcurrent (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9534:71)
+    at performWorkOnRoot (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:9061:150)
+    at performWorkOnRootViaSchedulerTask (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:10255:9)
+    at MessagePort.performWorkUntilDeadline (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_1amofcm._.js:2647:64) (file://C:/Users/lenovo/Documents/HACKATHON SIMKOPDES/kreasi-simkopdes/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_096_9a-._.js:3439:25)

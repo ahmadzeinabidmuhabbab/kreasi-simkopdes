@@ -266,7 +266,132 @@ function EmptyState({ title, text }: { title: string; text: string }) {
     <div className="flex min-h-[220px] flex-col items-center justify-center rounded-xl border border-dashed border-outline-variant/60 bg-surface-container-lowest p-xl text-center">
       <span className="material-symbols-outlined mb-sm text-5xl text-outline">inbox</span>
       <p className="font-bold text-on-surface">{title}</p>
-      <p className="mt-xs max-w-md text-sm text-on-surface-variant">{text}</p>
+<p className="mt-xs max-w-md text-sm text-on-surface-variant">{text}</p>
+</div>
+  );
+}
+
+function SkeletonBlock({ className = "" }: { className?: string }) {
+  return <div className={`animate-pulse rounded-xl bg-surface-container ${className}`} aria-hidden="true" />;
+}
+
+function SummaryCardsSkeleton() {
+  return (
+    <div
+      className="grid grid-cols-1 gap-gutter sm:grid-cols-2 xl:grid-cols-4"
+      role="status"
+      aria-live="polite"
+      aria-label="Memuat ringkasan demand"
+    >
+      {Array.from({ length: 4 }).map((_, index) => (
+        <div key={index} className="flex min-h-[92px] items-center gap-md rounded-2xl border border-outline-variant/25 bg-surface-container-lowest p-md shadow-sm">
+          <SkeletonBlock className="size-12 shrink-0 rounded-xl bg-surface-container-high" />
+          <div className="min-w-0 flex-1">
+            <SkeletonBlock className="h-3 w-28 rounded-full" />
+            <SkeletonBlock className="mt-sm h-7 w-24 rounded-lg bg-surface-container-high" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function TopProductsSkeleton() {
+  const barHeights = ["h-16", "h-24", "h-32", "h-20", "h-28"];
+
+  return (
+    <div
+      className="grid gap-md md:grid-cols-5"
+      role="status"
+      aria-live="polite"
+      aria-label="Memuat produk paling banyak RFQ"
+    >
+      {barHeights.map((height, index) => (
+        <div key={index} className="flex min-h-44 flex-col justify-end rounded-xl bg-surface-container-low p-sm">
+          <SkeletonBlock className={`${height} rounded-t-lg bg-primary/20`} />
+          <SkeletonBlock className="mx-auto mt-sm h-3 w-4/5 rounded-full" />
+          <SkeletonBlock className="mx-auto mt-xs h-3 w-3/5 rounded-full bg-primary/15" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function HistoryRowsSkeleton() {
+  return (
+    <div className="flex flex-col gap-sm" role="status" aria-live="polite" aria-label="Memuat history RFQ">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <div key={index} className="rounded-2xl border border-outline-variant/20 bg-surface-container-lowest p-md">
+          <div className="flex flex-col gap-sm sm:flex-row sm:items-center">
+            <SkeletonBlock className="h-4 w-28 rounded-full" />
+            <SkeletonBlock className="h-4 w-44 rounded-full bg-surface-container-high" />
+            <SkeletonBlock className="h-4 w-32 rounded-full" />
+            <SkeletonBlock className="h-7 w-24 rounded-full bg-primary/15 sm:ml-auto" />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ForecastSkeleton() {
+  return (
+    <div className="grid gap-gutter lg:grid-cols-2" role="status" aria-live="polite" aria-label="Memuat data forecasting">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <article key={index} className="rounded-2xl border border-primary/10 bg-gradient-to-br from-surface-container-lowest via-surface-container-lowest to-primary/5 p-md shadow-sm">
+          <div className="flex flex-wrap items-start justify-between gap-md">
+            <div className="min-w-0 flex-1">
+              <SkeletonBlock className="h-4 w-32 rounded-full bg-primary/15" />
+              <SkeletonBlock className="mt-sm h-6 w-3/4 rounded-lg bg-surface-container-high" />
+              <SkeletonBlock className="mt-xs h-4 w-44 rounded-full" />
+            </div>
+            <SkeletonBlock className="h-7 w-24 rounded-full bg-primary/10" />
+          </div>
+          <SkeletonBlock className="mt-md h-44 w-full rounded-2xl bg-surface-container" />
+          <div className="mt-sm grid gap-xs sm:grid-cols-2 xl:grid-cols-4">
+            {Array.from({ length: 4 }).map((_, metricIndex) => (
+              <div key={metricIndex} className="rounded-xl bg-surface-container-low p-sm">
+                <SkeletonBlock className="h-3 w-16 rounded-full" />
+                <SkeletonBlock className="mt-xs h-5 w-20 rounded-md bg-surface-container-high" />
+              </div>
+            ))}
+          </div>
+          <SkeletonBlock className="mt-sm h-4 w-full rounded-full" />
+          <SkeletonBlock className="mt-xs h-4 w-4/5 rounded-full" />
+        </article>
+      ))}
+    </div>
+  );
+}
+
+function TrendSkeleton() {
+  return (
+    <div className="grid gap-gutter lg:grid-cols-2" role="status" aria-live="polite" aria-label="Memuat analisis trend">
+      {Array.from({ length: 4 }).map((_, index) => (
+        <article key={index} className="rounded-2xl border border-outline-variant/25 bg-surface-container-lowest p-md shadow-sm">
+          <div className="flex flex-wrap items-start justify-between gap-md">
+            <div className="min-w-0 flex-1">
+              <div className="flex flex-wrap gap-xs">
+                <SkeletonBlock className="h-6 w-20 rounded-full bg-primary/15" />
+                <SkeletonBlock className="h-6 w-24 rounded-full" />
+              </div>
+              <SkeletonBlock className="mt-sm h-6 w-56 max-w-full rounded-lg bg-surface-container-high" />
+            </div>
+            <SkeletonBlock className="h-20 w-44 rounded-xl bg-primary/10" />
+          </div>
+          <SkeletonBlock className="mt-md h-5 w-4/5 rounded-lg bg-surface-container-high" />
+          <SkeletonBlock className="mt-sm h-4 w-full rounded-full" />
+          <SkeletonBlock className="mt-xs h-4 w-5/6 rounded-full" />
+          <div className="mt-md grid gap-sm sm:grid-cols-3">
+            {Array.from({ length: 3 }).map((_, metricIndex) => (
+              <div key={metricIndex} className="rounded-xl bg-surface-container-low p-sm">
+                <SkeletonBlock className="h-3 w-14 rounded-full" />
+                <SkeletonBlock className="mt-xs h-5 w-20 rounded-md bg-surface-container-high" />
+              </div>
+            ))}
+          </div>
+        </article>
+      ))}
     </div>
   );
 }
@@ -754,13 +879,15 @@ onClick={() => fetchRfqDashboard()}
             disabled={loading}
             className="inline-flex items-center justify-center gap-xs rounded-xl border border-outline-variant/40 bg-surface-container-low px-md py-2 text-sm font-bold text-on-surface-variant transition hover:bg-surface-container hover:text-primary disabled:opacity-60"
           >
-            <span className={`material-symbols-outlined text-[18px] ${loading ? "animate-spin" : ""}`}>sync</span>
+          <span className="material-symbols-outlined text-[18px]">sync</span>
             Refresh Data
           </button>
         </div>
       </div>
 
-      {summary && (
+      {loading && !summary ? (
+        <SummaryCardsSkeleton />
+      ) : summary ? (
         <div className="grid grid-cols-1 gap-gutter sm:grid-cols-2 xl:grid-cols-4">
           {[
             { label: "Total RFQ Diajukan", value: summary.totalRfq, icon: "receipt_long", color: "bg-primary/10 text-primary" },
@@ -781,11 +908,13 @@ onClick={() => fetchRfqDashboard()}
             </div>
           ))}
         </div>
-      )}
+      ) : null}
 
       <section className="rounded-2xl border border-outline-variant/25 bg-surface-container-lowest p-md shadow-sm">
         <p className="mb-md text-xs font-extrabold uppercase tracking-wider text-on-surface-variant">Produk Paling Banyak RFQ</p>
-        {topProducts.length === 0 ? (
+        {loading && topProducts.length === 0 ? (
+          <TopProductsSkeleton />
+        ) : topProducts.length === 0 ? (
           <EmptyState title="Belum ada produk RFQ" text="Produk teratas akan muncul setelah RFQ tersimpan di database." />
         ) : (
           <div className="grid gap-md md:grid-cols-5">
@@ -852,7 +981,7 @@ onClick={() => fetchRfqDashboard()}
           </div>
 
           {loading ? (
-            <div className="space-y-sm">{[1, 2, 3].map((item) => <div key={item} className="h-16 animate-pulse rounded-xl bg-surface-container" />)}</div>
+          <HistoryRowsSkeleton />
           ) : filteredHistory.length === 0 ? (
             <EmptyState title="Belum ada RFQ" text="Data RFQ akan muncul setelah ada request yang diproses dari backend." />
           ) : (
@@ -861,46 +990,46 @@ onClick={() => fetchRfqDashboard()}
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-outline-variant/25 bg-surface-container">
-                      {["Tanggal", "Produk", "Kopdes", "Volume", "Harga Satuan", "Total Nilai", "Sumber", "Status", "Detail"].map((header) => (
-                        <th key={header} className="px-md py-3 text-left text-[11px] font-extrabold uppercase tracking-wider text-on-surface-variant">
-                          {header}
-                        </th>
-                      ))}
+                    {["Tanggal", "Produk", "Kopdes", "Volume", "Harga Satuan", "Total Nilai", "Sumber", "Status", "Detail"].map((header) => (
+                      <th key={header} className="px-sm py-2 text-left text-[11px] font-extrabold uppercase tracking-wide text-on-surface-variant">
+                        {header}
+                      </th>
+                    ))}
                     </tr>
                   </thead>
                   <tbody>
                     {filteredHistory.map((rfq) => {
                       const meta = statusMeta[rfq.status];
                       return (
-                        <tr key={rfq.id} className="border-b border-outline-variant/10 transition hover:bg-surface-container-low">
-                          <td className="px-md py-3 whitespace-nowrap">
-                            <p className="text-xs font-bold text-on-surface">{rfq.date}</p>
-                            <p className="text-[10px] text-on-surface-variant">{rfq.time}</p>
-                          </td>
-                          <td className="px-md py-3 font-bold text-on-surface">{rfq.product}</td>
-                          <td className="px-md py-3 text-on-surface-variant">{rfq.kopdesName}</td>
-                          <td className="px-md py-3 font-semibold text-on-surface whitespace-nowrap">
-                            {formatNumber(rfq.volume)} {rfq.unit}
-                          </td>
-                          <td className="px-md py-3 font-semibold text-on-surface whitespace-nowrap">{formatRupiah(rfq.price)}</td>
-                          <td className="px-md py-3 font-extrabold text-primary whitespace-nowrap">{formatRupiah(rfq.value)}</td>
-                          <td className="px-md py-3">
-                            <span className="rounded-full bg-surface-container px-2 py-1 text-[10px] font-bold text-on-surface-variant">{rfq.source}</span>
-                          </td>
-                          <td className="px-md py-3">
-                            <span className={`inline-flex items-center gap-xs rounded-full border px-2.5 py-1 text-[10px] font-extrabold ${meta.className}`}>
-                              <span className="material-symbols-outlined text-[13px]">{meta.icon}</span>
-                              {meta.label}
-                            </span>
-                          </td>
-                          <td className="px-md py-3">
-                            <button
-                              onClick={() => openDetail(rfq.id)}
-                              className="inline-flex items-center gap-xs rounded-lg bg-primary px-sm py-1.5 text-[11px] font-bold text-white transition hover:bg-primary/90"
-                            >
-                              <span className="material-symbols-outlined text-[14px]">open_in_new</span>
-                              Detail
-                            </button>
+                      <tr key={rfq.id} className="border-b border-outline-variant/10 transition hover:bg-surface-container-low">
+                        <td className="px-sm py-2.5 whitespace-nowrap">
+                          <p className="text-xs font-bold text-on-surface">{rfq.date}</p>
+                          <p className="text-[10px] text-on-surface-variant">{rfq.time}</p>
+                        </td>
+                        <td className="px-sm py-2.5 font-bold text-on-surface">{rfq.product}</td>
+                        <td className="px-sm py-2.5 text-on-surface-variant">{rfq.kopdesName}</td>
+                        <td className="px-sm py-2.5 font-semibold text-on-surface whitespace-nowrap">
+                          {formatNumber(rfq.volume)} {rfq.unit}
+                        </td>
+                        <td className="px-sm py-2.5 font-semibold text-on-surface whitespace-nowrap">{formatRupiah(rfq.price)}</td>
+                        <td className="px-sm py-2.5 font-extrabold text-primary whitespace-nowrap">{formatRupiah(rfq.value)}</td>
+                        <td className="px-sm py-2.5">
+                          <span className="rounded-full bg-surface-container px-2 py-0.5 text-[10px] font-bold text-on-surface-variant">{rfq.source}</span>
+                        </td>
+                        <td className="px-sm py-2.5">
+                          <span className={`inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border px-2.5 py-1 text-[11px] font-extrabold ${meta.className}`}>
+                            <span className="material-symbols-outlined text-[15px] leading-none">{meta.icon}</span>
+                            {meta.label}
+                          </span>
+                        </td>
+                        <td className="px-sm py-2.5">
+                          <button
+                            onClick={() => openDetail(rfq.id)}
+                            className="inline-flex h-8 items-center justify-center gap-1.5 rounded-lg bg-primary px-2.5 py-1 text-[11px] font-extrabold text-white transition hover:bg-primary/90"
+                          >
+                            <span className="material-symbols-outlined text-[15px] leading-none">open_in_new</span>
+                            Detail
+                          </button>
                           </td>
                         </tr>
                       );
@@ -952,52 +1081,52 @@ onClick={() => fetchRfqDashboard()}
             </div>
 </div>
 
-{forecastLoading && (
-<EmptyState title="Memuat data forecasting" text="Sistem sedang mengambil konteks forecast dan stok. Halaman awal tidak lagi menunggu proses ini." />
-)}
-
-<div className="grid gap-gutter lg:grid-cols-2">
-{(forecast?.items ?? []).slice(0, 6).map((item, index) => (
-              <article
-                key={`${item.product_name}-${item.method}-${index}`}
-                className="rounded-2xl border border-primary/10 bg-gradient-to-br from-surface-container-lowest via-surface-container-lowest to-primary/5 p-md shadow-sm transition hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-md"
-              >
-                <div className="flex items-start justify-between gap-md">
-                  <div>
-                    <h3 className="font-extrabold text-on-surface">{item.product_name}</h3>
-                    <p className="mt-xs text-xs text-on-surface-variant">
-                      Ringkasan kebutuhan barang, stok tersedia, dan tindakan restock.
-                    </p>
+          {forecastLoading ? (
+            <ForecastSkeleton />
+          ) : (
+            <div className="grid gap-gutter lg:grid-cols-2">
+              {(forecast?.items ?? []).slice(0, 6).map((item, index) => (
+                <article
+                  key={`${item.product_name}-${item.method}-${index}`}
+                  className="rounded-2xl border border-primary/10 bg-gradient-to-br from-surface-container-lowest via-surface-container-lowest to-primary/5 p-md shadow-sm transition hover:-translate-y-0.5 hover:border-primary/25 hover:shadow-md"
+                >
+                  <div className="flex items-start justify-between gap-md">
+                    <div>
+                      <h3 className="font-extrabold text-on-surface">{item.product_name}</h3>
+                      <p className="mt-xs text-xs text-on-surface-variant">
+                        Ringkasan kebutuhan barang, stok tersedia, dan tindakan restock.
+                      </p>
+                    </div>
+                    <span className={`rounded-full border px-2.5 py-1 text-[10px] font-bold ${trendTone(item.trend)}`}>{trendDisplayName(item.trend)}</span>
                   </div>
-                  <span className={`rounded-full border px-2.5 py-1 text-[10px] font-bold ${trendTone(item.trend)}`}>{trendDisplayName(item.trend)}</span>
-                </div>
-                <div className="mt-md">
-                  <MiniLineChart item={item} />
-                </div>
-                <div className="mt-sm grid gap-xs sm:grid-cols-2 xl:grid-cols-4">
-                  <div className="rounded-xl border border-primary/10 bg-primary/8 p-sm">
-                    <p className="text-[10px] font-bold uppercase text-on-surface-variant">Prediksi 1 Bulan</p>
-                    <p className="mt-xs font-extrabold text-on-surface">
-                      {formatNumber(forecastMonthlyTotal(item))} {item.stock.unit}
-                    </p>
+                  <div className="mt-md">
+                    <MiniLineChart item={item} />
                   </div>
-                  <div className="rounded-xl bg-surface-container-low p-sm">
-                    <p className="text-[10px] font-bold uppercase text-on-surface-variant">Stok</p>
-                    <p className="mt-xs font-extrabold text-on-surface">{formatNumber(item.stock.available_quantity)} {item.stock.unit}</p>
+                  <div className="mt-sm grid gap-xs sm:grid-cols-2 xl:grid-cols-4">
+                    <div className="rounded-xl border border-primary/10 bg-primary/8 p-sm">
+                      <p className="text-[10px] font-bold uppercase text-on-surface-variant">Prediksi 1 Bulan</p>
+                      <p className="mt-xs font-extrabold text-on-surface">
+                        {formatNumber(forecastMonthlyTotal(item))} {item.stock.unit}
+                      </p>
+                    </div>
+                    <div className="rounded-xl bg-surface-container-low p-sm">
+                      <p className="text-[10px] font-bold uppercase text-on-surface-variant">Stok</p>
+                      <p className="mt-xs font-extrabold text-on-surface">{formatNumber(item.stock.available_quantity)} {item.stock.unit}</p>
+                    </div>
+                    <div className="rounded-xl bg-surface-container-low p-sm">
+                      <p className="text-[10px] font-bold uppercase text-on-surface-variant">Cakupan</p>
+                      <p className="mt-xs font-extrabold text-on-surface">{item.stock.coverage_days ?? 0} hari</p>
+                    </div>
+                    <div className="rounded-xl bg-surface-container-low p-sm">
+                      <p className="text-[10px] font-bold uppercase text-on-surface-variant">Risiko</p>
+                      <p className="mt-xs font-extrabold text-on-surface">{riskDisplayName(item.llm_recommendation.risk_level)}</p>
+                    </div>
                   </div>
- <div className="rounded-xl bg-surface-container-low p-sm">
-                    <p className="text-[10px] font-bold uppercase text-on-surface-variant">Cakupan</p>
- <p className="mt-xs font-extrabold text-on-surface">{item.stock.coverage_days ?? 0} hari</p>
- </div>
- <div className="rounded-xl bg-surface-container-low p-sm">
-                    <p className="text-[10px] font-bold uppercase text-on-surface-variant">Risiko</p>
-                    <p className="mt-xs font-extrabold text-on-surface">{riskDisplayName(item.llm_recommendation.risk_level)}</p>
- </div>
- </div>
-                <p className="mt-sm text-sm leading-relaxed text-on-surface-variant">{forecastInsightText(item)}</p>
-              </article>
-            ))}
-          </div>
+                  <p className="mt-sm text-sm leading-relaxed text-on-surface-variant">{forecastInsightText(item)}</p>
+                </article>
+              ))}
+            </div>
+          )}
         </section>
       )}
 
@@ -1011,14 +1140,14 @@ onClick={() => fetchRfqDashboard()}
           </div>
 
 {topTrendItems.length === 0 ? (
+            trendLoading ? (
+              <TrendSkeleton />
+) : (
 <EmptyState
-title={trendLoading ? "Memuat analisis trend" : "Summary trend belum tersedia"}
-text={
-trendLoading
-? "Sistem sedang mengambil ringkasan Google Trends dan Google Search/news. Data ini tidak lagi memblokir load awal halaman."
-: "Jalankan fetch external demand dan LLM summary di backend untuk menampilkan analisis trend komoditas."
-}
+title="Summary trend belum tersedia"
+text="Jalankan fetch external demand dan LLM summary di backend untuk menampilkan analisis trend komoditas."
 />
+) 
 ) : (
             <div className="grid gap-gutter lg:grid-cols-2">
               {topTrendItems.map((item, index) => (
