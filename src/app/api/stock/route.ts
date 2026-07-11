@@ -12,11 +12,16 @@ export async function GET(request: Request) {
   try {
     const response = await fetch(backendUrl(`/stock${query ? `?${query}` : ""}`), {
       headers: { Accept: "application/json" },
-      cache: "no-store",
+      next: { revalidate: 10 },
     });
     const data = await response.json();
 
-    return NextResponse.json(data, { status: response.status });
+    return NextResponse.json(data, {
+      status: response.status,
+      headers: response.ok
+        ? { "Cache-Control": "private, max-age=10, stale-while-revalidate=30" }
+        : undefined,
+    });
   } catch {
     return NextResponse.json(
       {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import {
   DataTablePagination,
@@ -10,6 +10,7 @@ import {
   SortButton,
   type SortOrder,
 } from "@/components/dashboard/DashboardDataTable";
+import { useApiQuery } from "@/hooks/use-api-query";
 
 type StockStatus = "SEMUA" | "AMAN" | "RENDAH" | "KRITIS" | "HABIS";
 type StockSortField =
@@ -171,17 +172,11 @@ function StatusBadge({ status }: { status: Exclude<StockStatus, "SEMUA"> }) {
 }
 
 export default function StockPage() {
-  const [items, setItems] = useState<StockItem[]>([]);
-  const [summary, setSummary] = useState<StockSummary | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [total, setTotal] = useState(0);
-  const [totalPages, setTotalPages] = useState(1);
   const [sortBy, setSortBy] = useState<StockSortField>("status");
   const [sortOrder, setSortOrder] = useState<SortOrder>("asc");
 
@@ -194,10 +189,7 @@ export default function StockPage() {
     return () => window.clearTimeout(timeout);
   }, [searchInput]);
 
-  const fetchStock = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-
+  const queryUrl = useMemo(() => {
     const params = new URLSearchParams({
       page: String(page),
       page_size: String(pageSize),
@@ -205,34 +197,13 @@ export default function StockPage() {
       order: sortOrder,
     });
     if (search) params.set("search", search);
-
-    try {
-      const response = await fetch(`/api/stock?${params.toString()}`, { cache: "no-store" });
-      const data = (await response.json()) as StockPayload;
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.detail ?? "Gagal memuat data stok");
-      }
-
-      setItems(data.items);
-      setSummary(data.summary);
-      setTotal(data.total);
-      setTotalPages(data.total_pages);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Gagal memuat data stok");
-      setItems([]);
-      setSummary(null);
-      setTotal(0);
-      setTotalPages(1);
-    } finally {
-      setLoading(false);
-    }
+    return `/api/stock?${params.toString()}`;
   }, [page, pageSize, search, sortBy, sortOrder]);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    void fetchStock();
-  }, [fetchStock]);
+  const { data, error, loading, refetch: fetchStock } = useApiQuery<StockPayload>(queryUrl);
+  const items = data?.items ?? [];
+  const summary = data?.summary ?? null;
+  const total = data?.total ?? 0;
+  const totalPages = data?.total_pages ?? 1;
 
   const handleSort = (field: StockSortField) => {
     setPage(1);

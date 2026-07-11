@@ -96,15 +96,16 @@ const DONUT_COLORS = ["#2e591f", "#fbbc00", "#3b82f6", "#8b5cf6", "#ef4444"];
 function DonutChart({ data }: { data: CategoryItem[] }) {
   const r = 70, cx = 90, cy = 90;
   const circumference = 2 * Math.PI * r;
-  let offset = 0;
+  const rotations = data.map((_, index) =>
+    data.slice(0, index).reduce((total, item) => total + item.percentage, 0),
+  );
 
   return (
     <svg viewBox="0 0 180 180" className="w-full h-full" style={{ maxWidth: 180 }}>
       {data.map((item, i) => {
         const dash = (item.percentage / 100) * circumference;
         const gap = circumference - dash;
-        const rotation = (offset / 100) * 360 - 90;
-        offset += item.percentage;
+        const rotation = (rotations[i] / 100) * 360 - 90;
         return (
           <circle
             key={i}
@@ -166,10 +167,6 @@ export default function FinanceDashboard() {
       setGeneratingPdf(false);
       setShowPdfPreview(true);
     }, 1500);
-  };
-
-  const handlePrint = () => {
-    window.print();
   };
 
   const handleDownloadPdf = () => {

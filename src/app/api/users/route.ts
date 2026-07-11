@@ -11,7 +11,15 @@ let nextId = 4;
 export async function GET() {
   return NextResponse.json({
     success: true,
-    users: users.map(({ password: _pw, ...u }) => u), // omit password
+    users: users.map(({ id, name, username, role, email, active, createdAt }) => ({
+      id,
+      name,
+      username,
+      role,
+      email,
+      active,
+      createdAt,
+    })),
   });
 }
 

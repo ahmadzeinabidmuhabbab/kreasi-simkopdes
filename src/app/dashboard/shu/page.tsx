@@ -40,9 +40,7 @@ function fmt(n: number) {
 // ── Waterfall flow SVG ─────────────────────────────────────────────────────
 function ShuFlowDiagram({ agg }: { agg: ShuAggregate }) {
   const { grossProfit, deductions, netShu, allocation } = agg;
-  const totalDeductions = Object.values(deductions).reduce((a, b) => a + b, 0);
   const maxBar = grossProfit;
-  const bw = 40; // bar width
 
   const bars = [
     { label: "Keuntungan Bruto", value: grossProfit, color: "#2e591f", type: "income" },
@@ -133,7 +131,10 @@ export default function ShuDistribution() {
     }
   }, [showToast]);
 
-  useEffect(() => { fetchData(); }, [fetchData]);
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => void fetchData(), 0);
+    return () => window.clearTimeout(timeoutId);
+  }, [fetchData]);
 
   const buildWaMessage = (member: MemberShu, period: string) =>
     `🌾 *KREASI Koperasi Desa*

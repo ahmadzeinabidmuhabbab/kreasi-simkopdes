@@ -142,6 +142,23 @@ interface ForecastPayload {
   items: ForecastItem[];
 }
 
+interface ForecastAISummary {
+  generated_at: string;
+  granularity: string;
+  horizon: number;
+  commodities_analyzed: number;
+  headline: string;
+  summary: string;
+  general_recommendation: string;
+  priorities: Array<{
+    title: string;
+    detail: string;
+    action: string;
+    severity: "high" | "medium" | "low";
+  }>;
+  risks: string[];
+}
+
 interface TrendItem {
   commodity_id: string;
   commodity_name: string;
@@ -273,6 +290,34 @@ function EmptyState({ title, text }: { title: string; text: string }) {
 
 function SkeletonBlock({ className = "" }: { className?: string }) {
   return <div className={`animate-pulse rounded-xl bg-surface-container ${className}`} aria-hidden="true" />;
+}
+
+function ForecastAISummarySkeleton() {
+  return (
+    <div className="mt-lg border-t border-white/15 pt-lg" role="status" aria-live="polite">
+      <span className="sr-only">Membuat AI summary forecasting</span>
+      <SkeletonBlock className="h-7 w-full max-w-xl bg-white/20" />
+      <SkeletonBlock className="mt-md h-4 w-full bg-white/15" />
+      <SkeletonBlock className="mt-xs h-4 w-11/12 bg-white/15" />
+      <SkeletonBlock className="mt-xs h-4 w-4/5 bg-white/15" />
+      <div className="mt-lg grid gap-md lg:grid-cols-[1.25fr_0.75fr]">
+        <div className="space-y-sm">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <div key={index} className="border-t border-white/10 pt-sm first:border-t-0 first:pt-0">
+              <SkeletonBlock className="h-4 w-36 bg-white/20" />
+              <SkeletonBlock className="mt-xs h-3 w-full bg-white/15" />
+              <SkeletonBlock className="mt-xs h-3 w-3/4 bg-white/15" />
+            </div>
+          ))}
+        </div>
+        <div className="border-l border-white/10 pl-md">
+          <SkeletonBlock className="h-4 w-32 bg-white/20" />
+          <SkeletonBlock className="mt-sm h-3 w-full bg-white/15" />
+          <SkeletonBlock className="mt-xs h-3 w-5/6 bg-white/15" />
+        </div>
+      </div>
+    </div>
+  );
 }
 
 function SummaryCardsSkeleton() {
@@ -414,16 +459,6 @@ function riskDisplayName(value: string) {
     urgent: "Mendesak",
   };
   return labels[value] ?? value;
-}
-
-function recommendationDisplayName(value: string) {
-  const labels: Record<string, string> = {
-    increase_procurement: "Tambah pengadaan",
-    schedule_reorder: "Jadwalkan restock",
-    maintain_stock: "Pertahankan stok",
-    review_manually: "Tinjau manual",
-  };
-  return labels[value] ?? value.replaceAll("_", " ");
 }
 
 function forecastMonthlyTotal(item: ForecastItem) {
@@ -723,10 +758,11 @@ export default function DemandIntelligence() {
   const [forecast, setForecast] = useState<ForecastPayload | null>(null);
 const [trend, setTrend] = useState<TrendItem[]>([]);
 const [loading, setLoading] = useState(true);
-const [generating, setGenerating] = useState(false);
 const [forecastLoading, setForecastLoading] = useState(false);
 const [trendLoading, setTrendLoading] = useState(false);
-const [forecastInsightVisible, setForecastInsightVisible] = useState(false);
+const [aiSummary, setAiSummary] = useState<ForecastAISummary | null>(null);
+const [aiSummaryLoading, setAiSummaryLoading] = useState(false);
+const [aiSummaryError, setAiSummaryError] = useState<string | null>(null);
 const [filterStatus, setFilterStatus] = useState<"SEMUA" | RfqStatus>("SEMUA");
   const [selectedRfq, setSelectedRfq] = useState<RfqDetail | null>(null);
   const [drawerLoading, setDrawerLoading] = useState(false);
@@ -748,7 +784,6 @@ try {
       setSummary(data.summary ?? null);
       setTopProducts(data.topProducts ?? []);
 setRfqHistory(data.rfqHistory ?? []);
-setForecastInsightVisible(false);
     } catch (error) {
       showToast(error instanceof Error ? error.message : "Gagal memuat data", "error");
     } finally {
@@ -756,7 +791,7 @@ setForecastInsightVisible(false);
     }
   }, [showToast]);
 
-const fetchForecastData = useCallback(async (options?: { showInsight?: boolean }) => {
+const fetchForecastData = useCallback(async () => {
 setForecastLoading(true);
 try {
 const response = await fetch("/api/demand?scope=forecast");
@@ -765,7 +800,6 @@ if (!response.ok || !data.success || !data.forecast) {
 throw new Error(data.message ?? "Gagal memuat data forecasting");
 }
 setForecast(data.forecast);
-setForecastInsightVisible(Boolean(options?.showInsight));
 } catch (error) {
 showToast(error instanceof Error ? error.message : "Gagal memuat data forecasting", "error");
 } finally {
@@ -829,29 +863,31 @@ void fetchTrendData();
     }
   };
 
-  const generateForecast = async () => {
-    setGenerating(true);
+  const generateAISummary = async () => {
+    setAiSummaryLoading(true);
+    setAiSummaryError(null);
     try {
-      const response = await fetch("/api/demand", {
+      const response = await fetch("/api/forecast-summary", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "generateForecast" }),
+        body: JSON.stringify({ granularity: forecast?.granularity ?? "daily", horizon: forecast?.horizon ?? 14 }),
       });
-      const data = (await response.json()) as { success: boolean; message?: string };
-      if (!response.ok || !data.success) {
-        throw new Error(data.message ?? "Forecast gagal dijalankan");
+      const data = (await response.json()) as {
+        success: boolean;
+        summary?: ForecastAISummary;
+        message?: string;
+      };
+      if (!response.ok || !data.success || !data.summary) {
+        throw new Error(data.message ?? "AI summary belum dapat dibuat");
       }
-showToast("Forecasting berhasil dijalankan. Data dashboard dimuat ulang.", "success");
-await fetchForecastData({ showInsight: true });
-setActiveTab("forecasting");
+      setAiSummary(data.summary);
     } catch (error) {
-      showToast(error instanceof Error ? error.message : "Forecast gagal dijalankan", "error");
+      setAiSummaryError(error instanceof Error ? error.message : "AI summary belum dapat dibuat");
     } finally {
-      setGenerating(false);
+      setAiSummaryLoading(false);
     }
   };
 
-  const bestForecast = forecast?.items[0];
   const topTrendItems = trend.slice(0, 20);
 
   return (
@@ -1067,33 +1103,90 @@ onClick={() => fetchRfqDashboard()}
             <div className="overflow-hidden rounded-2xl border border-primary/20 bg-gradient-to-br from-primary via-[#2f5d25] to-[#18350f] p-lg text-white shadow-[0_18px_48px_-30px_rgba(24,53,15,0.85)]">
               <div className="flex flex-col gap-md md:flex-row md:items-start md:justify-between">
                 <div>
-                  <p className="text-xs font-extrabold uppercase tracking-wider text-white/70">Insight LLM-ready</p>
-                  <h2 className="mt-xs text-xl font-extrabold">Konteks Prediksi Kebutuhan Barang</h2>
+                  <p className="text-xs font-extrabold uppercase tracking-wider text-white/70">Ringkasan AI</p>
+                  <h2 className="mt-xs text-xl font-extrabold">Forecasting Seluruh Komoditas</h2>
                 </div>
                 <button
-                  onClick={generateForecast}
-                  disabled={generating}
+                  onClick={generateAISummary}
+                  disabled={aiSummaryLoading || forecastLoading || !forecast}
                   className="inline-flex min-h-12 items-center justify-center gap-xs rounded-xl bg-white px-md py-2 text-sm font-extrabold text-primary shadow-sm transition hover:bg-white/90 focus:outline-none focus:ring-2 focus:ring-white/70 focus:ring-offset-2 focus:ring-offset-primary disabled:cursor-not-allowed disabled:opacity-60"
-                  aria-label="Buat forecast kebutuhan barang"
+                  aria-label="Generate AI summary forecasting"
                 >
-                  <span className={`material-symbols-outlined text-[20px] ${generating ? "animate-spin" : ""}`}>
-                    {generating ? "autorenew" : "auto_awesome"}
+                  <span className={`material-symbols-outlined text-[20px] ${aiSummaryLoading ? "animate-spin" : ""}`}>
+                    {aiSummaryLoading ? "autorenew" : "auto_awesome"}
                   </span>
-                  {generating ? "Memproses" : "Buat Forecast"}
+                  {aiSummaryLoading ? "Menganalisis" : aiSummary ? "Generate Ulang" : "Generate AI Summary"}
                 </button>
               </div>
 
-{forecastInsightVisible && bestForecast && (
+              {aiSummaryLoading && <ForecastAISummarySkeleton />}
+
+              {!aiSummaryLoading && aiSummaryError && (
+                <div className="mt-lg flex flex-col gap-sm border-t border-red-200/25 pt-lg sm:flex-row sm:items-center sm:justify-between" role="alert">
+                  <div className="flex items-start gap-sm">
+                    <span className="material-symbols-outlined mt-0.5 text-[20px] text-red-200">error</span>
+                    <p className="text-sm font-semibold text-white">{aiSummaryError}</p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={generateAISummary}
+                    className="inline-flex min-h-11 items-center justify-center gap-xs border border-white/30 px-md py-2 text-sm font-extrabold text-white transition hover:bg-white/10"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">refresh</span>
+                    Coba Lagi
+                  </button>
+                </div>
+              )}
+
+              {!aiSummaryLoading && aiSummary && (
                 <div className="mt-lg border-t border-white/15 pt-lg">
-                  <h3 className="text-xl font-extrabold">{bestForecast.llm_recommendation.headline}</h3>
-                  <p className="mt-md text-sm leading-relaxed text-white/85">
-                    {forecastInsightText(bestForecast)}
-                  </p>
-                  <div className="mt-lg rounded-xl border border-white/10 bg-white/10 p-md shadow-inner">
-                    <p className="text-[11px] font-bold uppercase tracking-wider text-white/70">Rekomendasi</p>
-                    <p className="mt-xs text-lg font-extrabold">
-                      {`${recommendationDisplayName(bestForecast.llm_recommendation.stock_action)}: ${bestForecast.llm_recommendation.recommendation}`}
+                  <div className="flex flex-col gap-xs sm:flex-row sm:items-end sm:justify-between">
+                    <h3 className="max-w-3xl text-xl font-extrabold leading-tight text-white">{aiSummary.headline}</h3>
+                    <p className="shrink-0 text-xs font-semibold text-white/65">
+                      {aiSummary.commodities_analyzed} komoditas · {aiSummary.horizon} periode
                     </p>
+                  </div>
+                  <p className="mt-md max-w-5xl text-sm leading-relaxed text-white">{aiSummary.summary}</p>
+
+                  <div className="mt-lg grid gap-lg lg:grid-cols-[1.2fr_0.8fr]">
+                    <div>
+                      <p className="text-xs font-extrabold uppercase tracking-wider text-white/65">Prioritas Tindakan</p>
+                      <div className="mt-sm divide-y divide-white/10">
+                        {aiSummary.priorities.map((priority, index) => (
+                          <div key={`${priority.title}-${index}`} className="grid gap-xs py-sm first:pt-0 sm:grid-cols-[28px_1fr]">
+                            <span className="grid size-7 place-items-center rounded-lg bg-white/12 text-xs font-extrabold text-white">
+                              {index + 1}
+                            </span>
+                            <div>
+                              <div className="flex flex-wrap items-center gap-xs">
+                                <h4 className="text-sm font-extrabold text-white">{priority.title}</h4>
+                                <span className={`size-2 rounded-full ${priority.severity === "high" ? "bg-amber-300" : priority.severity === "medium" ? "bg-sky-300" : "bg-emerald-300"}`} aria-label={`Prioritas ${priority.severity}`} />
+                              </div>
+                              <p className="mt-xs text-sm leading-relaxed text-white">{priority.detail}</p>
+                              <p className="mt-xs text-sm font-bold text-lime-200">{priority.action}</p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="border-t border-white/10 pt-md lg:border-l lg:border-t-0 lg:pl-lg lg:pt-0">
+                      <p className="text-xs font-extrabold uppercase tracking-wider text-white/65">Rekomendasi Umum</p>
+                      <p className="mt-sm text-sm font-semibold leading-relaxed text-white">{aiSummary.general_recommendation}</p>
+                      {aiSummary.risks.length > 0 && (
+                        <div className="mt-md border-t border-white/10 pt-md">
+                          <p className="text-xs font-extrabold uppercase tracking-wider text-white/65">Perlu Diperhatikan</p>
+                          <ul className="mt-sm space-y-sm">
+                            {aiSummary.risks.map((risk, index) => (
+                              <li key={`${risk}-${index}`} className="flex gap-xs text-sm leading-relaxed text-white">
+                                <span className="material-symbols-outlined mt-0.5 text-[17px] text-amber-300">warning</span>
+                                <span>{risk}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
               )}

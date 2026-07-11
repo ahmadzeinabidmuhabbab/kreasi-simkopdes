@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import {
   DataTablePagination,
@@ -10,6 +10,7 @@ import {
   SortButton,
   type SortOrder,
 } from "@/components/dashboard/DashboardDataTable";
+import { useApiQuery } from "@/hooks/use-api-query";
 
 type TransactionStatus = "SEMUA" | "SELESAI" | "DIPROSES" | "MENUNGGU";
 type TransactionSortField =
@@ -389,25 +390,16 @@ function InvoiceMetric({ label, value }: { label: string; value: string }) {
 }
 
 export default function TransactionsPage() {
-  const [items, setItems] = useState<TransactionItem[]>([]);
-  const [summary, setSummary] = useState<TransactionSummary | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [selected, setSelected] = useState<TransactionItem | null>(null);
   const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
 
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
-  const [total, setTotal] = useState(0);
-  const [totalPages, setTotalPages] = useState(1);
   const [sortBy, setSortBy] = useState<TransactionSortField>("transaction_at");
   const [sortOrder, setSortOrder] = useState<SortOrder>("desc");
 
-  const fetchTransactions = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-
+  const queryUrl = useMemo(() => {
     const params = new URLSearchParams({
       page: String(page),
       page_size: String(pageSize),
@@ -415,29 +407,14 @@ export default function TransactionsPage() {
       order: sortOrder,
     });
     if (search) params.set("search", search);
-
-    try {
-      const response = await fetch(`/api/transactions?${params.toString()}`, { cache: "no-store" });
-      const data = (await response.json()) as TransactionsPayload;
-
-      if (!response.ok || !data.success) {
-        throw new Error(data.detail ?? "Gagal memuat data transaksi");
-      }
-
-      setItems(data.items);
-      setSummary(data.summary);
-      setTotal(data.total);
-      setTotalPages(data.total_pages);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Gagal memuat data transaksi");
-      setItems([]);
-      setSummary(null);
-      setTotal(0);
-      setTotalPages(1);
-    } finally {
-      setLoading(false);
-    }
+    return `/api/transactions?${params.toString()}`;
   }, [page, pageSize, search, sortBy, sortOrder]);
+  const { data, error, loading, refetch: fetchTransactions } =
+    useApiQuery<TransactionsPayload>(queryUrl);
+  const items = data?.items ?? [];
+  const summary = data?.summary ?? null;
+  const total = data?.total ?? 0;
+  const totalPages = data?.total_pages ?? 1;
 
   useEffect(() => {
     const timeout = window.setTimeout(() => {
@@ -447,11 +424,6 @@ export default function TransactionsPage() {
 
     return () => window.clearTimeout(timeout);
   }, [searchInput]);
-
-  useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    void fetchTransactions();
-  }, [fetchTransactions]);
 
   const handleSort = (field: TransactionSortField) => {
     setPage(1);
@@ -495,7 +467,7 @@ export default function TransactionsPage() {
               <MaterialIcon filled className="text-[16px]">
                 database
               </MaterialIcon>
-              Database KDMP
+              Transaksi KDMP
             </div>
             <h1 className="text-2xl font-extrabold text-white">Data Transaksi</h1>
             <p className="mt-xs max-w-3xl text-sm leading-relaxed text-white/78">
