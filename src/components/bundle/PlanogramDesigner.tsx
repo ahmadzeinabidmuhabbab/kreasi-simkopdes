@@ -244,6 +244,29 @@ function getSlotIdsForRow(rackId: RackId, rowIndex: number) {
   return columnIndexes.map((columnIndex) => makeSlotId(rackId, rowIndex * 6 + columnIndex + 1));
 }
 
+function ScenarioSelectorSkeleton() {
+  return (
+    <div
+      className="grid gap-xs md:grid-cols-4"
+      role="status"
+      aria-live="polite"
+      aria-label="Memuat pilihan skenario planogram"
+    >
+      {Array.from({ length: 4 }, (_, index) => (
+        <div
+          key={index}
+          className="min-h-16 animate-pulse rounded-2xl border border-outline-variant/25 bg-surface-container-lowest p-sm shadow-sm motion-reduce:animate-none"
+          aria-hidden="true"
+        >
+          <div className="h-3 w-16 rounded-full bg-outline-variant/35" />
+          <div className="mt-2 h-4 w-36 max-w-full rounded-full bg-surface-container-high" />
+          <div className="mt-2 h-3 w-44 max-w-full rounded-full bg-surface-container" />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 export default function PlanogramDesigner({
   inventory,
   loading,
@@ -421,11 +444,13 @@ export default function PlanogramDesigner({
 
   return (
     <section className="@container/planogram space-y-md">
-      {scenarios.length > 0 && (
-          <div className="grid gap-xs md:grid-cols-4">
-            {scenarios.map((scenario) => {
-              const active = selectedScenario?.scenarioId === scenario.scenarioId;
-              const cardCopy = scenarioCardCopy(scenario);
+      {loading ? (
+        <ScenarioSelectorSkeleton />
+      ) : scenarios.length > 0 ? (
+        <div className="grid gap-xs md:grid-cols-4">
+          {scenarios.map((scenario) => {
+            const active = selectedScenario?.scenarioId === scenario.scenarioId;
+            const cardCopy = scenarioCardCopy(scenario);
               return (
                 <button
                   key={scenario.scenarioId}
@@ -447,10 +472,10 @@ export default function PlanogramDesigner({
                     {cardCopy.description}
                   </span>
                 </button>
-              );
-            })}
+            );
+          })}
         </div>
-      )}
+      ) : null}
 
       {selectedScenario && !selectedScenario.editable ? (
         <ScenarioPreview scenario={selectedScenario} />

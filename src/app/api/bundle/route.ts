@@ -68,7 +68,20 @@ function fallbackDashboard() {
   };
 }
 
-async function proxyJson(path: string, init?: RequestInit) {
+function fallbackBootstrap() {
+  return {
+    success: true,
+    dashboard: fallbackDashboard(),
+    frontendBundles: { success: true, data: [] },
+    commodityPrices: {
+      success: true,
+      generatedAt: new Date(0).toISOString(),
+      items: [],
+    },
+  };
+}
+
+async function proxyJson<T = unknown>(path: string, init?: RequestInit) {
   const response = await fetch(backendUrl(path), {
     ...init,
     headers: {
@@ -77,7 +90,7 @@ async function proxyJson(path: string, init?: RequestInit) {
     },
     cache: init?.method && init.method !== "GET" ? undefined : "no-store",
   });
-  const data = await response.json();
+  const data = (await response.json()) as T;
   return NextResponse.json(data, { status: response.status });
 }
 
@@ -86,35 +99,45 @@ function appendQuery(path: string, searchParams: URLSearchParams) {
   return `${path}${query ? `?${query}` : ""}`;
 }
 
+const resourcePath = {
+  dashboard: "/smart-bundle/dashboard",
+  bootstrap: "/smart-bundle/bootstrap",
+  products: "/smart-bundle/products",
+  bundles: "/smart-bundle/bundles",
+  "frontend-bundles": "/smart-bundle/frontend-bundles",
+  "commodity-prices": "/smart-bundle/commodity-prices",
+  "dynamic-pricing": "/smart-bundle/dynamic-pricing",
+  "association-rules": "/smart-bundle/association-rules",
+  "planogram-scenarios": "/smart-bundle/planogram/scenarios",
+  "planogram-suggestions": "/smart-bundle/planogram/suggestions",
+  "planogram-llm-context": "/smart-bundle/planogram/llm-context",
+} as const satisfies Record<string, `/${string}`>;
+
+type BundleResource = keyof typeof resourcePath;
+
+function isBundleResource(resource: string): resource is BundleResource {
+  return resource in resourcePath;
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const resource = searchParams.get("resource") ?? "dashboard";
   searchParams.delete("resource");
 
-  const resourcePath: Record<string, string> = {
-    dashboard: "/smart-bundle/dashboard",
-    products: "/smart-bundle/products",
-    bundles: "/smart-bundle/bundles",
-    "frontend-bundles": "/smart-bundle/frontend-bundles",
-    "commodity-prices": "/smart-bundle/commodity-prices",
-    "dynamic-pricing": "/smart-bundle/dynamic-pricing",
-    "association-rules": "/smart-bundle/association-rules",
-    "planogram-scenarios": "/smart-bundle/planogram/scenarios",
-    "planogram-suggestions": "/smart-bundle/planogram/suggestions",
-    "planogram-llm-context": "/smart-bundle/planogram/llm-context",
-  };
-
-  const path = resourcePath[resource];
-  if (!path) {
+  if (!isBundleResource(resource)) {
     return NextResponse.json(
       { success: false, detail: `Unknown bundle resource: ${resource}` },
       { status: 400 },
     );
   }
+  const path = resourcePath[resource];
 
   try {
     return await proxyJson(appendQuery(path, searchParams));
   } catch (error) {
+    if (resource === "bootstrap") {
+      return NextResponse.json(fallbackBootstrap());
+    }
     if (resource === "dashboard") {
       return NextResponse.json(fallbackDashboard());
     }

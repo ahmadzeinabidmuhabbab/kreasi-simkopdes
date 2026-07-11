@@ -156,6 +156,14 @@ interface CommodityPriceResponse {
   detail?: string;
 }
 
+interface SmartBundleBootstrapResponse {
+  success: boolean;
+  dashboard: BundleApiResponse;
+  frontendBundles: SmartBundleFrontendResponse;
+  commodityPrices: CommodityPriceResponse;
+  detail?: string;
+}
+
 interface KpiItem {
   label: string;
   value: ReactNode;
@@ -330,37 +338,31 @@ export default function SmartBundle() {
   useEffect(() => {
     const controller = new AbortController();
 
-    fetch("/api/bundle", { signal: controller.signal })
-      .then((response) => response.json() as Promise<BundleApiResponse>)
-      .then((data) => {
-        if (data.success) {
-          setInventory(data.inventory);
-          setBundles(data.bundles);
-          setPlanogram(data.planogram ?? null);
+    fetch("/api/bundle?resource=bootstrap", { signal: controller.signal })
+      .then(async (response) => {
+        const data = (await response.json()) as SmartBundleBootstrapResponse;
+        if (!response.ok || !data.success) {
+          throw new Error(data.detail ?? "Data Smart Bundle belum dapat ditampilkan.");
         }
+        return data;
       })
-      .catch((error: Error) => {
-        if (error.name !== "AbortError") setLoading(false);
-      })
-      .finally(() => setLoading(false));
-
-    return () => controller.abort();
-  }, []);
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    fetch("/api/bundle?resource=frontend-bundles&limit=200", { signal: controller.signal })
-      .then((response) => response.json() as Promise<SmartBundleFrontendResponse>)
       .then((data) => {
-        if (data.success) setFrontendBundles(data.data);
+        setInventory(data.dashboard.inventory);
+        setBundles(data.dashboard.bundles);
+        setPlanogram(data.dashboard.planogram ?? null);
+        setFrontendBundles(data.frontendBundles.data);
+        setCommodityPrices(data.commodityPrices.items);
       })
       .catch((error: Error) => {
         if (error.name !== "AbortError") {
-          setToast("Rekomendasi bundle belum dapat ditampilkan.");
+          setToast(error.message);
         }
       })
-      .finally(() => setBundleLoading(false));
+      .finally(() => {
+        setLoading(false);
+        setBundleLoading(false);
+        setPriceLoading(false);
+      });
 
     return () => controller.abort();
   }, []);
@@ -374,23 +376,6 @@ export default function SmartBundle() {
   );
   const currentBundlePaginationItems = paginationItems(bundlePage, bundleTotalPages);
 
-  useEffect(() => {
-    const controller = new AbortController();
-
-    fetch("/api/bundle?resource=commodity-prices&limit=20", { signal: controller.signal })
-      .then((response) => response.json() as Promise<CommodityPriceResponse>)
-      .then((data) => {
-        if (data.success) setCommodityPrices(data.items);
-      })
-      .catch((error: Error) => {
-        if (error.name !== "AbortError") {
-          setToast("Harga komoditas belum dapat ditampilkan.");
-        }
-      })
-      .finally(() => setPriceLoading(false));
-
-    return () => controller.abort();
-  }, []);
 
   const stats = useMemo<KpiItem[]>(() => {
     const criticalCount = inventory.filter((item) => item.status === "Kritis").length;
