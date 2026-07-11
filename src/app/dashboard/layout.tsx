@@ -19,8 +19,6 @@ const navItems: NavItem[] = [
 { name: "AI Demand Intelligence", href: "/dashboard/demand", icon: "psychology", description: "Prediksi demand & RFQ", tone: "primary" },
 { name: "RFM Segmentation", href: "/dashboard/rfm", icon: "groups", description: "Profil anggota", tone: "amber" },
 { name: "Smart Bundle & Stock", href: "/dashboard/bundle", icon: "inventory_2", description: "Planogram & pricing", tone: "sky" },
-  { name: "Arus SAK-EP", href: "/dashboard/finance", icon: "account_balance_wallet", description: "Keuangan & PDF", tone: "violet" },
-  { name: "Distribusi SHU", href: "/dashboard/shu", icon: "payments", description: "Kalkulasi SHU", tone: "rose" },
   { name: "Data Transaksi", href: "/dashboard/transactions", icon: "receipt_long", description: "Penjualan anggota", tone: "cyan" },
   { name: "Data Stok", href: "/dashboard/stock", icon: "warehouse", description: "Inventaris", tone: "orange" },
 { name: "Data User", href: "/dashboard/users", icon: "manage_accounts", description: "Akun & akses", tone: "purple" },

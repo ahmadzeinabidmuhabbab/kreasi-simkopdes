@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import RfqAssistant from "@/components/landing/RfqAssistant";
 
 // Scroll reveal hook
 function useScrollReveal() {
@@ -848,6 +849,7 @@ export default function LandingPage() {
           </div>
         </div>
       </footer>
+      <RfqAssistant />
     </div>
   );
 }

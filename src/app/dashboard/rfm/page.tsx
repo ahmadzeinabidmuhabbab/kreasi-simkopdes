@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState, type CSSProperties, type ReactNode } from "react";
 import { motion } from "motion/react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 type SortOrder = "asc" | "desc";
 type SortField =
@@ -90,6 +91,46 @@ interface FloatingMetric {
 }
 
 type MetricTone = NonNullable<FloatingMetric["tone"]>;
+
+const metricDescriptions: Record<string, string> = {
+  "total anggota": "Jumlah seluruh anggota yang menjadi basis perhitungan segmentasi RFM aktif.",
+  "segmen aktif": "Jumlah kelompok perilaku anggota yang terbentuk dari kombinasi skor Recency, Frequency, dan Monetary.",
+  "avg churn": "Rata-rata probabilitas anggota dalam segmen berhenti atau tidak kembali bertransaksi.",
+  "avg clv": "Rata-rata prediksi Customer Lifetime Value, yaitu potensi nilai anggota sepanjang hubungan dengan koperasi.",
+  target: "Jumlah anggota pada segmen terpilih yang menjadi sasaran rekomendasi aksi.",
+  rfm: "Gabungan skor Recency, Frequency, dan Monetary yang merangkum perilaku transaksi segmen.",
+  avg: "Rata-rata nilai transaksi anggota pada segmen terpilih.",
+  churn: "Rata-rata risiko anggota pada segmen terpilih untuk berhenti atau tidak kembali bertransaksi.",
+  clv: "Rata-rata prediksi potensi nilai jangka panjang anggota pada segmen terpilih.",
+  prioritas: "Jumlah anggota dengan prediksi churn minimal 70% yang perlu ditangani lebih dahulu.",
+  "high clv": "Jumlah anggota dengan prediksi CLV minimal 70% yang memiliki potensi nilai tinggi.",
+  recency: "Skor kebaruan transaksi. Skor 5 menunjukkan anggota bertransaksi paling baru.",
+  frequency: "Skor frekuensi transaksi. Skor 5 menunjukkan anggota paling sering bertransaksi.",
+  monetary: "Skor nilai transaksi. Skor 5 menunjukkan kontribusi nilai transaksi paling tinggi.",
+  "nilai segmen": "Estimasi total nilai transaksi yang dihasilkan seluruh anggota pada segmen terpilih.",
+  "churn prioritas": "Jumlah anggota dengan probabilitas churn minimal 70% pada segmen terpilih.",
+  "clv prioritas": "Jumlah anggota dengan prediksi CLV minimal 70% pada segmen terpilih.",
+  anggota: "Jumlah anggota yang termasuk dalam segmen RFM yang sedang dipilih.",
+  proporsi: "Persentase anggota segmen terpilih dibandingkan seluruh anggota yang dianalisis.",
+};
+
+function DataLabel({ label, className = "" }: { label: string; className?: string }) {
+  const description = metricDescriptions[label.toLocaleLowerCase("id-ID")];
+
+  if (!description) return <span className={className}>{label}</span>;
+
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button type="button" className={`inline-flex cursor-help items-center gap-1 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/60 ${className}`} aria-label={`${label}: tampilkan penjelasan`}>
+          <span>{label}</span>
+          <MaterialIcon className="!text-[13px] opacity-65" aria-hidden="true">info</MaterialIcon>
+        </button>
+      </TooltipTrigger>
+      <TooltipContent>{description}</TooltipContent>
+    </Tooltip>
+  );
+}
 
 interface SegmentVisual {
   color: string;
@@ -321,7 +362,7 @@ function ScoreBar({ label, value }: { label: string; value: number }) {
   return (
     <div>
       <div className="mb-xs flex items-center justify-between">
-        <p className="text-xs font-extrabold uppercase tracking-wider text-on-surface-variant">{label}</p>
+        <DataLabel label={label} className="text-xs font-extrabold uppercase tracking-wider text-on-surface-variant" />
         <p className="text-xs font-extrabold text-primary">{normalizedValue}/5</p>
       </div>
       <div className="grid grid-cols-5 gap-1">
@@ -354,14 +395,14 @@ function KpiCard({
   }[tone];
 
   return (
-    <div className="flex min-w-0 items-center gap-sm rounded-2xl border border-outline-variant/25 bg-surface-container-lowest p-sm shadow-sm">
+    <div className="flex min-w-0 items-center gap-2 rounded-2xl border border-outline-variant/25 bg-surface-container-lowest px-sm py-2 shadow-sm">
       <div className={`grid size-10 shrink-0 place-items-center rounded-xl ${toneClass}`}>
         <MaterialIcon filled className="text-xl">
           {icon}
         </MaterialIcon>
       </div>
       <div className="min-w-0">
-        <p className="text-xs font-extrabold uppercase tracking-wider text-on-surface-variant">{label}</p>
+        <DataLabel label={label} className="text-xs font-extrabold uppercase tracking-wider text-on-surface-variant" />
         <p className="mt-0.5 truncate text-xl font-extrabold text-on-surface">{value}</p>
         <p className="mt-0.5 text-xs text-on-surface-variant">{helper}</p>
       </div>
@@ -371,9 +412,9 @@ function KpiCard({
 
 function MetricPill({ label, value }: { label: string; value: ReactNode }) {
   return (
-    <div className="min-w-0 rounded-xl border border-outline-variant/20 bg-white/75 px-sm py-xs text-center shadow-sm">
+    <div className="min-w-0 rounded-xl border border-outline-variant/20 bg-white/75 px-2.5 py-1.5 text-center shadow-sm">
       <p className="whitespace-nowrap text-[clamp(1.1rem,1.45vw,1.45rem)] font-extrabold leading-none text-on-surface">{value}</p>
-      <p className="mt-0.5 text-xs font-bold uppercase text-on-surface-variant">{label}</p>
+      <DataLabel label={label} className="mt-0.5 text-xs font-bold uppercase text-on-surface-variant" />
     </div>
   );
 }
@@ -422,16 +463,16 @@ function FloatingMetricCard({
         scale: { duration: 0.35, delay },
         y: { duration: 3.4, repeat: Infinity, ease: "easeInOut", delay },
       }}
-      className={`pointer-events-none rounded-2xl border px-sm py-xs shadow-[0_18px_38px_-28px_rgba(26,28,23,0.65)] backdrop-blur ${toneStyle.floating} ${className}`}
+      className={`rounded-xl border px-2.5 py-1.5 shadow-[0_18px_38px_-28px_rgba(26,28,23,0.65)] backdrop-blur ${toneStyle.floating} ${className}`}
     >
       <div className="flex items-center gap-xs">
-        <span className={`grid size-8 shrink-0 place-items-center rounded-lg ${toneStyle.icon}`}>
+        <span className={`grid size-7 shrink-0 place-items-center rounded-lg ${toneStyle.icon}`}>
           <MaterialIcon filled className="text-[18px]">
             {icon}
           </MaterialIcon>
         </span>
         <div className="min-w-0">
-          <p className="text-[10px] font-extrabold uppercase leading-tight text-on-surface-variant">{label}</p>
+          <DataLabel label={label} className="text-[10px] font-extrabold uppercase leading-tight text-on-surface-variant" />
           <p className="truncate text-base font-extrabold leading-tight text-on-surface">{value}</p>
         </div>
       </div>
@@ -443,7 +484,7 @@ function InlineMetricRow({ metrics }: { metrics: FloatingMetric[] }) {
   if (metrics.length === 0) return null;
 
   return (
-    <div className="mt-md grid gap-xs sm:hidden">
+    <div className="mt-sm grid gap-xs sm:hidden">
       {metrics.map((metric) => (
         <FloatingMetricCard key={metric.label} {...metric} className="w-full" />
       ))}
@@ -465,7 +506,7 @@ function InsightCard({
   const toneStyle = metricToneStyles(metrics[0]?.tone ?? "primary");
 
   return (
-    <div className={`relative overflow-visible rounded-2xl border p-xs pt-md shadow-sm sm:p-sm sm:pt-md ${toneStyle.surface}`}>
+    <div className={`relative overflow-visible rounded-2xl border p-xs shadow-sm sm:px-sm sm:pb-sm sm:pt-14 ${toneStyle.surface}`}>
       {metrics.length > 0 ? (
         <div className="absolute -top-4 right-md hidden gap-xs sm:flex">
           {metrics.map((metric) => (
@@ -473,7 +514,7 @@ function InsightCard({
           ))}
         </div>
       ) : null}
-      <div className="mb-xs flex items-center gap-sm">
+      <div className="mb-xs flex items-center gap-xs">
         <span className={`grid size-9 shrink-0 place-items-center rounded-lg ${toneStyle.icon}`}>
           <MaterialIcon filled className="text-[20px]">
             {icon}
@@ -729,6 +770,7 @@ export default function RfmSegmentation() {
   ];
 
   return (
+    <TooltipProvider>
     <div className="dashboard-page dashboard-page-rfm mx-auto w-full max-w-[1440px] space-y-lg pb-2xl">
       {error ? (
         <div className="rounded-xl border border-error/25 bg-error-container/55 p-md text-sm font-semibold text-error">{error}</div>
@@ -763,7 +805,7 @@ export default function RfmSegmentation() {
         </div>
       </header>
 
-      <section className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-gutter">
+      <section className="grid grid-cols-[repeat(auto-fit,minmax(220px,1fr))] gap-sm">
         <KpiCard label="Total Anggota" value={totalCustomers.toLocaleString("id-ID")} helper="basis segmentasi aktif" icon="groups" />
         <KpiCard label="Segmen Aktif" value={segments.length} helper="cluster perilaku anggota" icon="hub" tone="amber" />
         <KpiCard label="Avg Churn" value={avgChurn} helper="rata-rata risiko segmen" icon="warning" tone="danger" />
@@ -831,20 +873,20 @@ export default function RfmSegmentation() {
                 <p className="mt-sm max-w-4xl text-sm leading-relaxed text-on-surface-variant">{selectedSegment.customer_profiling}</p>
               </div>
 
-              <div className="grid w-full grid-cols-2 gap-sm">
+              <div className="grid w-full grid-cols-2 gap-xs">
                 <MetricPill label="Anggota" value={selectedSegment.customers.toLocaleString("id-ID")} />
                 <MetricPill label="Proporsi" value={segmentShare} />
               </div>
             </div>
 
-            <div className="mt-md grid gap-sm md:grid-cols-3">
+            <div className="mt-sm grid gap-sm md:grid-cols-3">
               <ScoreBar label="Recency" value={selectedSegment.recency_score} />
               <ScoreBar label="Frequency" value={selectedSegment.frequency_score} />
               <ScoreBar label="Monetary" value={selectedSegment.monetary_score} />
             </div>
           </section>
 
-          <section className="grid gap-gutter lg:grid-cols-3">
+          <section className="grid gap-sm lg:grid-cols-3">
             <KpiCard
               label="Nilai Segmen"
               value={formatRupiah(totalSegmentValue)}
@@ -893,13 +935,13 @@ export default function RfmSegmentation() {
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.35, delay: metric.delay ?? 0 }}
-                  className={`relative mt-md min-h-32 overflow-visible rounded-2xl border p-xs pt-md shadow-sm sm:p-sm sm:pt-md ${toneStyle.surface}`}
+                  className={`relative mt-sm min-h-32 overflow-visible rounded-2xl border px-sm pb-sm pt-16 shadow-sm ${toneStyle.surface}`}
                 >
                   <FloatingMetricCard
                     {...metric}
                     className="absolute -right-2 -top-3 min-w-28 max-w-[9.25rem]"
                   />
-                  <div className="mb-xs flex items-center gap-sm">
+                  <div className="mb-xs flex items-center gap-xs">
                     <span className={`grid size-8 shrink-0 place-items-center rounded-lg ${toneStyle.icon}`}>
                       <MaterialIcon filled className="text-[18px]">
                         {pillar.icon}
@@ -1114,5 +1156,6 @@ export default function RfmSegmentation() {
         </div>
       </section>
     </div>
+    </TooltipProvider>
   );
 }

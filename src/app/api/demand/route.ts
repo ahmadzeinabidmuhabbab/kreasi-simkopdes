@@ -1,9 +1,5 @@
 import { NextResponse } from "next/server";
-
-const BACKEND_URL =
-  process.env.KREASI_BACKEND_URL ??
-  process.env.NEXT_PUBLIC_API_BASE_URL ??
-  "http://127.0.0.1:8000";
+import { getBackendApiUrl } from "@/lib/backend-url";
 
 type BackendRFQStatus = "open" | "in_review" | "closed" | "cancelled";
 type UiRFQStatus = "DIPROSES" | "DITOLAK";
@@ -188,7 +184,7 @@ trend?: Awaited<ReturnType<typeof getTrendSummaries>>;
 }
 
 function apiUrl(path: string) {
-  return `${BACKEND_URL.replace(/\/$/, "")}/api/v1${path}`;
+  return getBackendApiUrl(path);
 }
 
 async function fetchJson<T>(path: string, revalidate = 300): Promise<T> {

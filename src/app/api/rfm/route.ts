@@ -1,12 +1,8 @@
 import { NextResponse } from "next/server";
-
-const BACKEND_URL =
-  process.env.KREASI_BACKEND_URL ??
-  process.env.NEXT_PUBLIC_API_BASE_URL ??
-  "http://127.0.0.1:8000";
+import { getBackendApiUrl } from "@/lib/backend-url";
 
 function backendUrl(path: string) {
-  return `${BACKEND_URL.replace(/\/$/, "")}/api/v1${path}`;
+  return getBackendApiUrl(path);
 }
 
 async function proxyJson(path: string, init?: RequestInit) {

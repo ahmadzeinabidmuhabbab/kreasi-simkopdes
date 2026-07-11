@@ -416,7 +416,7 @@ export default function PlanogramDesigner({
     setActiveProducts(new Set());
     setActiveSlots(new Set());
     setPendingPlacement(null);
-    onToast?.("Seluruh rak dan alur asosiasi planogram direset.");
+    onToast?.("Seluruh susunan rak dan rekomendasi produk direset.");
   };
 
   return (
@@ -503,7 +503,7 @@ export default function PlanogramDesigner({
               <div>
                 <h2 className="text-lg font-extrabold text-on-surface">Visual Planogram</h2>
                 <p className="text-sm text-on-surface-variant">
-                  Custom manual dengan guardrail association rule.
+                  Susun produk secara manual dengan panduan keterkaitan produk.
                 </p>
               </div>
 
@@ -519,7 +519,7 @@ export default function PlanogramDesigner({
                     <span className="material-symbols-outlined text-[16px] text-primary" aria-hidden="true">
                       restart_alt
                     </span>
-                    Reset rak & asosiasi
+                    Reset susunan rak
                   </button>
                 )}
               </div>
@@ -528,7 +528,7 @@ export default function PlanogramDesigner({
             {associationContext.length > 0 && (
               <div className="mb-sm rounded-2xl border border-primary/15 bg-primary/8 p-sm">
                 <p className="text-[11px] font-extrabold uppercase tracking-wider text-primary">
-                  Association rule aktif
+                  Rekomendasi produk terkait
                 </p>
                 <p className="mt-xs text-sm font-semibold text-on-surface-variant">
                   {associationContext.join(" + ")}
@@ -610,7 +610,7 @@ function ScenarioPreview({ scenario }: { scenario: PlanogramScenario }) {
       <div className="mb-md flex flex-col gap-sm lg:flex-row lg:items-center lg:justify-between">
         <div>
           <p className="text-[11px] font-extrabold uppercase tracking-wider text-primary">
-            Skenario AI read-only
+            Skenario rekomendasi AI
           </p>
           <h2 className="mt-xs text-lg font-extrabold text-on-surface">{scenario.name}</h2>
           <p className="mt-xs max-w-4xl text-sm leading-relaxed text-on-surface-variant">
@@ -621,7 +621,7 @@ function ScenarioPreview({ scenario }: { scenario: PlanogramScenario }) {
           <span className="material-symbols-outlined text-[16px]" aria-hidden="true">
             lock
           </span>
-          Tidak dapat diubah
+          Pratinjau terkunci
         </span>
       </div>
 

@@ -1,12 +1,8 @@
 import { NextResponse } from "next/server";
-
-const BACKEND_URL =
-  process.env.KREASI_BACKEND_URL ??
-  process.env.NEXT_PUBLIC_API_BASE_URL ??
-  "http://127.0.0.1:8000";
+import { getBackendApiUrl } from "@/lib/backend-url";
 
 function backendUrl(path: string) {
-  return `${BACKEND_URL.replace(/\/$/, "")}/api/v1${path}`;
+  return getBackendApiUrl(path);
 }
 
 function fallbackDashboard() {
@@ -99,6 +95,8 @@ export async function GET(request: Request) {
     dashboard: "/smart-bundle/dashboard",
     products: "/smart-bundle/products",
     bundles: "/smart-bundle/bundles",
+    "frontend-bundles": "/smart-bundle/frontend-bundles",
+    "commodity-prices": "/smart-bundle/commodity-prices",
     "dynamic-pricing": "/smart-bundle/dynamic-pricing",
     "association-rules": "/smart-bundle/association-rules",
     "planogram-scenarios": "/smart-bundle/planogram/scenarios",
@@ -133,6 +131,25 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   const { searchParams } = new URL(request.url);
   const resource = searchParams.get("resource") ?? "validate-planogram-drop";
+
+  if (resource === "refresh-commodity-prices") {
+    const body = await request.text();
+    try {
+      return await proxyJson("/smart-bundle/commodity-prices/refresh", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: body || JSON.stringify({ limit: 20 }),
+      });
+    } catch (error) {
+      return NextResponse.json(
+        {
+          success: false,
+          detail: error instanceof Error ? error.message : "Backend commodity price refresh unavailable",
+        },
+        { status: 503 },
+      );
+    }
+  }
 
   if (resource !== "validate-planogram-drop") {
     return NextResponse.json(
